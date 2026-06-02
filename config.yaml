@@ -42,17 +42,25 @@ sources:
 
   # ── GOV.UK Search API ─────────────────────────────────────────────────────
   # Uses https://www.gov.uk/api/search.json — official, no scraping.
-  # content_purpose_supergroup values: guidance_and_regulation, news_and_communications, policy_and_engagement
+  # Valid filter: filter_organisations, filter_document_type, order, count.
+  # NOTE: filter_content_purpose_supergroup is NOT a valid API field — removed.
+  # filter_document_type values: news_story, press_release, guidance, consultation,
+  #   policy_paper, speech, written_statement, government_response, transparency
   govuk:
     - id: govuk_dsit
       label: "DSIT"
       type: govuk_api
       params:
         filter_organisations: "department-for-science-innovation-and-technology"
-        filter_content_purpose_supergroup:
-          - guidance_and_regulation
-          - news_and_communications
-          - policy_and_engagement
+        filter_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
         order: "-updated_at"
         count: 50
 
@@ -61,10 +69,15 @@ sources:
       type: govuk_api
       params:
         filter_organisations: "hm-treasury"
-        filter_content_purpose_supergroup:
-          - guidance_and_regulation
-          - news_and_communications
-          - policy_and_engagement
+        filter_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
         order: "-updated_at"
         count: 50
 
@@ -73,10 +86,15 @@ sources:
       type: govuk_api
       params:
         filter_organisations: "cabinet-office"
-        filter_content_purpose_supergroup:
-          - guidance_and_regulation
-          - news_and_communications
-          - policy_and_engagement
+        filter_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
         order: "-updated_at"
         count: 50
 
@@ -85,9 +103,10 @@ sources:
       type: govuk_api
       params:
         filter_organisations: "prime-ministers-office-10-downing-street"
-        filter_content_purpose_supergroup:
-          - news_and_communications
-          - policy_and_engagement
+        filter_document_type:
+          - news_story
+          - press_release
+          - speech
         order: "-updated_at"
         count: 50
 
@@ -96,56 +115,69 @@ sources:
       type: govuk_api
       params:
         filter_organisations: "department-for-business-and-trade"
-        filter_content_purpose_supergroup:
-          - guidance_and_regulation
-          - news_and_communications
-          - policy_and_engagement
+        filter_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
         order: "-updated_at"
         count: 50
 
   # ── Parliamentary Committees ──────────────────────────────────────────────
-  # committees.parliament.uk offers an RSS feed per committee.
-  # Format: https://committees.parliament.uk/committee/{id}/news/rss/
-  # IDs sourced from committees.parliament.uk URLs.
+  # committees.parliament.uk committee IDs changed after the 2024 general election.
+  # We use dynamic discovery: the runner scrapes the committee listing page to find
+  # current IDs, then builds RSS URLs. The static IDs below are used as fallback labels.
+  # TYPE: parliament_committee_news — uses dynamic ID discovery (see fetcher).
   committees:
     - id: committee_sit_commons
       label: "Science, Innovation & Technology Committee (Commons)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/135/science-innovation-and-technology-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Science, Innovation and Technology"
+      house: "Commons"
 
     - id: committee_st_lords
       label: "Science & Technology Committee (Lords)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/54/science-and-technology-committee-lords/news/rss/"
+      type: parliament_committee_news
+      search_name: "Science and Technology"
+      house: "Lords"
 
     - id: committee_bt_commons
       label: "Business & Trade Committee (Commons)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/814/business-and-trade-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Business and Trade"
+      house: "Commons"
 
     - id: committee_cd_lords
       label: "Communications & Digital Committee (Lords)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/170/communications-and-digital-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Communications and Digital"
+      house: "Lords"
 
     - id: committee_ea_lords
       label: "Economic Affairs Committee (Lords)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/175/economic-affairs-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Economic Affairs"
+      house: "Lords"
 
     - id: committee_ir_lords
       label: "Industry & Regulators Committee (Lords)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/560/industry-and-regulators-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Industry and Regulators"
+      house: "Lords"
 
     - id: committee_treasury_commons
       label: "Treasury Committee (Commons)"
-      type: parliament_rss
-      url: "https://committees.parliament.uk/committee/158/treasury-committee/news/rss/"
+      type: parliament_committee_news
+      search_name: "Treasury"
+      house: "Commons"
 
   # ── Committee Inquiries ───────────────────────────────────────────────────
-  # committees.parliament.uk/inquiries has no stable RSS/API — falls back to HTML scraping.
-  # FRAGILITY NOTE: This page uses server-side rendered HTML; structure may change.
+  # committees.parliament.uk/inquiries has no stable RSS/API — HTML scrape.
+  # FRAGILITY NOTE: SSR page, structure may change after website redesigns.
   inquiries:
     - id: parliament_inquiries
       label: "Committee Inquiries (All)"
@@ -153,7 +185,8 @@ sources:
       url: "https://committees.parliament.uk/inquiries/"
 
   # ── Written Statements ────────────────────────────────────────────────────
-  # Uses the official Parliament Written Statements API (OData).
+  # Official Parliament API. Domain changed from oralquestionsandstatements.parliament.uk
+  # to questions-statements-api.parliament.uk.
   written_statements:
     - id: written_statements_commons
       label: "Written Statements (Commons)"
@@ -166,7 +199,8 @@ sources:
       house: "Lords"
 
   # ── Hansard ───────────────────────────────────────────────────────────────
-  # Uses the Hansard API at https://hansard.parliament.uk/api
+  # Uses the Hansard search API to fetch recent debates by house.
+  # Falls back to RSS if the search endpoint changes.
   hansard:
     - id: hansard_commons
       label: "Hansard (Commons)"
@@ -179,9 +213,9 @@ sources:
       house: "Lords"
 
   # ── What's On in Parliament ───────────────────────────────────────────────
-  # whatson.parliament.uk — RSS available.
+  # whatson.parliament.uk — scrape (no reliable RSS URL found).
   whatson:
     - id: whatson_parliament
       label: "What's On in Parliament"
-      type: parliament_rss
-      url: "https://whatson.parliament.uk/api/events/rss/"
+      type: whatson_scrape
+      url: "https://whatson.parliament.uk"

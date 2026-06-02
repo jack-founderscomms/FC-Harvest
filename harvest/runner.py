@@ -8,7 +8,15 @@ from pathlib import Path
 
 from . import db as database
 from .filters import match_keywords
-from .fetchers import govuk, parliament_rss, parliament_written_statements, hansard, parliament_inquiries
+from .fetchers import (
+    govuk,
+    parliament_rss,
+    parliament_written_statements,
+    hansard,
+    parliament_inquiries,
+    parliament_committee_news,
+    whatson_scrape,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +26,11 @@ CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
 FETCHER_MAP = {
     "govuk_api": govuk,
     "parliament_rss": parliament_rss,
+    "parliament_committee_news": parliament_committee_news,
     "parliament_written_statements_api": parliament_written_statements,
     "hansard_api": hansard,
     "parliament_inquiries_scrape": parliament_inquiries,
+    "whatson_scrape": whatson_scrape,
 }
 
 

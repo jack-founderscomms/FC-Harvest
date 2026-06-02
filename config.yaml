@@ -1,0 +1,187 @@
+# FC-Harvest configuration
+# Edit sources, keywords and schedule here — no code changes needed.
+
+schedule:
+  # Cron expression: default 7am UK time (UTC+0 winter / UTC+1 summer — set UTC here, adjust for BST manually)
+  cron: "0 7 * * *"
+  timezone: "Europe/London"
+
+keywords:
+  - AI
+  - artificial intelligence
+  - technology
+  - digital
+  - data
+  - regulation
+  - semiconductor
+  - semiconductor chips
+  - cyber
+  - cybersecurity
+  - broadband
+  - telecoms
+  - innovation
+  - R&D
+  - research and development
+  - fintech
+  - open banking
+  - competition
+  - antitrust
+  - platforms
+  - online safety
+  - GDPR
+  - data protection
+  - science
+  - space
+  - quantum
+  - net zero
+  - green tech
+  - trade
+  - export controls
+
+sources:
+
+  # ── GOV.UK Search API ─────────────────────────────────────────────────────
+  # Uses https://www.gov.uk/api/search.json — official, no scraping.
+  # content_purpose_supergroup values: guidance_and_regulation, news_and_communications, policy_and_engagement
+  govuk:
+    - id: govuk_dsit
+      label: "DSIT"
+      type: govuk_api
+      params:
+        filter_organisations: "department-for-science-innovation-and-technology"
+        filter_content_purpose_supergroup:
+          - guidance_and_regulation
+          - news_and_communications
+          - policy_and_engagement
+        order: "-updated_at"
+        count: 50
+
+    - id: govuk_treasury
+      label: "HM Treasury"
+      type: govuk_api
+      params:
+        filter_organisations: "hm-treasury"
+        filter_content_purpose_supergroup:
+          - guidance_and_regulation
+          - news_and_communications
+          - policy_and_engagement
+        order: "-updated_at"
+        count: 50
+
+    - id: govuk_cabinet_office
+      label: "Cabinet Office"
+      type: govuk_api
+      params:
+        filter_organisations: "cabinet-office"
+        filter_content_purpose_supergroup:
+          - guidance_and_regulation
+          - news_and_communications
+          - policy_and_engagement
+        order: "-updated_at"
+        count: 50
+
+    - id: govuk_no10
+      label: "No.10 / Prime Minister's Office"
+      type: govuk_api
+      params:
+        filter_organisations: "prime-ministers-office-10-downing-street"
+        filter_content_purpose_supergroup:
+          - news_and_communications
+          - policy_and_engagement
+        order: "-updated_at"
+        count: 50
+
+    - id: govuk_dbt
+      label: "DBT"
+      type: govuk_api
+      params:
+        filter_organisations: "department-for-business-and-trade"
+        filter_content_purpose_supergroup:
+          - guidance_and_regulation
+          - news_and_communications
+          - policy_and_engagement
+        order: "-updated_at"
+        count: 50
+
+  # ── Parliamentary Committees ──────────────────────────────────────────────
+  # committees.parliament.uk offers an RSS feed per committee.
+  # Format: https://committees.parliament.uk/committee/{id}/news/rss/
+  # IDs sourced from committees.parliament.uk URLs.
+  committees:
+    - id: committee_sit_commons
+      label: "Science, Innovation & Technology Committee (Commons)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/135/science-innovation-and-technology-committee/news/rss/"
+
+    - id: committee_st_lords
+      label: "Science & Technology Committee (Lords)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/54/science-and-technology-committee-lords/news/rss/"
+
+    - id: committee_bt_commons
+      label: "Business & Trade Committee (Commons)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/814/business-and-trade-committee/news/rss/"
+
+    - id: committee_cd_lords
+      label: "Communications & Digital Committee (Lords)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/170/communications-and-digital-committee/news/rss/"
+
+    - id: committee_ea_lords
+      label: "Economic Affairs Committee (Lords)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/175/economic-affairs-committee/news/rss/"
+
+    - id: committee_ir_lords
+      label: "Industry & Regulators Committee (Lords)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/560/industry-and-regulators-committee/news/rss/"
+
+    - id: committee_treasury_commons
+      label: "Treasury Committee (Commons)"
+      type: parliament_rss
+      url: "https://committees.parliament.uk/committee/158/treasury-committee/news/rss/"
+
+  # ── Committee Inquiries ───────────────────────────────────────────────────
+  # committees.parliament.uk/inquiries has no stable RSS/API — falls back to HTML scraping.
+  # FRAGILITY NOTE: This page uses server-side rendered HTML; structure may change.
+  inquiries:
+    - id: parliament_inquiries
+      label: "Committee Inquiries (All)"
+      type: parliament_inquiries_scrape
+      url: "https://committees.parliament.uk/inquiries/"
+
+  # ── Written Statements ────────────────────────────────────────────────────
+  # Uses the official Parliament Written Statements API (OData).
+  written_statements:
+    - id: written_statements_commons
+      label: "Written Statements (Commons)"
+      type: parliament_written_statements_api
+      house: "Commons"
+
+    - id: written_statements_lords
+      label: "Written Statements (Lords)"
+      type: parliament_written_statements_api
+      house: "Lords"
+
+  # ── Hansard ───────────────────────────────────────────────────────────────
+  # Uses the Hansard API at https://hansard.parliament.uk/api
+  hansard:
+    - id: hansard_commons
+      label: "Hansard (Commons)"
+      type: hansard_api
+      house: "Commons"
+
+    - id: hansard_lords
+      label: "Hansard (Lords)"
+      type: hansard_api
+      house: "Lords"
+
+  # ── What's On in Parliament ───────────────────────────────────────────────
+  # whatson.parliament.uk — RSS available.
+  whatson:
+    - id: whatson_parliament
+      label: "What's On in Parliament"
+      type: parliament_rss
+      url: "https://whatson.parliament.uk/api/events/rss/"

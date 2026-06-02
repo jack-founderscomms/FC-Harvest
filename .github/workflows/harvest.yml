@@ -1,0 +1,60 @@
+name: Harvest & Publish
+
+on:
+  schedule:
+    # 7:05am UK time (UTC — add 1h manually when BST is in effect if needed)
+    - cron: "5 7 * * 1-5"   # weekdays only; change to "5 7 * * *" for every day
+  workflow_dispatch:          # also lets you click "Run workflow" manually in GitHub
+
+permissions:
+  contents: write   # needed to commit the generated docs/index.html back to the repo
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # ── Restore SQLite DB from cache so items accumulate across runs ──────
+      - name: Restore harvest DB cache
+        uses: actions/cache@v4
+        with:
+          path: harvest.db
+          key: harvest-db-${{ github.ref_name }}
+          restore-keys: harvest-db-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Run the harvest ───────────────────────────────────────────────────
+      - name: Run harvest
+        run: python run.py harvest
+        env:
+          PYTHONUNBUFFERED: "1"
+
+      # ── Generate static site ──────────────────────────────────────────────
+      - name: Generate static site
+        run: python generate_static.py
+
+      # ── Commit docs/index.html back to the branch ────────────────────────
+      - name: Commit and push static site
+        run: |
+          git config user.name  "fc-harvest[bot]"
+          git config user.email "fc-harvest[bot]@users.noreply.github.com"
+          git add docs/index.html
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to docs/index.html — skipping commit"
+          else
+            git commit -m "chore: update dashboard $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push origin ${{ github.ref_name }}
+          fi

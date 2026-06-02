@@ -1,7 +1,8 @@
 """
 Entry points:
-  python run.py serve    — start the web dashboard (default port 8000)
-  python run.py harvest  — run a single harvest now and exit
+  python run.py serve    — start the live web dashboard (port 8000)
+  python run.py harvest  — run a harvest and exit
+  python run.py static   — generate docs/index.html for GitHub Pages
   python run.py          — same as 'serve'
 """
 
@@ -28,12 +29,21 @@ def harvest():
     if result["errors"]:
         print(f"  Errors ({len(result['errors'])}):")
         for e in result["errors"]:
-            print(f"    - {e}")
+            src = e.get("source_id", "?")
+            msg = e.get("message", str(e))
+            print(f"    - [{src}] {msg}")
+
+
+def static():
+    from generate_static import generate
+    generate()
 
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "serve"
     if cmd == "harvest":
         harvest()
+    elif cmd == "static":
+        static()
     else:
         serve()

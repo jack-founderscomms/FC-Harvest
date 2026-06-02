@@ -6,184 +6,160 @@
   <title>FC-Harvest — Parliamentary Monitor</title>
   <style>
     :root {
-      --bg: #f8f9fa;
+      --bg: #f4f5f7;
       --surface: #ffffff;
-      --border: #dee2e6;
-      --text: #212529;
-      --muted: #6c757d;
-      --accent: #0d6efd;
-      --accent-light: #e7f1ff;
-      --tag-bg: #e9ecef;
-      --tag-kw: #d1e7dd;
-      --tag-kw-text: #0a3622;
-      --danger: #dc3545;
-      --success: #198754;
+      --border: #e1e4e8;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --accent: #1d4ed8;
+      --accent-light: #eff6ff;
+      --tag-bg: #f0f1f3;
+      --kw-bg: #dcfce7;
+      --kw-text: #14532d;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --err: #dc2626;
+      --err-bg: #fef2f2;
+      --err-border: #fecaca;
+      --sidebar-w: 240px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+           background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
     /* ── Layout ── */
-    .layout { display: flex; min-height: 100vh; }
-    .sidebar {
-      width: 260px;
-      flex-shrink: 0;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 16px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    .main { flex: 1; padding: 24px; max-width: 1000px; }
+    .shell { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--surface);
+               border-right: 1px solid var(--border); display: flex; flex-direction: column;
+               position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .main { flex: 1; overflow: hidden; }
 
-    /* ── Header ── */
-    .header { margin-bottom: 24px; }
-    .header h1 { font-size: 20px; font-weight: 700; color: var(--text); }
-    .header p { color: var(--muted); margin-top: 4px; font-size: 13px; }
+    /* ── Sidebar sections ── */
+    .sb-brand { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
+    .sb-brand h1 { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+    .sb-brand p  { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-    /* ── Sidebar ── */
-    .sidebar h2 { font-size: 12px; font-weight: 600; text-transform: uppercase;
-                  letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
-    .sidebar-section { margin-bottom: 20px; }
+    .sb-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .sb-section h2 { font-size: 10px; font-weight: 600; text-transform: uppercase;
+                     letter-spacing: 0.07em; color: var(--muted); margin-bottom: 8px; }
 
-    .filter-toggle {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 12px;
-      padding: 8px 10px;
-      background: var(--bg);
-      border-radius: 6px;
-      border: 1px solid var(--border);
-    }
-    .filter-toggle label { font-size: 13px; cursor: pointer; user-select: none; }
-    .filter-toggle input[type=checkbox] { cursor: pointer; }
+    /* filter toggle */
+    .toggle-row { display: flex; align-items: center; gap: 8px;
+                  padding: 6px 8px; background: var(--bg); border-radius: 6px;
+                  border: 1px solid var(--border); cursor: pointer; }
+    .toggle-row label { font-size: 12px; cursor: pointer; flex: 1; }
+    input[type=checkbox] { cursor: pointer; accent-color: var(--accent); }
 
-    .source-list { list-style: none; }
-    .source-list li { margin-bottom: 4px; }
-    .source-list label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; cursor: pointer; padding: 3px 0;
-    }
-    .source-list input[type=checkbox] { cursor: pointer; }
+    /* source list */
+    .src-list { list-style: none; }
+    .src-list li { margin-bottom: 1px; }
+    .src-list label { display: flex; align-items: center; gap: 6px; padding: 3px 2px;
+                      font-size: 12px; cursor: pointer; border-radius: 4px; }
+    .src-list label:hover { background: var(--bg); }
+    .src-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .src-dot.ok   { background: var(--ok); }
+    .src-dot.error { background: var(--err); }
+    .src-dot.warning { background: var(--warn); }
+    .src-dot.unknown { background: var(--border); }
 
-    .btn {
-      display: inline-block; padding: 7px 14px;
-      border-radius: 6px; font-size: 13px; font-weight: 500;
-      cursor: pointer; border: none; text-decoration: none;
-      transition: opacity 0.15s;
-    }
-    .btn:hover { opacity: 0.85; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-secondary { background: var(--tag-bg); color: var(--text); border: 1px solid var(--border); }
-    .btn-harvest { background: var(--success); color: #fff; width: 100%; text-align: center;
-                   margin-top: 6px; }
+    /* action buttons */
+    .btn { display: block; width: 100%; padding: 7px 12px; border-radius: 6px;
+           font-size: 12px; font-weight: 500; cursor: pointer; border: none;
+           text-align: center; transition: filter 0.15s; }
+    .btn:hover { filter: brightness(0.92); }
+    .btn-harvest { background: var(--ok); color: #fff; margin-bottom: 6px; }
+    .btn-reset   { background: var(--tag-bg); color: var(--text);
+                   border: 1px solid var(--border); text-decoration: none; }
 
-    /* ── Run history ── */
-    .run-row { font-size: 12px; color: var(--muted); padding: 4px 0;
-               border-bottom: 1px solid var(--border); }
-    .run-row:last-child { border-bottom: none; }
-    .run-row .run-count { font-weight: 600; color: var(--text); }
+    /* run history */
+    .run-item { font-size: 11px; padding: 5px 0; border-bottom: 1px solid var(--border);
+                display: flex; gap: 6px; align-items: baseline; }
+    .run-item:last-child { border: none; }
+    .run-new { font-weight: 600; color: var(--text); }
+    .run-ts  { color: var(--muted); }
+    .run-err { color: var(--err); }
 
-    /* ── Main content ── */
-    .stats-bar {
-      display: flex; gap: 16px; align-items: center;
-      margin-bottom: 20px; flex-wrap: wrap;
-    }
-    .stats-bar .stat { font-size: 13px; color: var(--muted); }
-    .stats-bar .stat strong { color: var(--text); }
+    /* ── Main area ── */
+    .top-bar { background: var(--surface); border-bottom: 1px solid var(--border);
+               padding: 14px 24px; display: flex; gap: 16px; align-items: center;
+               flex-wrap: wrap; position: sticky; top: 0; z-index: 10; }
+    .top-bar h2 { font-size: 15px; font-weight: 600; }
+    .stat { font-size: 12px; color: var(--muted); }
+    .stat strong { color: var(--text); }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px;
+             font-weight: 500; }
+    .badge-ok  { background: #dcfce7; color: var(--ok); }
+    .badge-kw  { background: var(--kw-bg); color: var(--kw-text); }
 
-    /* ── Source group ── */
-    .source-group {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    .source-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      user-select: none;
-    }
-    .source-header h3 { font-size: 14px; font-weight: 600; }
-    .source-header .count {
-      font-size: 12px; color: var(--muted);
-      background: var(--tag-bg); padding: 2px 8px; border-radius: 10px;
-    }
-    .source-body { padding: 0; }
+    .content { padding: 20px 24px; }
 
-    /* ── Item row ── */
-    .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .item:last-child { border-bottom: none; }
+    /* ── Error health panel ── */
+    .error-panel { background: var(--err-bg); border: 1px solid var(--err-border);
+                   border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; }
+    .error-panel h3 { font-size: 13px; font-weight: 600; color: var(--err);
+                      margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .error-list { list-style: none; }
+    .error-list li { font-size: 12px; padding: 5px 0; border-bottom: 1px solid var(--err-border); }
+    .error-list li:last-child { border: none; }
+    .error-source { font-weight: 600; }
+    .error-msg { color: var(--muted); margin-top: 1px; }
+
+    /* ── Keyword cloud ── */
+    .kw-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .kw-pill { font-size: 11px; padding: 3px 8px; border-radius: 12px;
+               background: var(--kw-bg); color: var(--kw-text); font-weight: 500;
+               cursor: pointer; border: none; }
+    .kw-pill .kw-count { opacity: 0.6; margin-left: 3px; }
+
+    /* ── Source group cards ── */
+    .group { background: var(--surface); border: 1px solid var(--border);
+             border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+    .group-header { display: flex; align-items: center; justify-content: space-between;
+                    padding: 11px 16px; background: var(--bg); border-bottom: 1px solid var(--border);
+                    cursor: pointer; user-select: none; }
+    .group-header-left { display: flex; align-items: center; gap: 8px; }
+    .group-title { font-size: 13px; font-weight: 600; }
+    .group-count { font-size: 11px; background: var(--tag-bg); color: var(--muted);
+                   padding: 1px 7px; border-radius: 10px; }
+    .group-kw-count { font-size: 11px; background: var(--kw-bg); color: var(--kw-text);
+                      padding: 1px 7px; border-radius: 10px; }
+    .chevron { font-size: 10px; color: var(--muted); }
+
+    /* ── Item rows ── */
+    .item { padding: 11px 16px; border-bottom: 1px solid var(--border);
+            transition: background 0.1s; }
+    .item:last-child { border: none; }
     .item:hover { background: var(--accent-light); }
-
-    .item-title a {
-      color: var(--accent); text-decoration: none; font-weight: 500;
-      font-size: 13px; line-height: 1.4;
-    }
+    .item-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+    .item-title a { color: var(--accent); text-decoration: none; }
     .item-title a:hover { text-decoration: underline; }
-    .item-meta {
-      font-size: 12px; color: var(--muted); margin-top: 4px;
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-    .item-summary {
-      font-size: 12px; color: var(--muted); margin-top: 4px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 680px;
-    }
+    .item-meta { display: flex; gap: 12px; margin-top: 4px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+    .item-summary { font-size: 12px; color: var(--muted); margin-top: 4px;
+                    overflow: hidden; display: -webkit-box;
+                    -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .item-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
-    .tag {
-      font-size: 11px; padding: 1px 6px; border-radius: 4px;
-      background: var(--tag-bg); color: var(--muted);
-    }
-    .tag.kw { background: var(--tag-kw); color: var(--tag-kw-text); font-weight: 500; }
-
-    .item-date {
-      font-size: 11px; color: var(--muted); white-space: nowrap;
-      padding-top: 2px;
-    }
+    .tag { font-size: 10px; padding: 1px 6px; border-radius: 4px;
+           background: var(--tag-bg); color: var(--muted); }
+    .tag.kw { background: var(--kw-bg); color: var(--kw-text); font-weight: 500; }
 
     /* ── Empty state ── */
-    .empty {
-      padding: 40px; text-align: center; color: var(--muted);
-    }
-    .empty p { margin-bottom: 12px; }
+    .empty { padding: 48px 24px; text-align: center; color: var(--muted); }
+    .empty p { margin-bottom: 16px; font-size: 15px; }
 
     /* ── Toast ── */
-    #toast {
-      position: fixed; bottom: 20px; right: 20px;
-      background: #333; color: #fff; padding: 10px 18px;
-      border-radius: 8px; font-size: 13px;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-      z-index: 9999;
-    }
+    #toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e;
+             color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px;
+             opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 9999; }
     #toast.show { opacity: 1; }
 
-    /* ── Collapsible ── */
-    .source-body { display: block; }
-    .source-body.collapsed { display: none; }
-    .chevron { font-size: 12px; color: var(--muted); }
+    /* ── Spinner ── */
+    .harvesting #run-btn { opacity: 0.5; pointer-events: none; }
+    .harvesting #run-btn::after { content: " …"; }
 
-    @media (max-width: 700px) {
-      .layout { flex-direction: column; }
+    @media (max-width: 640px) {
+      .shell { flex-direction: column; }
       .sidebar { width: 100%; height: auto; position: static; }
+      .content { padding: 14px; }
     }
   </style>
 </head>
@@ -191,128 +167,181 @@
 
 <form id="filter-form" method="get" action="/">
 
-<div class="layout">
+<div class="shell">
 
-  <!-- ── Sidebar ── -->
+  <!-- ═══════════ SIDEBAR ═══════════ -->
   <aside class="sidebar">
-    <div class="sidebar-section">
-      <h2>FC-Harvest</h2>
-      <p style="font-size:12px;color:var(--muted);margin-top:2px;">UK Parliament &amp; Gov Monitor</p>
+
+    <div class="sb-brand">
+      <h1>FC-Harvest</h1>
+      <p>UK Parliament &amp; Government Monitor</p>
     </div>
 
-    <div class="sidebar-section">
-      <h2>Filters</h2>
-      <div class="filter-toggle">
+    <div class="sb-section">
+      <h2>View</h2>
+      <div class="toggle-row">
         <input type="checkbox" id="kw-toggle" name="keywords_only" value="true"
                {% if keywords_only %}checked{% endif %}
-               onchange="document.getElementById('filter-form').submit()">
+               onchange="this.form.submit()">
         <label for="kw-toggle">Keyword matches only</label>
       </div>
     </div>
 
-    <div class="sidebar-section">
+    <div class="sb-section">
       <h2>Sources</h2>
-      <ul class="source-list">
+      <ul class="src-list">
         {% for sid in all_source_ids %}
+        {% set h = source_health.get(sid, {}) %}
+        {% set dot_class = h.get('status', 'unknown') %}
         <li>
-          <label>
+          <label title="{{ h.get('message','') if dot_class == 'error' else '' }}">
             <input type="checkbox" name="source" value="{{ sid }}"
                    {% if not selected_sources or sid in selected_sources %}checked{% endif %}
-                   onchange="document.getElementById('filter-form').submit()">
+                   onchange="this.form.submit()">
+            <span class="src-dot {{ dot_class }}"></span>
             {{ label_map[sid] }}
           </label>
         </li>
         {% endfor %}
       </ul>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted);">
+        <span style="color:var(--ok)">●</span> ok &nbsp;
+        <span style="color:var(--warn)">●</span> empty &nbsp;
+        <span style="color:var(--err)">●</span> error &nbsp;
+        <span style="color:var(--border)">●</span> not run
+      </div>
     </div>
 
-    <div class="sidebar-section">
-      <h2>Run Harvest</h2>
-      <button type="button" class="btn btn-harvest" onclick="triggerHarvest()">
-        ▶ Run now
+    <div class="sb-section">
+      <h2>Actions</h2>
+      <button type="button" id="run-btn" class="btn btn-harvest" onclick="triggerHarvest()">
+        ▶ Run harvest now
       </button>
+      <a href="/" class="btn btn-reset">Reset filters</a>
     </div>
 
-    <div class="sidebar-section">
-      <h2>Recent Runs</h2>
+    <div class="sb-section">
+      <h2>Recent runs</h2>
       {% for run in recent_runs %}
-      <div class="run-row">
-        <span class="run-count">+{{ run.new_items }} new</span>
-        · {{ run.started_at[:16].replace('T',' ') if run.started_at else '—' }} UTC
+      <div class="run-item">
+        <span class="run-new">+{{ run.new_items }}</span>
+        <span class="run-ts">{{ run.started_at[:16].replace('T',' ') if run.started_at else '—' }} UTC</span>
         {% if run.errors %}
-          · <span style="color:var(--danger)">{{ run.errors|length }} err</span>
+          <span class="run-err">{{ run.errors|length }}✕</span>
         {% endif %}
       </div>
       {% else %}
-      <div class="run-row" style="color:var(--muted)">No runs yet</div>
+      <div style="font-size:12px;color:var(--muted)">No runs yet</div>
       {% endfor %}
     </div>
+
   </aside>
 
-  <!-- ── Main ── -->
+  <!-- ═══════════ MAIN ═══════════ -->
   <main class="main">
-    <div class="header">
-      <h1>Parliamentary Monitor</h1>
-      <p>GOV.UK departments · Parliament committees · Hansard · Written Statements</p>
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <h2>Parliamentary Monitor</h2>
+      <span class="stat">
+        <strong>{{ total_items }}</strong> items
+        {% if keywords_only %}<span class="badge badge-kw" style="margin-left:6px">● Keyword filter on</span>{% endif %}
+        {% if errored_sources %}<span class="badge" style="background:var(--err-bg);color:var(--err);margin-left:6px">{{ errored_sources|length }} source{{ 's' if errored_sources|length != 1 }} failing</span>{% endif %}
+      </span>
     </div>
 
-    <div class="stats-bar">
-      <div class="stat">Showing <strong>{{ total_items }}</strong> items</div>
-      {% if keywords_only %}
-        <div class="stat" style="color:var(--success)">● Keyword filter active</div>
+    <div class="content">
+
+      <!-- ── Error health panel ── -->
+      {% if errored_sources %}
+      <div class="error-panel">
+        <h3>⚠ Source failures <span style="font-size:11px;font-weight:400;color:var(--muted)">(other sources continued normally)</span></h3>
+        <ul class="error-list">
+          {% for src in errored_sources %}
+          <li>
+            <div class="error-source">{{ src.label }}</div>
+            <div class="error-msg">{{ src.message }}</div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
       {% endif %}
-      <div style="flex:1"></div>
-      <a href="/" class="btn btn-secondary" style="font-size:12px">Reset filters</a>
-    </div>
 
-    {% if groups %}
-      {% for group in groups %}
-      {% if group.items %}
-      <div class="source-group">
-        <div class="source-header" onclick="toggleGroup('{{ group.source_id }}')">
-          <h3>{{ group.label }}</h3>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span class="count">{{ group.items|length }}</span>
+      <!-- ── Keyword cloud ── -->
+      {% if top_keywords %}
+      <div class="kw-cloud">
+        {% for kw, count in top_keywords %}
+        <button type="button" class="kw-pill"
+                onclick="applyKeywordFilter()"
+                title="{{ count }} items match '{{ kw }}'">
+          {{ kw }}<span class="kw-count">{{ count }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ── Source groups ── -->
+      {% if groups %}
+        {% for group in groups %}
+        {% if group.items %}
+        {% set kw_items = group.items | selectattr('matched_kws') | list %}
+        <div class="group" id="grp-{{ group.source_id }}">
+          <div class="group-header" onclick="toggleGroup('{{ group.source_id }}')">
+            <div class="group-header-left">
+              {% set h = group.health %}
+              {% if h %}
+              <span class="src-dot {{ h.get('status','unknown') }}"
+                    title="{{ h.get('message','') }}"></span>
+              {% endif %}
+              <span class="group-title">{{ group.label }}</span>
+              <span class="group-count">{{ group.items|length }}</span>
+              {% if kw_items %}
+              <span class="group-kw-count">{{ kw_items|length }} matched</span>
+              {% endif %}
+            </div>
             <span class="chevron" id="chev-{{ group.source_id }}">▼</span>
           </div>
-        </div>
-        <div class="source-body" id="body-{{ group.source_id }}">
-          {% for item in group.items %}
-          <div class="item">
-            <div>
+          <div id="body-{{ group.source_id }}">
+            {% for item in group.items %}
+            <div class="item">
               <div class="item-title">
+                {% if item.url %}
                 <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+                {% else %}
+                {{ item.title }}
+                {% endif %}
               </div>
               {% if item.summary %}
-              <div class="item-summary" title="{{ item.summary }}">{{ item.summary }}</div>
+              <div class="item-summary">{{ item.summary }}</div>
               {% endif %}
               <div class="item-meta">
                 <span>{{ item.published_at[:10] if item.published_at else 'No date' }}</span>
+                <span>{{ group.label }}</span>
               </div>
               {% if item.matched_kws %}
               <div class="item-tags">
-                {% for kw in item.matched_kws %}
-                <span class="tag kw">{{ kw }}</span>
-                {% endfor %}
+                {% for kw in item.matched_kws %}<span class="tag kw">{{ kw }}</span>{% endfor %}
               </div>
               {% endif %}
             </div>
-            <div class="item-date">{{ item.published_at[:10] if item.published_at else '' }}</div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-    {% else %}
-      <div class="empty">
-        <p>No items yet. Run a harvest to fetch content.</p>
-        <button type="button" class="btn btn-primary" onclick="triggerHarvest()">Run first harvest</button>
-      </div>
-    {% endif %}
+        {% endif %}
+        {% endfor %}
 
+      {% else %}
+        <div class="empty">
+          <p>No items yet — run a harvest to pull in content.</p>
+          <button type="button" class="btn btn-harvest" style="display:inline-block;width:auto;padding:8px 20px"
+                  onclick="triggerHarvest()">▶ Run first harvest</button>
+        </div>
+      {% endif %}
+
+    </div><!-- /content -->
   </main>
-</div>
+
+</div><!-- /shell -->
 </form>
 
 <div id="toast"></div>
@@ -321,34 +350,39 @@
 function toggleGroup(id) {
   const body = document.getElementById('body-' + id);
   const chev = document.getElementById('chev-' + id);
-  if (body.classList.contains('collapsed')) {
-    body.classList.remove('collapsed');
-    chev.textContent = '▼';
-  } else {
-    body.classList.add('collapsed');
-    chev.textContent = '▶';
-  }
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  chev.textContent = hidden ? '▼' : '▶';
 }
 
 function triggerHarvest() {
-  showToast('Harvest started — this may take a minute…');
+  document.body.classList.add('harvesting');
+  showToast('Harvest started — fetching all sources…');
   fetch('/api/harvest', { method: 'POST' })
     .then(r => r.json())
-    .then(d => {
-      showToast('Harvest running in background. Refresh in ~30s.');
-      // Auto-reload after 45s
-      setTimeout(() => window.location.reload(), 45000);
+    .then(() => {
+      showToast('Running… page will refresh in ~45s');
+      setTimeout(() => { window.location.reload(); }, 45000);
     })
-    .catch(() => showToast('Failed to start harvest.'));
+    .catch(() => {
+      document.body.classList.remove('harvesting');
+      showToast('Could not start harvest — is the server running?');
+    });
+}
+
+function applyKeywordFilter() {
+  const form = document.getElementById('filter-form');
+  const kw = form.querySelector('#kw-toggle');
+  kw.checked = true;
+  form.submit();
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4000);
+  setTimeout(() => t.classList.remove('show'), 4500);
 }
 </script>
-
 </body>
 </html>

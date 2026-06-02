@@ -3,8 +3,9 @@ SQLite persistence layer.
 
 Schema
 ------
-items       — every item ever fetched (deduped by source_id + item_id)
-runs        — log of each harvest run
+items          — every item ever fetched (deduped by source_id + item_id)
+runs           — log of each harvest run
+source_health  — last status per source (ok / error + message)
 """
 
 import sqlite3
@@ -40,18 +41,18 @@ def init_db():
             CREATE TABLE IF NOT EXISTS items (
                 id            INTEGER PRIMARY KEY AUTOINCREMENT,
                 source_id     TEXT    NOT NULL,
-                item_id       TEXT    NOT NULL,  -- stable ID from source (URL, API ID, etc.)
+                item_id       TEXT    NOT NULL,
                 title         TEXT    NOT NULL,
                 url           TEXT,
-                published_at  TEXT,              -- ISO-8601, may be NULL if source doesn't provide
+                published_at  TEXT,
                 summary       TEXT,
-                matched_kws   TEXT    DEFAULT '[]',  -- JSON array of matched keywords
+                matched_kws   TEXT    DEFAULT '[]',
                 fetched_at    TEXT    NOT NULL,
                 UNIQUE (source_id, item_id)
             );
 
-            CREATE INDEX IF NOT EXISTS idx_items_source   ON items(source_id);
-            CREATE INDEX IF NOT EXISTS idx_items_fetched  ON items(fetched_at DESC);
+            CREATE INDEX IF NOT EXISTS idx_items_source    ON items(source_id);
+            CREATE INDEX IF NOT EXISTS idx_items_fetched   ON items(fetched_at DESC);
             CREATE INDEX IF NOT EXISTS idx_items_published ON items(published_at DESC);
 
             CREATE TABLE IF NOT EXISTS runs (
@@ -59,19 +60,22 @@ def init_db():
                 started_at  TEXT NOT NULL,
                 finished_at TEXT,
                 new_items   INTEGER DEFAULT 0,
-                errors      TEXT DEFAULT '[]'   -- JSON array of error strings
+                errors      TEXT DEFAULT '[]'
+            );
+
+            CREATE TABLE IF NOT EXISTS source_health (
+                source_id   TEXT PRIMARY KEY,
+                status      TEXT NOT NULL DEFAULT 'unknown',  -- ok | error | warning
+                message     TEXT DEFAULT '',
+                item_count  INTEGER DEFAULT 0,
+                checked_at  TEXT NOT NULL
             );
         """)
 
 
 def upsert_item(db: sqlite3.Connection, source_id: str, item: dict) -> bool:
-    """
-    Insert item if not seen before. Returns True if it was new.
-    item must have keys: item_id, title, url, published_at (optional), summary (optional), matched_kws (list).
-    """
     fetched_at = datetime.now(timezone.utc).isoformat()
     matched_kws_json = json.dumps(item.get("matched_kws", []))
-
     try:
         db.execute(
             """
@@ -91,12 +95,37 @@ def upsert_item(db: sqlite3.Connection, source_id: str, item: dict) -> bool:
         )
         return True
     except sqlite3.IntegrityError:
-        # Already seen — update matched keywords in case config changed
         db.execute(
             "UPDATE items SET matched_kws = ? WHERE source_id = ? AND item_id = ?",
             (matched_kws_json, source_id, item["item_id"]),
         )
         return False
+
+
+def record_source_health(
+    db: sqlite3.Connection,
+    source_id: str,
+    status: str,
+    message: str = "",
+    item_count: int = 0,
+):
+    db.execute(
+        """
+        INSERT INTO source_health (source_id, status, message, item_count, checked_at)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(source_id) DO UPDATE SET
+            status=excluded.status,
+            message=excluded.message,
+            item_count=excluded.item_count,
+            checked_at=excluded.checked_at
+        """,
+        (source_id, status, message, item_count, datetime.now(timezone.utc).isoformat()),
+    )
+
+
+def get_source_health(db: sqlite3.Connection) -> dict[str, dict]:
+    rows = db.execute("SELECT * FROM source_health").fetchall()
+    return {r["source_id"]: _row_to_dict(r) for r in rows}
 
 
 def get_items(
@@ -106,7 +135,6 @@ def get_items(
     limit: int = 500,
     offset: int = 0,
 ) -> list[dict]:
-    """Return items as dicts, newest first."""
     where_clauses = []
     params: list = []
 

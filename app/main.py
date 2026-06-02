@@ -2,10 +2,12 @@
 FC-Harvest web dashboard — FastAPI.
 
 Routes:
-  GET /            — main dashboard (items grouped by source, filter controls)
-  GET /api/items   — JSON API for items
-  POST /api/harvest — trigger a harvest run manually
-  GET /api/runs    — recent run history
+  GET /              — main dashboard
+  GET /api/items     — JSON items
+  GET /api/health    — per-source health status
+  POST /api/harvest  — trigger harvest in background
+  GET /api/runs      — recent run history
+  GET /api/sources   — source list + keywords
 """
 
 import logging
@@ -27,11 +29,11 @@ app = FastAPI(title="FC-Harvest", version="1.0")
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 STATIC_DIR = Path(__file__).parent / "static"
+STATIC_DIR.mkdir(exist_ok=True)
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-# Start scheduler on app startup
 _scheduler = None
 
 
@@ -75,13 +77,12 @@ def dashboard(
             offset=offset,
         )
         recent_runs = database.get_recent_runs(conn, limit=5)
+        source_health = database.get_source_health(conn)
 
-    # Group items by source_id
     grouped: dict[str, list] = defaultdict(list)
     for item in items:
         grouped[item["source_id"]].append(item)
 
-    # Order groups by label
     ordered_groups = []
     seen_sources = set(grouped.keys())
     for sid in all_source_ids:
@@ -90,14 +91,26 @@ def dashboard(
                 "source_id": sid,
                 "label": label_map.get(sid, sid),
                 "items": grouped[sid],
+                "health": source_health.get(sid),
             })
-    # Any sources not in config (shouldn't happen, but just in case)
-    for sid in seen_sources:
-        if sid not in set(g["source_id"] for g in ordered_groups):
-            ordered_groups.append({
+
+    # Count keyword-matched items across all sources
+    kw_counts: dict[str, int] = defaultdict(int)
+    for item in items:
+        for kw in (item.get("matched_kws") or []):
+            kw_counts[kw] += 1
+    top_keywords = sorted(kw_counts.items(), key=lambda x: -x[1])[:15]
+
+    # Sources with errors (for health panel — include even if they have no items)
+    errored_sources = []
+    for sid in all_source_ids:
+        h = source_health.get(sid)
+        if h and h.get("status") == "error":
+            errored_sources.append({
                 "source_id": sid,
                 "label": label_map.get(sid, sid),
-                "items": grouped[sid],
+                "message": h.get("message", ""),
+                "checked_at": (h.get("checked_at") or "")[:16].replace("T", " "),
             })
 
     return templates.TemplateResponse("index.html", {
@@ -111,6 +124,9 @@ def dashboard(
         "offset": offset,
         "total_items": len(items),
         "recent_runs": recent_runs,
+        "source_health": source_health,
+        "errored_sources": errored_sources,
+        "top_keywords": top_keywords,
         "keywords": config.get("keywords", []),
     })
 
@@ -136,9 +152,16 @@ def api_items(
     return {"items": items, "count": len(items)}
 
 
+@app.get("/api/health")
+def api_health():
+    database.init_db()
+    with database.get_db() as conn:
+        health = database.get_source_health(conn)
+    return {"sources": health}
+
+
 @app.post("/api/harvest")
 def api_trigger_harvest(background_tasks: BackgroundTasks):
-    """Trigger a harvest run in the background."""
     background_tasks.add_task(_run_harvest_bg)
     return {"status": "harvest started"}
 
@@ -146,7 +169,7 @@ def api_trigger_harvest(background_tasks: BackgroundTasks):
 def _run_harvest_bg():
     try:
         result = run_harvest()
-        logger.info("Manual harvest result: %s", result)
+        logger.info("Manual harvest result: new=%d errors=%d", result["new_items"], len(result["errors"]))
     except Exception as e:
         logger.error("Manual harvest error: %s", e, exc_info=True)
 
@@ -171,16 +194,12 @@ def api_sources():
 # ── Helpers ────────────────────────────────────────────────────────────────
 
 def _get_all_source_ids(config: dict) -> list[str]:
-    ids = []
-    for group in config.get("sources", {}).values():
-        for src in group:
-            ids.append(src["id"])
-    return ids
+    return [src["id"] for group in config.get("sources", {}).values() for src in group]
 
 
 def _build_label_map(config: dict) -> dict[str, str]:
-    label_map = {}
-    for group in config.get("sources", {}).values():
-        for src in group:
-            label_map[src["id"]] = src.get("label", src["id"])
-    return label_map
+    return {
+        src["id"]: src.get("label", src["id"])
+        for group in config.get("sources", {}).values()
+        for src in group
+    }

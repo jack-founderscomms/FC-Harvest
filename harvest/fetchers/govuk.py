@@ -1,15 +1,16 @@
 """
 GOV.UK Search API fetcher.
-API docs: https://github.com/alphagov/search-api/blob/main/docs/search-api.md
-Base URL: https://www.gov.uk/api/search.json
+Docs: https://docs.publishing.service.gov.uk/repos/search-api/using-the-search-api.html
+Base: https://www.gov.uk/api/search.json   (no auth, official, stable)
 
-No auth required. Official API, stable.
+Valid filter params:
+  filter_organisations             — org slug, e.g. "department-for-science-innovation-and-technology"
+  filter_content_store_document_type — e.g. news_story, press_release, guidance, consultation,
+                                       policy_paper, speech, written_statement, government_response
+  order                            — "-public_timestamp" (newest first)
+  count                            — max results (up to 1500)
 
-Valid filter fields: filter_organisations, filter_document_type, filter_world_locations, etc.
-NOTE: filter_content_purpose_supergroup is NOT a valid parameter — use filter_document_type.
-
-Useful document types: news_story, press_release, guidance, consultation, policy_paper,
-speech, written_statement, government_response, statistical_data_set, transparency
+NOTE: filter_content_purpose_supergroup and filter_document_type are NOT valid — they cause 422.
 """
 
 from .base import polite_get
@@ -19,10 +20,6 @@ GOVUK_BASE = "https://www.gov.uk"
 
 
 def fetch(source_cfg: dict) -> list[dict]:
-    """
-    Fetch items from GOV.UK Search API for a single source config entry.
-    Returns list of normalised item dicts.
-    """
     params = _build_params(source_cfg["params"])
     resp = polite_get(GOVUK_API_URL, params=params, accept_json=True)
     data = resp.json()
@@ -46,8 +43,5 @@ def fetch(source_cfg: dict) -> list[dict]:
 def _build_params(cfg_params: dict) -> dict:
     params: dict[str, object] = {}
     for key, value in cfg_params.items():
-        if isinstance(value, list):
-            params[key] = value
-        else:
-            params[key] = value
+        params[key] = value
     return params

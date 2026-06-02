@@ -17,6 +17,7 @@ from .fetchers import (
     hansard,
     parliament_inquiries,
     parliament_committee_news,
+    parliament_committees_api,
     whatson_scrape,
 )
 
@@ -28,6 +29,7 @@ FETCHER_MAP = {
     "govuk_api": govuk,
     "parliament_rss": parliament_rss,
     "parliament_committee_news": parliament_committee_news,
+    "parliament_committees_api": parliament_committees_api,
     "parliament_written_statements_api": parliament_written_statements,
     "hansard_api": hansard,
     "parliament_inquiries_scrape": parliament_inquiries,

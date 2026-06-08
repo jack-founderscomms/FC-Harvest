@@ -120,6 +120,48 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
 .cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
+/* ── Date filter bar ── */
+.date-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+          border-bottom:1px solid var(--border);background:#fafbfc}
+.date-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
+          cursor:pointer;border:1px solid var(--border);background:var(--surface);
+          color:var(--muted);transition:all .12s;white-space:nowrap}
+.date-btn:hover{border-color:var(--accent);color:var(--accent)}
+.date-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.date-bar-label{font-size:11px;color:var(--muted);margin-right:2px}
+
+/* ── Advanced search panel ── */
+.adv-toggle{margin-left:auto;font-size:11px;color:var(--accent);cursor:pointer;
+            background:none;border:none;padding:4px 8px;border-radius:4px;
+            display:flex;align-items:center;gap:4px;font-weight:500}
+.adv-toggle:hover{background:var(--accent-light)}
+.adv-toggle svg{transition:transform .2s}
+.adv-toggle.open svg{transform:rotate(180deg)}
+
+.adv-panel{background:var(--surface);border-bottom:1px solid var(--border);
+           padding:16px 24px;display:none}
+.adv-panel.open{display:block}
+.adv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.adv-section{font-size:12px}
+.adv-section h4{font-size:11px;font-weight:700;text-transform:uppercase;
+                letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.adv-section label{display:flex;align-items:center;gap:6px;padding:3px 0;
+                   cursor:pointer;color:var(--text);font-size:12px}
+.adv-section label:hover{color:var(--accent)}
+.adv-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.adv-row label{font-size:11px;color:var(--muted);white-space:nowrap}
+input[type=date]{padding:4px 8px;border:1px solid var(--border);border-radius:5px;
+                 font-size:12px;color:var(--text);background:var(--surface);outline:none}
+input[type=date]:focus{border-color:var(--accent)}
+.adv-actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;
+             border-top:1px solid var(--border)}
+.btn-adv-apply{padding:5px 14px;background:var(--accent);color:#fff;border:none;
+               border-radius:5px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-adv-apply:hover{opacity:.88}
+.btn-adv-clear{padding:5px 14px;background:none;color:var(--muted);border:1px solid var(--border);
+               border-radius:5px;font-size:12px;cursor:pointer}
+.btn-adv-clear:hover{background:var(--tag)}
+
 .doc-type{font-size:10px;background:var(--tag);color:var(--muted);padding:1px 6px;border-radius:4px}
 
 .footer{padding:16px 24px;font-size:11px;color:var(--muted);
@@ -151,6 +193,58 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
   <span id="filter-status"></span>
+</div>
+
+<!-- Date filter bar -->
+<div class="date-bar">
+  <span class="date-bar-label">Date:</span>
+  <button class="date-btn active" data-date="" onclick="filterDate(this)">All time</button>
+  <button class="date-btn" data-date="today" onclick="filterDate(this)">Today</button>
+  <button class="date-btn" data-date="last7" onclick="filterDate(this)">Last 7 days</button>
+  <button class="date-btn" data-date="last30" onclick="filterDate(this)">Last 30 days</button>
+  <button class="date-btn" data-date="next7" onclick="filterDate(this)">Coming week</button>
+  <button class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm2 4h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm2 4h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"/></svg>
+    Advanced search
+  </button>
+</div>
+
+<!-- Advanced search panel -->
+<div class="adv-panel" id="adv-panel">
+  <div class="adv-grid">
+    <div class="adv-section">
+      <h4>Source type</h4>
+      <label><input type="checkbox" class="adv-srctype" value="govuk" checked onchange="applyFilters()"> GOV.UK departments</label>
+      <label><input type="checkbox" class="adv-srctype" value="committee" checked onchange="applyFilters()"> Parliamentary committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="written" checked onchange="applyFilters()"> Written statements</label>
+      <label><input type="checkbox" class="adv-srctype" value="hansard" checked onchange="applyFilters()"> Hansard</label>
+    </div>
+    <div class="adv-section">
+      <h4>Document type</h4>
+      <label><input type="checkbox" class="adv-doctype" value="news_story,press_release" checked onchange="applyFilters()"> News &amp; press releases</label>
+      <label><input type="checkbox" class="adv-doctype" value="consultation,policy_paper,government_response" checked onchange="applyFilters()"> Consultations &amp; policy</label>
+      <label><input type="checkbox" class="adv-doctype" value="speech" checked onchange="applyFilters()"> Speeches</label>
+      <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries</label>
+      <label><input type="checkbox" class="adv-doctype" value="committee news" checked onchange="applyFilters()"> Committee news</label>
+      <label><input type="checkbox" class="adv-doctype" value="written statement" checked onchange="applyFilters()"> Written statements</label>
+      <label><input type="checkbox" class="adv-doctype" value="hansard" checked onchange="applyFilters()"> Hansard debates</label>
+    </div>
+    <div class="adv-section">
+      <h4>Custom date range</h4>
+      <div class="adv-row">
+        <label for="adv-from">From</label>
+        <input type="date" id="adv-from" onchange="applyFilters()">
+      </div>
+      <div class="adv-row">
+        <label for="adv-to">To</label>
+        <input type="date" id="adv-to" onchange="applyFilters()">
+      </div>
+    </div>
+  </div>
+  <div class="adv-actions">
+    <button class="btn-adv-apply" onclick="applyFilters()">Apply</button>
+    <button class="btn-adv-clear" onclick="clearAdv()">Clear all filters</button>
+  </div>
 </div>
 
 <div class="topic-tabs">
@@ -253,6 +347,7 @@ const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 let allItems = [];
 let sourceErrors = {};
 let activeCat = null;
+let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
 let committeeLists = {};
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
@@ -596,8 +691,11 @@ function renderAll() {
 function makeItemEl(item) {
   const div = document.createElement('div');
   div.className = 'item';
-  div.dataset.cats = (item.matched_cats || []).join(',');
-  div.dataset.kw   = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
+  div.dataset.cats    = (item.matched_cats || []).join(',');
+  div.dataset.kw      = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
+  div.dataset.date    = (item.published_at || '').slice(0, 10);
+  div.dataset.srctype = item.source_id || '';
+  div.dataset.doctype = item.doc_type  || '';
 
   const titleHtml = item.url
     ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
@@ -623,29 +721,114 @@ function makeItemEl(item) {
 // ── Filter / expand ───────────────────────────────────────────────────────────
 
 function applyFilters() {
-  const q = (document.getElementById('search').value || '').toLowerCase();
-  const kwOnly = document.getElementById('kw-only').checked;
+  const q        = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly   = document.getElementById('kw-only').checked;
+  const advFrom  = document.getElementById('adv-from')?.value || '';
+  const advTo    = document.getElementById('adv-to')?.value   || '';
+
+  // Collect enabled source types and doc types from advanced panel
+  const srcTypes = [...document.querySelectorAll('.adv-srctype')]
+    .filter(cb => cb.checked).map(cb => cb.value);
+  const docTypes = [...document.querySelectorAll('.adv-doctype')]
+    .filter(cb => cb.checked).flatMap(cb => cb.value.split(','));
+  const advOpen  = document.getElementById('adv-panel')?.classList.contains('open');
+
+  // Date window from quick buttons
+  const today = new Date(); today.setHours(0,0,0,0);
+  let winStart = null, winEnd = null;
+  if (activeDateFilter === 'today') {
+    winStart = today; winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+  } else if (activeDateFilter === 'last7') {
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-7);
+  } else if (activeDateFilter === 'last30') {
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-30);
+  } else if (activeDateFilter === 'next7') {
+    winStart = today;
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+8);
+  }
+  // Custom date range overrides quick buttons when set
+  if (advFrom) winStart = new Date(advFrom);
+  if (advTo)   { winEnd = new Date(advTo); winEnd.setDate(winEnd.getDate()+1); }
+
   let shown = 0;
   document.querySelectorAll('.item').forEach(item => {
-    const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
-    const cats = (item.dataset.cats || '').split(',').filter(Boolean);
+    const title   = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
+    const cats    = (item.dataset.cats || '').split(',').filter(Boolean);
+    const dateStr = item.dataset.date || '';
+    const srcType = item.dataset.srctype || '';
+    const docType = item.dataset.doctype || '';
+
+    // Date check
+    let dateOk = true;
+    if (winStart || winEnd) {
+      const d = dateStr ? new Date(dateStr) : null;
+      if (!d || isNaN(d)) { dateOk = false; }
+      else {
+        if (winStart && d < winStart) dateOk = false;
+        if (winEnd   && d >= winEnd)  dateOk = false;
+      }
+    }
+
+    // Advanced: source type filter
+    const srcOk = !advOpen || srcTypes.length === 0 ||
+      srcTypes.some(t => srcType.startsWith(t));
+
+    // Advanced: doc type filter
+    const dtOk = !advOpen || docTypes.length === 0 ||
+      docTypes.some(t => docType.includes(t));
+
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
-            && (!activeCat || cats.includes(activeCat));
+            && (!activeCat || cats.includes(activeCat))
+            && dateOk && srcOk && dtOk;
     item.classList.toggle('hidden', !ok);
     if (ok) shown++;
   });
+
   document.querySelectorAll('.group').forEach(grp => {
     grp.classList.toggle('hidden', grp.querySelectorAll('.item:not(.hidden)').length === 0);
   });
+
   const fs = document.getElementById('filter-status');
-  if (fs) fs.textContent = (q || kwOnly || activeCat) ? shown + ' results' : '';
+  const anyFilter = q || kwOnly || activeCat || activeDateFilter || advFrom || advTo;
+  if (fs) fs.textContent = anyFilter ? shown + ' results' : '';
+}
+
+function filterDate(btn) {
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDateFilter = btn.dataset.date || '';
+  // Clear custom date inputs when using quick buttons
+  const f = document.getElementById('adv-from'); if (f) f.value = '';
+  const t = document.getElementById('adv-to');   if (t) t.value = '';
+  applyFilters();
 }
 
 function filterCat(btn) {
   document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeCat = btn.dataset.cat || null;
+  applyFilters();
+}
+
+function toggleAdv() {
+  const panel  = document.getElementById('adv-panel');
+  const toggle = document.getElementById('adv-toggle');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function clearAdv() {
+  // Reset advanced checkboxes
+  document.querySelectorAll('.adv-srctype,.adv-doctype').forEach(cb => cb.checked = true);
+  const f = document.getElementById('adv-from'); if (f) f.value = '';
+  const t = document.getElementById('adv-to');   if (t) t.value = '';
+  // Reset date buttons
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.date-btn[data-date=""]')?.classList.add('active');
+  activeDateFilter = '';
   applyFilters();
 }
 

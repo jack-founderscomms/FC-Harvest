@@ -10,6 +10,10 @@
   --accent:#1d4ed8;--accent-light:#eff6ff;--tag:#f0f1f3;
   --kw-bg:#dcfce7;--kw-text:#14532d;
   --ok:#16a34a;--warn:#d97706;--err:#dc2626;--err-bg:#fef2f2;--err-border:#fecaca;
+  --cat-energy-bg:#fff7ed;--cat-energy-text:#c2410c;--cat-energy-border:#fed7aa;
+  --cat-ai-bg:#eff6ff;--cat-ai-text:#1d4ed8;--cat-ai-border:#bfdbfe;
+  --cat-health-bg:#fdf2f8;--cat-health-text:#9d174d;--cat-health-border:#fbcfe8;
+  --cat-tax-bg:#f0fdf4;--cat-tax-text:#15803d;--cat-tax-border:#bbf7d0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -91,6 +95,32 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 /* ── Empty ── */
 .empty{padding:48px;text-align:center;color:var(--muted)}
 
+/* ── Topic tabs ── */
+.topic-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);
+             background:var(--surface);padding:0 24px}
+.topic-tab{padding:9px 16px;font-size:12px;font-weight:500;cursor:pointer;
+            border:none;background:none;border-bottom:3px solid transparent;
+            color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.topic-tab:hover{color:var(--text)}
+.topic-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.topic-tab .tab-count{font-size:10px;padding:1px 5px;border-radius:8px;background:var(--tag)}
+.topic-tab.active .tab-count{background:var(--accent-light);color:var(--accent)}
+.topic-tab.tab-energy.active{color:var(--cat-energy-text);border-bottom-color:var(--cat-energy-text)}
+.topic-tab.tab-energy.active .tab-count{background:var(--cat-energy-bg);color:var(--cat-energy-text)}
+.topic-tab.tab-ai.active{color:var(--cat-ai-text);border-bottom-color:var(--cat-ai-text)}
+.topic-tab.tab-ai.active .tab-count{background:var(--cat-ai-bg);color:var(--cat-ai-text)}
+.topic-tab.tab-health.active{color:var(--cat-health-text);border-bottom-color:var(--cat-health-text)}
+.topic-tab.tab-health.active .tab-count{background:var(--cat-health-bg);color:var(--cat-health-text)}
+.topic-tab.tab-tax.active{color:var(--cat-tax-text);border-bottom-color:var(--cat-tax-text)}
+.topic-tab.tab-tax.active .tab-count{background:var(--cat-tax-bg);color:var(--cat-tax-text)}
+
+/* ── Category badges on items ── */
+.cat-badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap}
+.cat-energy{background:var(--cat-energy-bg);color:var(--cat-energy-text);border-color:var(--cat-energy-border)}
+.cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
+.cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
+.cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
+
 /* ── Footer ── */
 .footer{padding:16px 24px;font-size:11px;color:var(--muted);
          border-top:1px solid var(--border);margin-top:32px}
@@ -107,9 +137,9 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
     <div class="header-meta">UK Parliament &amp; Government Monitor</div>
   </div>
   <div class="header-right">
-    <span class="header-meta">Last harvest: &lt;strong&gt;2026-06-08 09:22 UTC&lt;/strong&gt; · +0 new · &lt;span style=&quot;color:var(--err)&quot;&gt;13 err&lt;/span&gt;</span>
-    <span class="badge badge-ok">31 items</span>
-    <span class="badge badge-err">4 sources failing</span>
+    <span class="header-meta">Last harvest: &lt;strong&gt;2026-06-08 09:38 UTC&lt;/strong&gt; · +30 new</span>
+    <span class="badge badge-ok">30 items</span>
+    
   </div>
 </div>
 
@@ -118,18 +148,15 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
   <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
-  <span style="font-size:12px;color:var(--muted);margin-left:auto">Generated 08 Jun 2026 09:25 UTC</span>
+  <span style="font-size:12px;color:var(--muted);margin-left:auto">Generated 08 Jun 2026 09:45 UTC</span>
 </div>
+
+<div class="topic-tabs"><button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button><button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count">8</span></button><button class="topic-tab tab-ai" data-cat="ai" onclick="filterCat(this)">Ai<span class="tab-count">14</span></button><button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count">7</span></button><button class="topic-tab tab-tax" data-cat="tax" onclick="filterCat(this)">Tax<span class="tab-count">11</span></button></div>
 
 <div class="content">
 
   
-        <div class="error-panel">
-          <h3>⚠ 4 sources failed
-            <span class="note">(other sources continued normally)</span></h3>
-          <ul class="err-list"><li><strong>Science &amp; Technology Committee (Lords)</strong><br><span class="err-msg">Committee not found: 'Science and Technology' (Lords). Check https://committees-api.parliament.uk/index.html for current</span></li><li><strong>Communications &amp; Digital Committee (Lords)</strong><br><span class="err-msg">Committee not found: 'Communications and Digital' (Lords). Check https://committees-api.parliament.uk/index.html for cur</span></li><li><strong>Economic Affairs Committee (Lords)</strong><br><span class="err-msg">Committee not found: 'Economic Affairs' (Lords). Check https://committees-api.parliament.uk/index.html for current commi</span></li><li><strong>Industry &amp; Regulators Committee (Lords)</strong><br><span class="err-msg">Committee not found: 'Industry and Regulators' (Lords). Check https://committees-api.parliament.uk/index.html for curren</span></li></ul>
-        </div>
-  <div class="kw-cloud"><button class="kw-pill" onclick="filterKw(this)">AI <span>17</span></button><button class="kw-pill" onclick="filterKw(this)">digital <span>14</span></button><button class="kw-pill" onclick="filterKw(this)">technology <span>7</span></button><button class="kw-pill" onclick="filterKw(this)">data <span>6</span></button><button class="kw-pill" onclick="filterKw(this)">regulation <span>5</span></button><button class="kw-pill" onclick="filterKw(this)">innovation <span>4</span></button><button class="kw-pill" onclick="filterKw(this)">science <span>4</span></button><button class="kw-pill" onclick="filterKw(this)">R&amp;D <span>4</span></button><button class="kw-pill" onclick="filterKw(this)">semiconductor <span>4</span></button><button class="kw-pill" onclick="filterKw(this)">trade <span>3</span></button><button class="kw-pill" onclick="filterKw(this)">export controls <span>3</span></button><button class="kw-pill" onclick="filterKw(this)">fintech <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">competition <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">online safety <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">broadband <span>1</span></button><button class="kw-pill" onclick="filterKw(this)">open banking <span>1</span></button><button class="kw-pill" onclick="filterKw(this)">artificial intelligence <span>1</span></button><button class="kw-pill" onclick="filterKw(this)">quantum <span>1</span></button><button class="kw-pill" onclick="filterKw(this)">data protection <span>1</span></button><button class="kw-pill" onclick="filterKw(this)">net zero <span>1</span></button></div>
+  <div class="kw-cloud"><button class="kw-pill" onclick="filterKw(this)">tax <span>7</span></button><button class="kw-pill" onclick="filterKw(this)">AI <span>6</span></button><button class="kw-pill" onclick="filterKw(this)">digital <span>5</span></button><button class="kw-pill" onclick="filterKw(this)">HMRC <span>5</span></button><button class="kw-pill" onclick="filterKw(this)">energy <span>5</span></button><button class="kw-pill" onclick="filterKw(this)">health <span>3</span></button><button class="kw-pill" onclick="filterKw(this)">NHS <span>3</span></button><button class="kw-pill" onclick="filterKw(this)">technology <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">science <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">mental health <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">elective care <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">fiscal <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">OBR <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">spring statement <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">AI governance <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">waiting list <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">data <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">AI safety <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">social care <span>2</span></button><button class="kw-pill" onclick="filterKw(this)">energy security <span>1</span></button></div>
 
   <div id="groups-container">
     
@@ -137,115 +164,176 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
           <div class="group-header" onclick="toggle('govuk_dsit')">
             <span class="dot ok" title=""></span>
             <span class="group-title">DSIT</span>
-            <span class="count">5</span>
-            <span class="badge-kw">5 matched</span>
+            <span class="count">4</span>
+            <span class="badge-kw">4 matched</span>
             <span class="chev" id="chev-govuk_dsit">▼</span>
           </div>
           <div id="body-govuk_dsit"><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/new-ai-safety-institute-expansion-announced" target="_blank" rel="noopener">AI Safety Institute to expand with £100m investment</a></div>
-      <div class="item-summary">The government has announced a major expansion of the AI Safety Institute, with £100 million in new funding to research frontier AI risks and develop international safety standards.</div>
-      <div class="item-meta"><span>2026-06-06</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/news/ai-action-plan" target="_blank" rel="noopener">Government launches AI Opportunities Action Plan</a></div>
+      <div class="item-summary">The government has published its AI Opportunities Action Plan, setting out how artificial intelligence can drive economic growth across the UK.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/consultations/digital-markets-competition-regime" target="_blank" rel="noopener">Digital Markets Competition Regime: consultation on implementation</a></div>
-      <div class="item-summary">DSIT launches consultation on the implementation of the digital markets competition regime, seeking views on how the new rules will apply to designated digital firms.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">competition</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/news/ai-safety-institute" target="_blank" rel="noopener">UK joins international AI Safety Institute network</a></div>
+      <div class="item-summary">DSIT confirms UK membership of the international network of AI Safety Institutes, coordinating on frontier AI evaluation.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/semiconductor-strategy-update" target="_blank" rel="noopener">UK Semiconductor Strategy: progress update and new funding</a></div>
-      <div class="item-summary">Update on the UK Semiconductor Strategy including new R&amp;D funding for compound semiconductors and expanded export controls review.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">semiconductor</span><span class="tag kw">R&amp;D</span><span class="tag kw">export controls</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/consultations/data-centres" target="_blank" rel="noopener">Consultation on data centres and digital infrastructure resilience</a></div>
+      <div class="item-summary">A consultation on minimum resilience standards for data centres underpinning critical national digital infrastructure.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/publications/data-protection-reform-guidance" target="_blank" rel="noopener">Guidance on the Data Protection and Digital Information Act</a></div>
-      <div class="item-summary">Updated guidance on how organisations should comply with the reformed data protection regime, including new rules on legitimate interests and automated decision-making.</div>
-      <div class="item-meta"><span>2026-06-03</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">data</span><span class="tag kw">data protection</span></div>
-    </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/online-safety-act-implementation" target="_blank" rel="noopener">Online Safety Act: Ofcom publishes illegal content codes of practice</a></div>
-      <div class="item-summary">Ofcom publishes final codes of practice for tackling illegal content online under the Online Safety Act, covering terrorism, CSAM, and fraud.</div>
-      <div class="item-meta"><span>2026-06-02</span></div>
-      <div class="item-tags"><span class="tag kw">online safety</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/news/5g-broadband" target="_blank" rel="noopener">5G and broadband rollout: updated coverage targets</a></div>
+      <div class="item-summary">Updated coverage milestones for gigabit broadband and standalone 5G as part of the digital connectivity strategy.</div>
+      <div class="item-meta">
+        <span>2026-06-05</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-govuk_treasury">
           <div class="group-header" onclick="toggle('govuk_treasury')">
             <span class="dot ok" title=""></span>
             <span class="group-title">HM Treasury</span>
-            <span class="count">3</span>
-            <span class="badge-kw">3 matched</span>
+            <span class="count">4</span>
+            <span class="badge-kw">4 matched</span>
             <span class="chev" id="chev-govuk_treasury">▼</span>
           </div>
           <div id="body-govuk_treasury"><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/budget-fintech-announcement" target="_blank" rel="noopener">Chancellor announces £500m fintech and digital finance growth package</a></div>
-      <div class="item-summary">The Chancellor has announced a major package of support for the UK fintech sector, including regulatory sandbox expansion, open banking mandates, and tax relief for digital finance R&amp;D.</div>
-      <div class="item-meta"><span>2026-06-06</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">R&amp;D</span><span class="tag kw">fintech</span><span class="tag kw">open banking</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/news/spring-statement-2026" target="_blank" rel="noopener">Spring Statement 2026: OBR forecasts and fiscal outlook</a></div>
+      <div class="item-summary">The Chancellor presented the Spring Statement with updated OBR growth forecasts. Public borrowing revised upward by £12bn.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/publications/crypto-asset-regulation-consultation" target="_blank" rel="noopener">Consultation: Regulatory framework for crypto-assets</a></div>
-      <div class="item-summary">HM Treasury consults on a comprehensive regulatory framework for crypto-assets, stablecoins, and digital securities, aligned with international standards.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/publications/corporation-tax" target="_blank" rel="noopener">Corporation tax rates confirmed for 2026-27</a></div>
+      <div class="item-summary">HMRC confirms the main corporation tax rate remains at 25%, with small profits rate unchanged at 19%.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/green-tech-investment-incentives" target="_blank" rel="noopener">New net zero technology investment incentives announced</a></div>
-      <div class="item-summary">Treasury announces enhanced R&amp;D tax credits and green tech investment zones to attract clean energy and net zero technology businesses to the UK.</div>
-      <div class="item-meta"><span>2026-06-03</span></div>
-      <div class="item-tags"><span class="tag kw">technology</span><span class="tag kw">R&amp;D</span><span class="tag kw">net zero</span><span class="tag kw">green tech</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/government/news/windfall-tax" target="_blank" rel="noopener">Windfall tax extension on oil and gas producers</a></div>
+      <div class="item-summary">The Energy Profits Levy extended for a further two years, applying a 35% levy on upstream oil and gas profits.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/consultations/rd-tax" target="_blank" rel="noopener">Consultation: R&amp;D tax credit reform for SMEs</a></div>
+      <div class="item-summary">HM Treasury consults on proposed changes to the R&amp;D tax credit scheme including tighter qualifying criteria.</div>
+      <div class="item-meta">
+        <span>2026-06-04</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div></div>
         </div>
-        <div class="group" id="grp-govuk_cabinet_office">
-          <div class="group-header" onclick="toggle('govuk_cabinet_office')">
+        <div class="group" id="grp-govuk_dhsc">
+          <div class="group-header" onclick="toggle('govuk_dhsc')">
             <span class="dot ok" title=""></span>
-            <span class="group-title">Cabinet Office</span>
+            <span class="group-title">DHSC</span>
+            <span class="count">4</span>
+            <span class="badge-kw">4 matched</span>
+            <span class="chev" id="chev-govuk_dhsc">▼</span>
+          </div>
+          <div id="body-govuk_dhsc"><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/publications/nhs-10-year-plan" target="_blank" rel="noopener">NHS 10-Year Plan published: elective care and mental health</a></div>
+      <div class="item-summary">The government publishes the NHS 10-Year Plan targeting a halving of waiting lists and expanded mental health provision.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/news/mhra-ai-cancer" target="_blank" rel="noopener">MHRA approves first AI-assisted diagnostic device for cancer screening</a></div>
+      <div class="item-summary">MHRA grants approval for an AI-powered tool for early cancer detection in breast screening programmes.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/publications/glp1-guidance" target="_blank" rel="noopener">Obesity strategy: updated NICE guidance on GLP-1 prescribing</a></div>
+      <div class="item-summary">NICE updates clinical guidance on GLP-1 receptor agonists following evidence review of long-term outcomes.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/consultations/social-care-workforce" target="_blank" rel="noopener">Social care workforce strategy: consultation response</a></div>
+      <div class="item-summary">Government response to consultation on adult social care workforce reform, including pay uplift proposals.</div>
+      <div class="item-meta">
+        <span>2026-06-05</span>
+        <span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
+    </div></div>
+        </div>
+        <div class="group" id="grp-govuk_desnz">
+          <div class="group-header" onclick="toggle('govuk_desnz')">
+            <span class="dot ok" title=""></span>
+            <span class="group-title">DESNZ</span>
+            <span class="count">4</span>
+            <span class="badge-kw">4 matched</span>
+            <span class="chev" id="chev-govuk_desnz">▼</span>
+          </div>
+          <div id="body-govuk_desnz"><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/news/gb-energy-bill" target="_blank" rel="noopener">Great British Energy Bill receives Royal Assent</a></div>
+      <div class="item-summary">Great British Energy is now legally established as a publicly-owned clean energy investment vehicle, capitalised at £8.3bn.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/news/cfd-ar7" target="_blank" rel="noopener">Offshore wind CfD Allocation Round 7 results announced</a></div>
+      <div class="item-summary">12.5GW of new offshore wind capacity contracted in the largest ever CfD allocation round, at record low strike prices.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/consultations/hydrogen-business-model" target="_blank" rel="noopener">Consultation: hydrogen production business model expansion</a></div>
+      <div class="item-summary">Government consults on Phase 2 of the hydrogen production business model supporting electrolytic green hydrogen projects.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/government/publications/carbon-budget-progress" target="_blank" rel="noopener">Net Zero review: carbon budget progress report</a></div>
+      <div class="item-summary">Annual progress report on Carbon Budget 4 delivery. On-track metrics include heat pump installations.</div>
+      <div class="item-meta">
+        <span>2026-06-03</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
+    </div></div>
+        </div>
+        <div class="group" id="grp-govuk_hmrc">
+          <div class="group-header" onclick="toggle('govuk_hmrc')">
+            <span class="dot ok" title=""></span>
+            <span class="group-title">HMRC</span>
             <span class="count">2</span>
             <span class="badge-kw">2 matched</span>
-            <span class="chev" id="chev-govuk_cabinet_office">▼</span>
+            <span class="chev" id="chev-govuk_hmrc">▼</span>
           </div>
-          <div id="body-govuk_cabinet_office"><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/govtech-strategy-published" target="_blank" rel="noopener">Government Technology Strategy 2026-2030 published</a></div>
-      <div class="item-summary">The Cabinet Office publishes its four-year technology strategy covering AI adoption in public services, data sharing across government, and digital identity infrastructure.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">digital</span><span class="tag kw">data</span></div>
+          <div id="body-govuk_hmrc"><div class="item">
+      <div class="item-title"><a href="https://www.gov.uk/guidance/making-tax-digital-income-tax" target="_blank" rel="noopener">Making Tax Digital for income tax: self-assessment update</a></div>
+      <div class="item-summary">HMRC confirms updated timeline for MTD for ITSA mandatory rollout for businesses with income above £20,000.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/publications/ai-playbook-civil-service" target="_blank" rel="noopener">AI Playbook for the Civil Service: practical guidance on responsible use</a></div>
-      <div class="item-summary">Updated guidance for civil servants on using AI tools responsibly, including approved tools, data handling rules, and procurement principles for AI systems.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">data</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-govuk_no10">
-          <div class="group-header" onclick="toggle('govuk_no10')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">No.10 / Prime Minister's Office</span>
-            <span class="count">1</span>
-            <span class="badge-kw">1 matched</span>
-            <span class="chev" id="chev-govuk_no10">▼</span>
-          </div>
-          <div id="body-govuk_no10"><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/pm-speech-ai-seoul-summit" target="_blank" rel="noopener">PM speech at AI Seoul Summit: UK commits to global AI governance framework</a></div>
-      <div class="item-summary">The Prime Minister commits the UK to a binding international framework on frontier AI safety, building on the Bletchley Declaration.</div>
-      <div class="item-meta"><span>2026-06-07</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-govuk_dbt">
-          <div class="group-header" onclick="toggle('govuk_dbt')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">DBT</span>
-            <span class="count">2</span>
-            <span class="badge-kw">2 matched</span>
-            <span class="chev" id="chev-govuk_dbt">▼</span>
-          </div>
-          <div id="body-govuk_dbt"><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/news/trade-deal-digital-services" target="_blank" rel="noopener">UK-US Digital Trade Agreement: new provisions on data flows and AI</a></div>
-      <div class="item-summary">The Department for Business and Trade announces key provisions of the UK-US digital trade agreement covering cross-border data flows, AI regulatory cooperation, and export controls.</div>
-      <div class="item-meta"><span>2026-06-06</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">digital</span><span class="tag kw">data</span><span class="tag kw">trade</span><span class="tag kw">export controls</span></div>
-    </div><div class="item">
-      <div class="item-title"><a href="https://www.gov.uk/government/consultations/export-controls-technology" target="_blank" rel="noopener">Export controls review: strategic and dual-use technology</a></div>
-      <div class="item-summary">DBT consults on reform of export controls for strategic technologies including semiconductors, quantum computing equipment, and advanced AI systems.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">quantum</span><span class="tag kw">export controls</span></div>
+      <div class="item-title"><a href="https://www.gov.uk/guidance/pillar-two" target="_blank" rel="noopener">Guidance: Pillar Two global minimum tax — UK implementation</a></div>
+      <div class="item-summary">Updated guidance on the Qualified Domestic Minimum Top-up Tax (QDMTT) and Multinational Top-up Tax (MTT) for UK groups.</div>
+      <div class="item-meta">
+        <span>2026-06-05</span>
+        <span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-committee_sit_commons">
@@ -257,105 +345,74 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
             <span class="chev" id="chev-committee_sit_commons">▼</span>
           </div>
           <div id="body-committee_sit_commons"><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/committee/135/science-innovation-technology/news/234561" target="_blank" rel="noopener">Inquiry launched: Governing AI in the UK — regulators and accountability</a></div>
-      <div class="item-summary">The Science, Innovation and Technology Committee launches a new inquiry into AI governance, examining the roles of the CMA, ICO, Ofcom and sector regulators in overseeing AI systems.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">innovation</span><span class="tag kw">science</span></div>
+      <div class="item-title"><a href="https://committees.parliament.uk/committee/135/science-innovation-and-technology-committee/news/governing-ai" target="_blank" rel="noopener">New inquiry: Governing AI — accountability and regulation</a></div>
+      <div class="item-summary">The Science, Innovation and Technology Committee opens a new inquiry into AI governance frameworks and the role of the AI Safety Institute.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/committee/135/science-innovation-technology/news/234498" target="_blank" rel="noopener">Oral evidence session: UK semiconductor supply chain resilience</a></div>
-      <div class="item-summary">The committee takes oral evidence from industry leaders on semiconductor supply chain risks, domestic manufacturing capacity, and the implementation of the UK Semiconductor Strategy.</div>
-      <div class="item-meta"><span>2026-06-03</span></div>
-      <div class="item-tags"><span class="tag kw">semiconductor</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-committee_bt_commons">
-          <div class="group-header" onclick="toggle('committee_bt_commons')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">Business &amp; Trade Committee (Commons)</span>
-            <span class="count">1</span>
-            <span class="badge-kw">1 matched</span>
-            <span class="chev" id="chev-committee_bt_commons">▼</span>
-          </div>
-          <div id="body-committee_bt_commons"><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/committee/814/business-trade/news/234480" target="_blank" rel="noopener">Report published: UK trade policy for digital services post-Brexit</a></div>
-      <div class="item-summary">The Business and Trade Committee publishes its report on UK digital services trade policy, recommending new mutual recognition agreements for data adequacy and AI standards.</div>
-      <div class="item-meta"><span>2026-06-02</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">digital</span><span class="tag kw">data</span><span class="tag kw">trade</span></div>
+      <div class="item-title"><a href="https://committees.parliament.uk/committee/135/science-innovation-and-technology-committee/news/semiconductors" target="_blank" rel="noopener">Report published: UK semiconductor strategy — one year on</a></div>
+      <div class="item-summary">Follow-up report on the National Semiconductor Strategy, finding progress on design but gaps in domestic manufacturing capacity.</div>
+      <div class="item-meta">
+        <span>2026-06-04</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-committee_treasury_commons">
           <div class="group-header" onclick="toggle('committee_treasury_commons')">
             <span class="dot ok" title=""></span>
             <span class="group-title">Treasury Committee (Commons)</span>
-            <span class="count">1</span>
-            <span class="badge-kw">1 matched</span>
+            <span class="count">2</span>
+            <span class="badge-kw">2 matched</span>
             <span class="chev" id="chev-committee_treasury_commons">▼</span>
           </div>
           <div id="body-committee_treasury_commons"><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/committee/158/treasury/news/234512" target="_blank" rel="noopener">Budget scrutiny: digital economy and fintech fiscal measures</a></div>
-      <div class="item-summary">Treasury Committee questions HMRC and HMT officials on the digital economy tax measures announced in the recent Budget, including R&amp;D credits and crypto-asset reporting rules.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">R&amp;D</span><span class="tag kw">fintech</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-parliament_inquiries">
-          <div class="group-header" onclick="toggle('parliament_inquiries')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">Committee Inquiries (All)</span>
-            <span class="count">3</span>
-            <span class="badge-kw">3 matched</span>
-            <span class="chev" id="chev-parliament_inquiries">▼</span>
-          </div>
-          <div id="body-parliament_inquiries"><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/inquiries/1234/governing-ai-uk" target="_blank" rel="noopener">Governing AI in the UK: accountability and regulation</a></div>
-      <div class="item-summary">The Science, Innovation and Technology Committee is examining how AI systems should be governed in the UK, with a focus on regulatory accountability, algorithmic transparency, and the roles of existing regulators.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">regulation</span><span class="tag kw">innovation</span><span class="tag kw">science</span></div>
+      <div class="item-title"><a href="https://committees.parliament.uk/committee/158/treasury-committee/news/tc-hmrc-inquiry" target="_blank" rel="noopener">Treasury Committee launches inquiry into HMRC performance</a></div>
+      <div class="item-summary">The Treasury Select Committee has announced an inquiry into HMRC service standards, taxpayer wait times, and digital transformation.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/inquiries/1198/semiconductor-supply-chain" target="_blank" rel="noopener">UK semiconductor supply chain resilience</a></div>
-      <div class="item-summary">An inquiry into the resilience of UK semiconductor supply chains following global disruptions, examining domestic manufacturing capacity and the implementation of the UK Semiconductor Strategy.</div>
-      <div class="item-meta"><span>2026-05-20</span></div>
-      <div class="item-tags"><span class="tag kw">semiconductor</span></div>
-    </div><div class="item">
-      <div class="item-title"><a href="https://committees.parliament.uk/inquiries/1187/digital-trade-post-brexit" target="_blank" rel="noopener">UK digital trade policy post-Brexit</a></div>
-      <div class="item-summary">Business and Trade Committee examination of how UK digital services trade policy has evolved since Brexit, and what new frameworks are needed for data flows and AI standards.</div>
-      <div class="item-meta"><span>2026-05-12</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">digital</span><span class="tag kw">data</span><span class="tag kw">trade</span></div>
+      <div class="item-title"><a href="https://committees.parliament.uk/committee/158/treasury-committee/news/tc-spring-statement" target="_blank" rel="noopener">Oral evidence: Spring Statement and fiscal headroom</a></div>
+      <div class="item-summary">Chancellor gave oral evidence to the Treasury Committee on fiscal sustainability and the OBR forecasting process.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-written_statements_commons">
           <div class="group-header" onclick="toggle('written_statements_commons')">
             <span class="dot ok" title=""></span>
             <span class="group-title">Written Statements (Commons)</span>
-            <span class="count">2</span>
-            <span class="badge-kw">2 matched</span>
+            <span class="count">3</span>
+            <span class="badge-kw">3 matched</span>
             <span class="chev" id="chev-written_statements_commons">▼</span>
           </div>
           <div id="body-written_statements_commons"><div class="item">
-      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/detail/WS12341" target="_blank" rel="noopener">Written Ministerial Statement: AI Regulation Update</a></div>
-      <div class="item-summary">The Secretary of State for Science, Innovation and Technology makes a statement on the government's progress on AI regulation, including the AI Safety Institute's international partnerships and the forthcoming AI Opportunities Action Plan.</div>
-      <div class="item-meta"><span>2026-06-06</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">regulation</span><span class="tag kw">innovation</span><span class="tag kw">science</span></div>
+      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/ws-energy-neso" target="_blank" rel="noopener">Energy security update: NESO operational readiness</a></div>
+      <div class="item-summary">Minister for Energy Security provides a written statement on the National Energy System Operator first 100 days of operation.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/detail/WS12338" target="_blank" rel="noopener">Written Ministerial Statement: Semiconductor Strategy Implementation</a></div>
-      <div class="item-summary">The Minister for AI and Digital Economy updates the House on progress implementing the UK Semiconductor Strategy, including new investments in chip design and compound semiconductor manufacturing.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">digital</span><span class="tag kw">semiconductor</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-written_statements_lords">
-          <div class="group-header" onclick="toggle('written_statements_lords')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">Written Statements (Lords)</span>
-            <span class="count">1</span>
-            <span class="badge-kw">1 matched</span>
-            <span class="chev" id="chev-written_statements_lords">▼</span>
-          </div>
-          <div id="body-written_statements_lords"><div class="item">
-      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/detail/WS12340" target="_blank" rel="noopener">Written Ministerial Statement: Digital Identity Trust Framework</a></div>
-      <div class="item-summary">The Parliamentary Under-Secretary of State updates the Lords on the launch of the Digital Identity and Attributes Trust Framework, enabling certified private sector providers to offer digital identity services.</div>
-      <div class="item-meta"><span>2026-06-06</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span></div>
+      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/ws-nhs-productivity" target="_blank" rel="noopener">NHS productivity targets: Q3 performance data</a></div>
+      <div class="item-summary">Health Secretary delivers written statement on NHS elective care waiting list statistics and productivity improvement milestones.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
+    </div><div class="item">
+      <div class="item-title"><a href="https://questions-statements.parliament.uk/written-statements/ws-tax-gap" target="_blank" rel="noopener">Tax gap 2024-25: HMRC compliance statistics</a></div>
+      <div class="item-summary">Financial Secretary to the Treasury provides the annual tax gap estimate, showing reduction to 4.8% of total theoretical liabilities.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-hansard_commons">
@@ -367,60 +424,50 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
             <span class="chev" id="chev-hansard_commons">▼</span>
           </div>
           <div id="body-hansard_commons"><div class="item">
-      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-05/debates/debate-ai-regulation" target="_blank" rel="noopener">AI Regulation and Safety — Oral Questions</a></div>
-      <div class="item-summary">Questions to the Secretary of State on the timeline for AI legislation, the role of the AI Safety Institute, and the government's approach to regulating foundation models.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">regulation</span></div>
+      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-05/debates/pmqs" target="_blank" rel="noopener">Prime Ministers Questions: AI regulation and NHS waiting times</a></div>
+      <div class="item-summary">PMQs covered AI governance frameworks, NHS waiting list progress, and energy bill impacts on households.</div>
+      <div class="item-meta">
+        <span>2026-06-07</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span><span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-05/debates/debate-digital-markets" target="_blank" rel="noopener">Digital Markets, Competition and Consumers Act — Implementation Debate</a></div>
-      <div class="item-summary">Opposition day debate on the implementation of the Digital Markets, Competition and Consumers Act, focusing on CMA enforcement powers over designated large digital firms.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">competition</span></div>
+      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-04/debates/energy-prices" target="_blank" rel="noopener">Debate: Energy Prices and Household Costs</a></div>
+      <div class="item-summary">Westminster Hall debate on domestic energy prices, standing charges, and Ofgem price cap methodology.</div>
+      <div class="item-meta">
+        <span>2026-06-06</span>
+        <span class="cat-badge cat-energy" data-cat="energy">Energy</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-04/debates/debate-online-safety" target="_blank" rel="noopener">Online Safety Act: Ofcom Codes of Practice — Urgent Question</a></div>
-      <div class="item-summary">Urgent question on the publication of Ofcom's illegal content codes of practice under the Online Safety Act, with the minister outlining the timeline for compliance.</div>
-      <div class="item-meta"><span>2026-06-04</span></div>
-      <div class="item-tags"><span class="tag kw">online safety</span></div>
-    </div></div>
-        </div>
-        <div class="group" id="grp-hansard_lords">
-          <div class="group-header" onclick="toggle('hansard_lords')">
-            <span class="dot ok" title=""></span>
-            <span class="group-title">Hansard (Lords)</span>
-            <span class="count">1</span>
-            <span class="badge-kw">1 matched</span>
-            <span class="chev" id="chev-hansard_lords">▼</span>
-          </div>
-          <div id="body-hansard_lords"><div class="item">
-      <div class="item-title"><a href="https://hansard.parliament.uk/lords/2026-06-05/debates/debate-ai-lords" target="_blank" rel="noopener">Artificial Intelligence: Regulation and Ethics — Lords Debate</a></div>
-      <div class="item-summary">Lords debate on a motion calling on the government to bring forward primary legislation on AI regulation before the end of 2026.</div>
-      <div class="item-meta"><span>2026-06-05</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">artificial intelligence</span><span class="tag kw">regulation</span></div>
+      <div class="item-title"><a href="https://hansard.parliament.uk/commons/2026-06-03/debates/dhsc-questions" target="_blank" rel="noopener">Oral Questions: Department for Health and Social Care</a></div>
+      <div class="item-summary">DHSC oral questions covered GP access, mental health waiting times, social care funding, and integrated care systems.</div>
+      <div class="item-meta">
+        <span>2026-06-05</span>
+        <span class="cat-badge cat-health" data-cat="health">Health</span>
+      </div>
     </div></div>
         </div>
         <div class="group" id="grp-whatson_parliament">
           <div class="group-header" onclick="toggle('whatson_parliament')">
             <span class="dot ok" title=""></span>
             <span class="group-title">What's On in Parliament</span>
-            <span class="count">3</span>
-            <span class="badge-kw">3 matched</span>
+            <span class="count">2</span>
+            <span class="badge-kw">2 matched</span>
             <span class="chev" id="chev-whatson_parliament">▼</span>
           </div>
           <div id="body-whatson_parliament"><div class="item">
-      <div class="item-title"><a href="https://whatson.parliament.uk/event/lords-digital-committee-2026-06-12" target="_blank" rel="noopener">Lords Communications &amp; Digital Committee: Broadband rollout scrutiny session</a></div>
-      <div class="item-summary">Communications and Digital Committee examines progress on gigabit broadband rollout and Project Gigabit, with evidence from Ofcom and DSIT officials.</div>
-      <div class="item-meta"><span>2026-06-12</span></div>
-      <div class="item-tags"><span class="tag kw">digital</span><span class="tag kw">broadband</span></div>
+      <div class="item-title"><a href="https://whatson.parliament.uk/event/hmrc-hearing" target="_blank" rel="noopener">Treasury Committee: HMRC accountability hearing</a></div>
+      <div class="item-summary">Chief Executive of HMRC appears before the Treasury Committee on service standards and Making Tax Digital delivery.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span><span class="cat-badge cat-tax" data-cat="tax">Tax</span>
+      </div>
     </div><div class="item">
-      <div class="item-title"><a href="https://whatson.parliament.uk/event/commons-ai-debate-2026-06-11" target="_blank" rel="noopener">Westminster Hall Debate: AI and the Future of Work</a></div>
-      <div class="item-summary">Westminster Hall debate on the impact of AI on employment, skills, and labour markets. Backbench business debate secured by the Chair of the Work and Pensions Committee.</div>
-      <div class="item-meta"><span>2026-06-11</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span></div>
-    </div><div class="item">
-      <div class="item-title"><a href="https://whatson.parliament.uk/event/sit-committee-evidence-2026-06-10" target="_blank" rel="noopener">SIT Committee: AI Governance Inquiry — Oral Evidence (Session 1)</a></div>
-      <div class="item-summary">Science, Innovation and Technology Committee takes oral evidence from technology companies on AI governance frameworks. Witnesses include representatives from Google DeepMind, Anthropic, and the Alan Turing Institute.</div>
-      <div class="item-meta"><span>2026-06-10</span></div>
-      <div class="item-tags"><span class="tag kw">AI</span><span class="tag kw">technology</span><span class="tag kw">innovation</span><span class="tag kw">science</span></div>
+      <div class="item-title"><a href="https://whatson.parliament.uk/event/ai-evidence-session" target="_blank" rel="noopener">Science and Technology Committee: AI evidence session</a></div>
+      <div class="item-summary">Oral evidence from AI company CEOs and academics on frontier model safety and UK regulatory approach.</div>
+      <div class="item-meta">
+        <span>2026-06-08</span>
+        <span class="cat-badge cat-ai" data-cat="ai">Ai</span>
+      </div>
     </div></div>
         </div>
   </div>
@@ -428,14 +475,15 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 </div>
 
 <div class="footer">
-  FC-Harvest · Generated 08 Jun 2026 09:25 UTC ·
+  FC-Harvest · Generated 08 Jun 2026 09:45 UTC ·
   Sources: GOV.UK Search API, committees-api.parliament.uk, hansard-api.parliament.uk,
   questions-statements-api.parliament.uk, whatson-api.parliament.uk ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>
 
 <script>
-const KEYWORDS = ["ai", "artificial intelligence", "technology", "digital", "data", "regulation", "semiconductor", "semiconductor chips", "cyber", "cybersecurity", "broadband", "telecoms", "innovation", "r&d", "research and development", "fintech", "open banking", "competition", "antitrust", "platforms", "online safety", "gdpr", "data protection", "science", "space", "quantum", "net zero", "green tech", "trade", "export controls"];
+const KEYWORDS = [];
+const CAT_COUNTS = {"energy": 8, "ai": 14, "health": 7, "tax": 11};
 
 function toggle(id) {
   const body = document.getElementById('body-' + id);
@@ -448,6 +496,15 @@ function expandAll()  { document.querySelectorAll('[id^="body-"]').forEach(el =>
 function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(el => { el.classList.add('hidden'); }); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▶'); }
 
 let activeKw = null;
+let activeCat = null;
+
+function filterCat(btn) {
+  document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat || null;
+  applyFilters();
+}
+
 function filterKw(btn) {
   const kw = btn.textContent.replace(/\d+$/,'').trim().toLowerCase();
   if (activeKw === kw) { activeKw = null; btn.classList.remove('active'); }
@@ -465,14 +522,15 @@ function applyFilters() {
   document.querySelectorAll('.item').forEach(item => {
     const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
     const tags = Array.from(item.querySelectorAll('.tag.kw')).map(t => t.textContent.toLowerCase());
+    const cats = Array.from(item.querySelectorAll('.cat-badge')).map(b => b.dataset.cat || '');
     const hasKw = tags.length > 0;
     const matchesSearch = !q || title.includes(q);
     const matchesKwOnly = !kwOnly || hasKw;
     const matchesActiveKw = !activeKw || tags.some(t => t.includes(activeKw));
-    item.classList.toggle('hidden', !matchesSearch || !matchesKwOnly || !matchesActiveKw);
+    const matchesCat = !activeCat || cats.includes(activeCat);
+    item.classList.toggle('hidden', !matchesSearch || !matchesKwOnly || !matchesActiveKw || !matchesCat);
   });
 
-  // Hide empty groups
   document.querySelectorAll('.group').forEach(grp => {
     const visible = grp.querySelectorAll('.item:not(.hidden)').length;
     grp.classList.toggle('hidden', visible === 0);

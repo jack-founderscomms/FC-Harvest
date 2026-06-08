@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 
 from harvest import db as database
 from harvest.runner import load_config
+from harvest.filters import categories_for_item
 
 OUTPUT = ROOT / "docs" / "index.html"
 
@@ -27,17 +28,32 @@ def generate():
     label_map = _build_label_map(config)
     all_source_ids = list(label_map.keys())
 
+    keyword_categories: dict = config.get("keyword_categories", {})
+
     with database.get_db() as conn:
         all_items = database.get_items(conn, limit=2000)
         recent_runs = database.get_recent_runs(conn, limit=5)
         source_health = database.get_source_health(conn)
+
+    # Enrich items with matched categories
+    for item in all_items:
+        item["matched_categories"] = categories_for_item(
+            item.get("matched_kws") or [], keyword_categories
+        )
 
     # Group by source
     grouped: dict[str, list] = defaultdict(list)
     for item in all_items:
         grouped[item["source_id"]].append(item)
 
-    # Keyword frequency
+    # Category counts
+    category_counts: dict[str, int] = {cat: 0 for cat in keyword_categories}
+    for item in all_items:
+        for cat in (item.get("matched_categories") or []):
+            if cat in category_counts:
+                category_counts[cat] += 1
+
+    # Keyword frequency (still used for old compat)
     kw_counts: dict[str, int] = defaultdict(int)
     for item in all_items:
         for kw in (item.get("matched_kws") or []):
@@ -79,6 +95,7 @@ def generate():
         generated_at=generated_at,
         last_run=last_run,
         keywords=config.get("keywords", []),
+        category_counts=category_counts,
     )
 
     OUTPUT.parent.mkdir(exist_ok=True)
@@ -86,7 +103,7 @@ def generate():
     print(f"Generated {OUTPUT}  ({len(all_items)} items, {len(groups)} sources)")
 
 
-def _render(groups, top_keywords, errored, total_items, generated_at, last_run, keywords):
+def _render(groups, top_keywords, errored, total_items, generated_at, last_run, keywords, category_counts=None):
     groups_html = ""
     for g in groups:
         if not g["items"]:
@@ -137,6 +154,25 @@ def _render(groups, top_keywords, errored, total_items, generated_at, last_run, 
 
     kw_json = json.dumps([k.lower() for k in keywords])
 
+    # Topic tabs
+    CAT_COLOURS = {
+        "energy": ("--cat-energy-bg", "--cat-energy-text"),
+        "AI":     ("--cat-ai-bg",     "--cat-ai-text"),
+        "health": ("--cat-health-bg", "--cat-health-text"),
+        "tax":    ("--cat-tax-bg",    "--cat-tax-text"),
+    }
+    cat_tabs = '<button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button>'
+    for cat, count in (category_counts or {}).items():
+        cat_lower = cat.lower()
+        cat_tabs += (
+            f'<button class="topic-tab tab-{cat_lower}" data-cat="{cat_lower}" '
+            f'onclick="filterCat(this)">{_esc(cat.capitalize())}'
+            f'<span class="tab-count">{count}</span></button>'
+        )
+    tabs_html = f'<div class="topic-tabs">{cat_tabs}</div>'
+
+    category_counts_json = json.dumps({k.lower(): v for k, v in (category_counts or {}).items()})
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,6 +185,10 @@ def _render(groups, top_keywords, errored, total_items, generated_at, last_run, 
   --accent:#1d4ed8;--accent-light:#eff6ff;--tag:#f0f1f3;
   --kw-bg:#dcfce7;--kw-text:#14532d;
   --ok:#16a34a;--warn:#d97706;--err:#dc2626;--err-bg:#fef2f2;--err-border:#fecaca;
+  --cat-energy-bg:#fff7ed;--cat-energy-text:#c2410c;--cat-energy-border:#fed7aa;
+  --cat-ai-bg:#eff6ff;--cat-ai-text:#1d4ed8;--cat-ai-border:#bfdbfe;
+  --cat-health-bg:#fdf2f8;--cat-health-text:#9d174d;--cat-health-border:#fbcfe8;
+  --cat-tax-bg:#f0fdf4;--cat-tax-text:#15803d;--cat-tax-border:#bbf7d0;
 }}
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -230,6 +270,32 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 /* ── Empty ── */
 .empty{{padding:48px;text-align:center;color:var(--muted)}}
 
+/* ── Topic tabs ── */
+.topic-tabs{{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);
+             background:var(--surface);padding:0 24px}}
+.topic-tab{{padding:9px 16px;font-size:12px;font-weight:500;cursor:pointer;
+            border:none;background:none;border-bottom:3px solid transparent;
+            color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}}
+.topic-tab:hover{{color:var(--text)}}
+.topic-tab.active{{color:var(--accent);border-bottom-color:var(--accent)}}
+.topic-tab .tab-count{{font-size:10px;padding:1px 5px;border-radius:8px;background:var(--tag)}}
+.topic-tab.active .tab-count{{background:var(--accent-light);color:var(--accent)}}
+.topic-tab.tab-energy.active{{color:var(--cat-energy-text);border-bottom-color:var(--cat-energy-text)}}
+.topic-tab.tab-energy.active .tab-count{{background:var(--cat-energy-bg);color:var(--cat-energy-text)}}
+.topic-tab.tab-ai.active{{color:var(--cat-ai-text);border-bottom-color:var(--cat-ai-text)}}
+.topic-tab.tab-ai.active .tab-count{{background:var(--cat-ai-bg);color:var(--cat-ai-text)}}
+.topic-tab.tab-health.active{{color:var(--cat-health-text);border-bottom-color:var(--cat-health-text)}}
+.topic-tab.tab-health.active .tab-count{{background:var(--cat-health-bg);color:var(--cat-health-text)}}
+.topic-tab.tab-tax.active{{color:var(--cat-tax-text);border-bottom-color:var(--cat-tax-text)}}
+.topic-tab.tab-tax.active .tab-count{{background:var(--cat-tax-bg);color:var(--cat-tax-text)}}
+
+/* ── Category badges on items ── */
+.cat-badge{{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap}}
+.cat-energy{{background:var(--cat-energy-bg);color:var(--cat-energy-text);border-color:var(--cat-energy-border)}}
+.cat-ai{{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}}
+.cat-health{{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}}
+.cat-tax{{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}}
+
 /* ── Footer ── */
 .footer{{padding:16px 24px;font-size:11px;color:var(--muted);
          border-top:1px solid var(--border);margin-top:32px}}
@@ -260,6 +326,8 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
   <span style="font-size:12px;color:var(--muted);margin-left:auto">Generated {_esc(generated_at)}</span>
 </div>
 
+{tabs_html}
+
 <div class="content">
 
   {error_html}
@@ -280,6 +348,7 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 
 <script>
 const KEYWORDS = {kw_json};
+const CAT_COUNTS = {category_counts_json};
 
 function toggle(id) {{
   const body = document.getElementById('body-' + id);
@@ -292,6 +361,15 @@ function expandAll()  {{ document.querySelectorAll('[id^="body-"]').forEach(el =
 function collapseAll() {{ document.querySelectorAll('[id^="body-"]').forEach(el => {{ el.classList.add('hidden'); }}); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▶'); }}
 
 let activeKw = null;
+let activeCat = null;
+
+function filterCat(btn) {{
+  document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat || null;
+  applyFilters();
+}}
+
 function filterKw(btn) {{
   const kw = btn.textContent.replace(/\\d+$/,'').trim().toLowerCase();
   if (activeKw === kw) {{ activeKw = null; btn.classList.remove('active'); }}
@@ -309,14 +387,15 @@ function applyFilters() {{
   document.querySelectorAll('.item').forEach(item => {{
     const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
     const tags = Array.from(item.querySelectorAll('.tag.kw')).map(t => t.textContent.toLowerCase());
+    const cats = Array.from(item.querySelectorAll('.cat-badge')).map(b => b.dataset.cat || '');
     const hasKw = tags.length > 0;
     const matchesSearch = !q || title.includes(q);
     const matchesKwOnly = !kwOnly || hasKw;
     const matchesActiveKw = !activeKw || tags.some(t => t.includes(activeKw));
-    item.classList.toggle('hidden', !matchesSearch || !matchesKwOnly || !matchesActiveKw);
+    const matchesCat = !activeCat || cats.includes(activeCat);
+    item.classList.toggle('hidden', !matchesSearch || !matchesKwOnly || !matchesActiveKw || !matchesCat);
   }});
 
-  // Hide empty groups
   document.querySelectorAll('.group').forEach(grp => {{
     const visible = grp.querySelectorAll('.item:not(.hidden)').length;
     grp.classList.toggle('hidden', visible === 0);
@@ -337,18 +416,19 @@ def _item_row(item: dict) -> str:
 
     date_str = (item.get("published_at") or "")[:10]
 
-    kws = item.get("matched_kws") or []
-    tags_html = ""
-    if kws:
-        tags_html = '<div class="item-tags">' + "".join(
-            f'<span class="tag kw">{_esc(k)}</span>' for k in kws
-        ) + "</div>"
+    cats = item.get("matched_categories") or []
+    cat_badges = "".join(
+        f'<span class="cat-badge cat-{c.lower()}" data-cat="{c.lower()}">{c.capitalize()}</span>'
+        for c in cats
+    )
 
     return f"""<div class="item">
       <div class="item-title">{title_html}</div>
       {summary_html}
-      <div class="item-meta"><span>{_esc(date_str)}</span></div>
-      {tags_html}
+      <div class="item-meta">
+        <span>{_esc(date_str)}</span>
+        {cat_badges}
+      </div>
     </div>"""
 
 

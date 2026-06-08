@@ -12,7 +12,10 @@ RSS feeds themselves are official once the ID is found.
 """
 
 import re
-import feedparser
+try:
+    import feedparser
+except ImportError:
+    feedparser = None  # type: ignore
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -25,6 +28,8 @@ _id_cache: dict[tuple[str, str], str | None] = {}
 
 
 def fetch(source_cfg: dict) -> list[dict]:
+    if feedparser is None:
+        raise ImportError("feedparser is not available (requires sgmllib, removed in Python 3.11)")
     search_name = source_cfg["search_name"]
     house = source_cfg.get("house", "Commons")
 

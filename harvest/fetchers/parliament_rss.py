@@ -7,7 +7,10 @@ RELIABILITY: RSS feeds are official but occasionally go stale or return 404
 when committees are restructured. Flag if status != 200.
 """
 
-import feedparser
+try:
+    import feedparser
+except ImportError:
+    feedparser = None  # type: ignore
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -15,6 +18,8 @@ from .base import polite_get
 
 
 def fetch(source_cfg: dict) -> list[dict]:
+    if feedparser is None:
+        raise ImportError("feedparser is not available (requires sgmllib, removed in Python 3.11)")
     url = source_cfg["url"]
     resp = polite_get(url)
     feed = feedparser.parse(resp.text)

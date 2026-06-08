@@ -30,3 +30,13 @@ def match_keywords(item: dict, keywords: list[str]) -> list[str]:
     text = " ".join(filter(None, [item.get("title", ""), item.get("summary", "")]))
     matched = [kw for kw, pat in _COMPILED if pat.search(text)]
     return matched
+
+
+def categories_for_item(matched_kws: list[str], keyword_categories: dict[str, list[str]]) -> list[str]:
+    """Given an item's matched keywords, return which topic categories they belong to."""
+    matched_set = {kw.lower() for kw in matched_kws}
+    result = []
+    for category, kws in keyword_categories.items():
+        if any(kw.lower() in matched_set for kw in kws):
+            result.append(category)
+    return result

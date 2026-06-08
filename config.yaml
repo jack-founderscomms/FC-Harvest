@@ -5,37 +5,154 @@ schedule:
   cron: "0 7 * * *"
   timezone: "Europe/London"
 
-keywords:
-  - AI
-  - artificial intelligence
-  - technology
-  - digital
-  - data
-  - regulation
-  - semiconductor
-  - semiconductor chips
-  - cyber
-  - cybersecurity
-  - broadband
-  - telecoms
-  - innovation
-  - R&D
-  - research and development
-  - fintech
-  - open banking
-  - competition
-  - antitrust
-  - platforms
-  - online safety
-  - GDPR
-  - data protection
-  - science
-  - space
-  - quantum
-  - net zero
-  - green tech
-  - trade
-  - export controls
+# keyword_categories: items are tagged with which topics they match.
+# Each category's keywords are matched case-insensitively against item title + summary.
+# Add/remove keywords freely — no code changes needed.
+keyword_categories:
+  energy:
+    - energy
+    - net zero
+    - climate change
+    - renewable energy
+    - solar
+    - offshore wind
+    - onshore wind
+    - wind power
+    - nuclear
+    - hydrogen
+    - carbon
+    - emissions
+    - decarbonisation
+    - decarbonization
+    - electricity
+    - national grid
+    - Ofgem
+    - energy security
+    - oil and gas
+    - heat pump
+    - energy efficiency
+    - electric vehicle
+    - EV charging
+    - NESO
+    - green energy
+    - fossil fuel
+    - carbon capture
+    - energy storage
+    - battery storage
+    - power station
+    - grid
+    - carbon budget
+    - clean energy
+    - green hydrogen
+    - energy transition
+
+  AI:
+    - AI
+    - artificial intelligence
+    - machine learning
+    - large language model
+    - LLM
+    - generative AI
+    - foundation model
+    - automation
+    - algorithm
+    - frontier AI
+    - AI safety
+    - AISI
+    - responsible AI
+    - autonomous systems
+    - deep learning
+    - neural network
+    - compute
+    - AI regulation
+    - AI governance
+    - digital
+    - data
+    - technology
+    - tech
+    - digital infrastructure
+    - semiconductor
+    - cyber
+    - cybersecurity
+    - broadband
+    - telecoms
+    - quantum
+    - innovation
+    - R&D
+    - research and development
+    - online safety
+    - GDPR
+    - data protection
+    - science
+
+  health:
+    - health
+    - NHS
+    - healthcare
+    - social care
+    - medicine
+    - pharmaceutical
+    - drug
+    - vaccine
+    - mental health
+    - patient
+    - hospital
+    - GP
+    - primary care
+    - public health
+    - NICE
+    - CQC
+    - life sciences
+    - biotech
+    - biotechnology
+    - clinical trial
+    - cancer
+    - obesity
+    - waiting list
+    - elective care
+    - MHRA
+    - health service
+    - medical device
+    - genomics
+    - health data
+    - integrated care
+    - DHSC
+    - adult social care
+
+  tax:
+    - tax
+    - taxation
+    - HMRC
+    - income tax
+    - corporation tax
+    - VAT
+    - fiscal
+    - spending review
+    - national insurance
+    - capital gains
+    - inheritance tax
+    - stamp duty
+    - business rates
+    - windfall tax
+    - tax relief
+    - R&D tax credit
+    - global minimum tax
+    - Pillar Two
+    - OBR
+    - autumn statement
+    - spring statement
+    - budget
+    - public spending
+    - public finances
+    - government borrowing
+    - debt
+    - deficit
+    - levy
+    - excise duty
+    - customs
+    - tariff
+    - trade
+    - export
 
 sources:
 
@@ -112,6 +229,57 @@ sources:
       type: govuk_api
       params:
         filter_organisations: "department-for-business-and-trade"
+        filter_content_store_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
+        order: "-public_timestamp"
+        count: 50
+
+    - id: govuk_dhsc
+      label: "DHSC"
+      type: govuk_api
+      params:
+        filter_organisations: "department-of-health-and-social-care"
+        filter_content_store_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
+        order: "-public_timestamp"
+        count: 50
+
+    - id: govuk_desnz
+      label: "DESNZ"
+      type: govuk_api
+      params:
+        filter_organisations: "department-for-energy-security-and-net-zero"
+        filter_content_store_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
+        order: "-public_timestamp"
+        count: 50
+
+    - id: govuk_hmrc
+      label: "HMRC"
+      type: govuk_api
+      params:
+        filter_organisations: "hm-revenue-customs"
         filter_content_store_document_type:
           - news_story
           - press_release

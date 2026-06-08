@@ -132,6 +132,7 @@ def get_items(
     db: sqlite3.Connection,
     source_ids: list[str] | None = None,
     keyword_filter: bool = False,
+    category_keywords: list[str] | None = None,
     limit: int = 500,
     offset: int = 0,
 ) -> list[dict]:
@@ -145,6 +146,13 @@ def get_items(
 
     if keyword_filter:
         where_clauses.append("matched_kws != '[]'")
+
+    if category_keywords:
+        # Filter items whose matched_kws JSON contains at least one of the given keywords.
+        # Use OR'd LIKE checks — works fine for small category keyword sets.
+        kw_clauses = [f"matched_kws LIKE ?" for _ in category_keywords]
+        where_clauses.append("(" + " OR ".join(kw_clauses) + ")")
+        params.extend([f'%"{kw}"%' for kw in category_keywords])
 
     where = ("WHERE " + " AND ".join(where_clauses)) if where_clauses else ""
     rows = db.execute(

@@ -42,6 +42,21 @@ def load_config() -> dict:
         return yaml.safe_load(f)
 
 
+def _flatten_keywords(config: dict) -> list[str]:
+    """Return a deduplicated flat keyword list from keyword_categories (or legacy keywords)."""
+    cats = config.get("keyword_categories")
+    if cats:
+        seen: set[str] = set()
+        result: list[str] = []
+        for kws in cats.values():
+            for kw in kws:
+                if kw not in seen:
+                    seen.add(kw)
+                    result.append(kw)
+        return result
+    return config.get("keywords", [])
+
+
 def run_harvest(config: dict | None = None) -> dict:
     """
     Run a full harvest. Individual source failures are isolated — they are
@@ -52,7 +67,7 @@ def run_harvest(config: dict | None = None) -> dict:
     if config is None:
         config = load_config()
 
-    keywords = config.get("keywords", [])
+    keywords = _flatten_keywords(config)
     sources_cfg = config.get("sources", {})
 
     database.init_db()

@@ -312,7 +312,7 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
     <div class="header-meta">UK Parliament &amp; Government Monitor</div>
   </div>
   <div class="header-right">
-    <span class="header-meta">{_esc(last_run_html)}</span>
+    <span class="header-meta">{last_run_html}</span>
     <span class="badge badge-ok">{total_items} items</span>
     {'<span class="badge badge-err">'+str(len(errored))+' source'+('s' if len(errored)!=1 else '')+' failing</span>' if errored else ''}
   </div>

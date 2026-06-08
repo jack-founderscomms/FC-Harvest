@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import db as database
 from .filters import match_keywords
+from .emailer import send_digest
 from .fetchers import (
     govuk,
     parliament_rss,
@@ -74,6 +75,7 @@ def run_harvest(config: dict | None = None) -> dict:
 
     errors: list[dict] = []
     total_new = 0
+    new_items_list: list[dict] = []  # collected for email digest
 
     with database.get_db() as conn:
         run_id = database.log_run_start(conn)
@@ -116,6 +118,7 @@ def run_harvest(config: dict | None = None) -> dict:
                 is_new = database.upsert_item(conn, source_id, item)
                 if is_new:
                     new_count += 1
+                    new_items_list.append({"source_id": source_id, **item})
 
             status = "ok" if raw_items else "warning"
             health_msg = "" if raw_items else "Fetched successfully but returned 0 items"
@@ -130,6 +133,21 @@ def run_harvest(config: dict | None = None) -> dict:
 
     summary = {"new_items": total_new, "errors": errors, "run_id": run_id}
     logger.info("Harvest complete. New items: %d, Errors: %d", total_new, len(errors))
+
+    # Send email digest if enabled
+    if new_items_list:
+        label_map = {
+            src["id"]: src.get("label", src["id"])
+            for group in sources_cfg.values()
+            for src in group
+        }
+        try:
+            sent = send_digest(new_items_list, config, label_map)
+            if sent:
+                logger.info("Digest email sent.")
+        except Exception as exc:
+            logger.error("Failed to send digest email: %s", exc, exc_info=True)
+
     return summary
 
 

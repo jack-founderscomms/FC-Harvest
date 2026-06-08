@@ -5,6 +5,21 @@ schedule:
   cron: "0 7 * * *"
   timezone: "Europe/London"
 
+# ── Email digest ──────────────────────────────────────────────────────────────
+# Sends a morning digest of new keyword-matched items after each harvest.
+# SMTP credentials must be set as environment variables (not here):
+#   SMTP_HOST      e.g. smtp.gmail.com
+#   SMTP_PORT      e.g. 587  (default)
+#   SMTP_USER      your sending address / login
+#   SMTP_PASSWORD  app password or API key
+#   SMTP_TLS       true (default) or false
+email:
+  enabled: false          # set to true once SMTP env vars are configured
+  to: "jack@founderscomms.co"
+  from: "FC-Harvest <noreply@founderscomms.co>"
+  subject: "FC-Harvest digest — {date}"
+  only_if_matches: true   # skip the email when no items matched any keyword
+
 # keyword_categories: items are tagged with which topics they match.
 # Each category's keywords are matched case-insensitively against item title + summary.
 # Add/remove keywords freely — no code changes needed.

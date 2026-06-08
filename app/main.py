@@ -22,6 +22,7 @@ from fastapi.templating import Jinja2Templates
 from harvest import db as database
 from harvest.runner import load_config, run_harvest, _flatten_keywords
 from harvest.filters import categories_for_item
+from harvest.emailer import send_digest
 from harvest.scheduler import start_scheduler
 
 logger = logging.getLogger(__name__)
@@ -205,6 +206,32 @@ def _run_harvest_bg():
         logger.info("Manual harvest result: new=%d errors=%d", result["new_items"], len(result["errors"]))
     except Exception as e:
         logger.error("Manual harvest error: %s", e, exc_info=True)
+
+
+@app.post("/api/email-test")
+def api_email_test():
+    """Send a test digest using the most recent 20 keyword-matched items in the DB."""
+    database.init_db()
+    config = load_config()
+    label_map = _build_label_map(config)
+    keyword_categories = config.get("keyword_categories", {})
+
+    with database.get_db() as conn:
+        items = database.get_items(conn, keyword_filter=True, limit=20)
+
+    for item in items:
+        item["matched_categories"] = categories_for_item(
+            item.get("matched_kws") or [], keyword_categories
+        )
+
+    if not items:
+        return {"status": "skipped", "reason": "no keyword-matched items in database"}
+
+    try:
+        send_digest(items, {**config, "email": {**config.get("email", {}), "only_if_matches": False}}, label_map)
+        return {"status": "sent", "items": len(items)}
+    except Exception as exc:
+        return {"status": "error", "detail": str(exc)}
 
 
 @app.get("/api/runs")

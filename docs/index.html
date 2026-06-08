@@ -120,8 +120,7 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
 .cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
-
-/* Date filter bar */
+/* ── Date filter bar ── */
 .date-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
           border-bottom:1px solid var(--border);background:#fafbfc}
 .date-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
@@ -131,7 +130,7 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .date-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .date-bar-label{font-size:11px;color:var(--muted);margin-right:2px}
 
-/* Advanced search panel */
+/* ── Advanced search panel ── */
 .adv-toggle{margin-left:auto;font-size:11px;color:var(--accent);cursor:pointer;
             background:none;border:none;padding:4px 8px;border-radius:4px;
             display:flex;align-items:center;gap:4px;font-weight:500}
@@ -196,6 +195,7 @@ input[type=date]:focus{border-color:var(--accent)}
   <span id="filter-status"></span>
 </div>
 
+<!-- Date filter bar -->
 <div class="date-bar">
   <span class="date-bar-label">Date:</span>
   <button class="date-btn active" data-date="" onclick="filterDate(this)">All time</button>
@@ -209,12 +209,13 @@ input[type=date]:focus{border-color:var(--accent)}
   </button>
 </div>
 
+<!-- Advanced search panel -->
 <div class="adv-panel" id="adv-panel">
   <div class="adv-grid">
     <div class="adv-section">
       <h4>Source type</h4>
       <label><input type="checkbox" class="adv-srctype" value="govuk" checked onchange="applyFilters()"> GOV.UK departments</label>
-      <label><input type="checkbox" class="adv-srctype" value="cmt" checked onchange="applyFilters()"> Parliamentary committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="committee" checked onchange="applyFilters()"> Parliamentary committees</label>
       <label><input type="checkbox" class="adv-srctype" value="written" checked onchange="applyFilters()"> Written statements</label>
       <label><input type="checkbox" class="adv-srctype" value="hansard" checked onchange="applyFilters()"> Hansard</label>
     </div>
@@ -274,6 +275,8 @@ input[type=date]:focus{border-color:var(--accent)}
 </div>
 
 <script>
+// ── Config ────────────────────────────────────────────────────────────────────
+
 const KEYWORD_CATEGORIES = {
   energy: ['energy','net zero','climate change','renewable energy','solar','offshore wind',
     'onshore wind','wind power','nuclear','hydrogen','carbon','emissions','decarbonisation',
@@ -332,16 +335,22 @@ const HANSARD_SOURCES = [
 
 const ALL_SOURCES = [...GOVUK_SOURCES, ...COMMITTEE_SOURCES, ...WRITTEN_SOURCES, ...HANSARD_SOURCES];
 const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
+
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
+
 const CACHE_KEY = 'fc-harvest-v5';
-const CACHE_TTL = 6 * 60 * 60 * 1000;
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
+
+// ── State ─────────────────────────────────────────────────────────────────────
 
 let allItems = [];
 let sourceErrors = {};
 let activeCat = null;
-let activeDateFilter = '';
+let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
 let committeeLists = {};
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
   const cached = loadCache();
@@ -358,10 +367,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function doRefresh() { fetchAll(); }
 
+// ── Fetch pipeline ────────────────────────────────────────────────────────────
+
 async function fetchAll() {
   setRefreshing(true);
-  show('loading-panel'); hide('groups-container'); hide('error-panel'); hide('item-count');
-  allItems = []; sourceErrors = {}; committeeLists = {};
+  show('loading-panel');
+  hide('groups-container');
+  hide('error-panel');
+  hide('item-count');
+  allItems = [];
+  sourceErrors = {};
+  committeeLists = {};
 
   const prog = document.getElementById('progress-list');
   prog.innerHTML = '';
@@ -371,8 +387,8 @@ async function fetchAll() {
     li.id = 'p-' + id; li.className = 'loading'; li.textContent = label;
     prog.appendChild(li);
   }
-  function doneProg(id) { setProg(id, 'done'); }
-  function errProg(id, msg) { setProg(id, 'err', msg); }
+  function doneProg(id)      { setProg(id, 'done'); }
+  function errProg(id, msg)  { setProg(id, 'err', msg); }
   function setProg(id, cls, suffix) {
     const el = document.getElementById('p-' + id);
     if (!el) return;
@@ -380,6 +396,7 @@ async function fetchAll() {
     if (suffix) el.textContent += ' — ' + suffix;
   }
 
+  // Pre-fetch committee lists (2 calls instead of 14)
   mkProg('cmt-lists', 'Looking up committee IDs…');
   try {
     const [cd, ld] = await Promise.all([
@@ -390,10 +407,12 @@ async function fetchAll() {
     committeeLists.Lords   = toArr(ld);
     doneProg('cmt-lists');
   } catch (e) {
-    committeeLists.Commons = []; committeeLists.Lords = [];
+    committeeLists.Commons = [];
+    committeeLists.Lords   = [];
     errProg('cmt-lists', e.message);
   }
 
+  // All sources in parallel
   const tasks = [];
   for (const src of GOVUK_SOURCES) {
     mkProg(src.id, src.label);
@@ -431,6 +450,8 @@ function pushItems(items) {
   }
 }
 
+// ── Fetchers ──────────────────────────────────────────────────────────────────
+
 async function fetchGovUK(src) {
   const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count:'30'});
   DOC_TYPES.forEach(t => p.append('filter_content_store_document_type[]', t));
@@ -465,6 +486,7 @@ async function fetchCommittee(src) {
   const id = cmt.id || cmt.Id;
   const items = [];
 
+  // News articles
   try {
     const nd = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/NewsArticles?take=25`);
     for (const r of (toArr(nd) || [])) {
@@ -483,6 +505,7 @@ async function fetchCommittee(src) {
     }
   } catch(_) {}
 
+  // Inquiries / calls for evidence
   try {
     const iq = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/Inquiries?take=15`);
     for (const r of (toArr(iq) || [])) {
@@ -531,10 +554,26 @@ async function fetchHansard(src) {
   const h = src.house;
   const since = daysAgo(14);
   const today = new Date().toISOString().slice(0,10);
+  const hLower = h.toLowerCase();
 
+  function makeItem(t, sd, sid, summary) {
+    return {
+      item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
+      title: t,
+      url: sid
+        ? `https://hansard.parliament.uk/${hLower}/${sd}/debates/${sid}`
+        : `https://hansard.parliament.uk/${hLower}/${sd}`,
+      published_at: sd,
+      summary: summary||'',
+      doc_type: 'hansard',
+      source_id: src.id, source_label: src.label,
+    };
+  }
+
+  // 1. Primary: hansard-api sittings endpoint
   try {
     const data = await fetchJSON(
-      `https://hansard-api.parliament.uk/overview/${h.toLowerCase()}/sittings.json?startDate=${since}&endDate=${today}`
+      `https://hansard-api.parliament.uk/overview/${hLower}/sittings.json?startDate=${since}&endDate=${today}`
     );
     const sittings = toArr(data) || (data && data.sittings) || [];
     const items = [];
@@ -543,44 +582,69 @@ async function fetchHansard(src) {
       for (const sec of (sitting.sections||sitting.debateSections||[])) {
         const t = (sec.title||sec.Title||'').trim();
         if (!t || t.length < 4) continue;
-        const sid = sec.id||sec.externalId||'';
-        items.push({
-          item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
-          title: t,
-          url: sid
-            ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
-            : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
-          published_at: sd,
-          summary: sec.summary||'',
-          doc_type: 'hansard',
-          source_id: src.id, source_label: src.label,
-        });
+        items.push(makeItem(t, sd, sec.id||sec.externalId||'', sec.summary||''));
       }
     }
     if (items.length) return items;
   } catch(_) {}
 
-  const data = await fetchJSON(
-    `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
-  );
-  const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
-  return results.map(r => {
-    const t = (r.title||r.debateTitle||'').trim();
-    const sd = (r.sittingDate||r.date||'').slice(0,10);
-    const sid = r.id||r.externalId||'';
-    return {
-      item_id: `hansard_${h}_${sd}_${sid}`,
-      title: t,
-      url: sid
-        ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
-        : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
-      published_at: sd,
-      summary: r.summary||'',
-      doc_type: 'hansard',
-      source_id: src.id, source_label: src.label,
-    };
-  }).filter(i => i.title);
+  // 2. Secondary: parliament.uk API sittings search (covers broader date range)
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/sittings/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const sittings = toArr(data) || (data && (data.sittings||data.results)) || [];
+    const items = [];
+    for (const sitting of sittings) {
+      const sd = (sitting.date||sitting.sitting_date||'').slice(0,10);
+      // Each sitting may have debates/sections
+      const sections = sitting.sections||sitting.debates||sitting.contributions||[];
+      if (sections.length) {
+        for (const sec of sections) {
+          const t = (sec.title||sec.heading||sec.slug||'').replace(/-/g,' ').trim();
+          if (!t || t.length < 4) continue;
+          items.push(makeItem(t, sd, sec.id||sec.slug||'', sec.summary||sec.extract||''));
+        }
+      } else {
+        // Sitting-level entry
+        const t = (sitting.title||sitting.heading||'').trim();
+        if (t && t.length >= 4) items.push(makeItem(t, sd, sitting.id||sitting.slug||'', ''));
+      }
+    }
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 3. Fallback: hansard-api search endpoint
+  try {
+    const data = await fetchJSON(
+      `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
+    );
+    const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
+    const items = results.map(r => {
+      const t = (r.title||r.debateTitle||'').trim();
+      const sd = (r.sittingDate||r.date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.externalId||'', r.summary||'') : null;
+    }).filter(Boolean);
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 4. Last resort: parliament.uk contributions search
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/contributions/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const results = toArr(data) || (data && (data.contributions||data.results)) || [];
+    return results.map(r => {
+      const t = (r.title||r.debate_title||r.heading||'').trim();
+      const sd = (r.date||r.sitting_date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.slug||'', r.text||r.extract||'') : null;
+    }).filter(Boolean);
+  } catch(_) {}
+
+  return [];
 }
+
+// ── Keyword matching ──────────────────────────────────────────────────────────
 
 function matchCats(title, summary) {
   const text = (' ' + (title+' '+summary).toLowerCase() + ' ');
@@ -588,16 +652,21 @@ function matchCats(title, summary) {
   for (const [cat, kws] of Object.entries(KEYWORD_CATEGORIES)) {
     if (kws.some(kw => text.includes(kw.toLowerCase()))) cats.push(cat);
   }
+  // standalone 'tax' word
   if (!cats.includes('tax') && /\btax\b/.test(text)) cats.push('tax');
+  // standalone 'AI' word (uppercase in original)
   if (!cats.includes('ai') && /\bai\b/i.test(title+' '+summary)) cats.push('ai');
   return cats;
 }
+
+// ── Render ────────────────────────────────────────────────────────────────────
 
 function renderAll() {
   const container = document.getElementById('groups-container');
   container.innerHTML = '';
   show('groups-container');
 
+  // Tab counts
   const catCounts = {energy:0, ai:0, health:0, tax:0};
   for (const item of allItems)
     for (const c of (item.matched_cats||[]))
@@ -607,10 +676,12 @@ function renderAll() {
     if (el) el.textContent = n;
   }
 
+  // Item count badge
   const badge = document.getElementById('item-count');
   badge.textContent = allItems.length + ' items';
   show('item-count');
 
+  // Error panel
   const errKeys = Object.keys(sourceErrors);
   if (errKeys.length) {
     document.getElementById('error-summary').textContent =
@@ -620,6 +691,7 @@ function renderAll() {
     show('error-panel');
   }
 
+  // Build groups
   const grouped = {};
   for (const item of allItems)
     (grouped[item.source_id] = grouped[item.source_id] || []).push(item);
@@ -683,18 +755,22 @@ function makeItemEl(item) {
   return div;
 }
 
-function applyFilters() {
-  const q       = (document.getElementById('search').value || '').toLowerCase();
-  const kwOnly  = document.getElementById('kw-only').checked;
-  const advFrom = document.getElementById('adv-from')?.value || '';
-  const advTo   = document.getElementById('adv-to')?.value   || '';
-  const advOpen = document.getElementById('adv-panel')?.classList.contains('open');
+// ── Filter / expand ───────────────────────────────────────────────────────────
 
+function applyFilters() {
+  const q        = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly   = document.getElementById('kw-only').checked;
+  const advFrom  = document.getElementById('adv-from')?.value || '';
+  const advTo    = document.getElementById('adv-to')?.value   || '';
+
+  // Collect enabled source types and doc types from advanced panel
   const srcTypes = [...document.querySelectorAll('.adv-srctype')]
     .filter(cb => cb.checked).map(cb => cb.value);
   const docTypes = [...document.querySelectorAll('.adv-doctype')]
     .filter(cb => cb.checked).flatMap(cb => cb.value.split(','));
+  const advOpen  = document.getElementById('adv-panel')?.classList.contains('open');
 
+  // Date window from quick buttons
   const today = new Date(); today.setHours(0,0,0,0);
   let winStart = null, winEnd = null;
   if (activeDateFilter === 'today') {
@@ -709,6 +785,7 @@ function applyFilters() {
     winStart = today;
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+8);
   }
+  // Custom date range overrides quick buttons when set
   if (advFrom) winStart = new Date(advFrom);
   if (advTo)   { winEnd = new Date(advTo); winEnd.setDate(winEnd.getDate()+1); }
 
@@ -720,6 +797,7 @@ function applyFilters() {
     const srcType = item.dataset.srctype || '';
     const docType = item.dataset.doctype || '';
 
+    // Date check
     let dateOk = true;
     if (winStart || winEnd) {
       const d = dateStr ? new Date(dateStr) : null;
@@ -730,8 +808,13 @@ function applyFilters() {
       }
     }
 
-    const srcOk = !advOpen || srcTypes.length === 0 || srcTypes.some(t => srcType.startsWith(t));
-    const dtOk  = !advOpen || docTypes.length === 0 || docTypes.some(t => docType.includes(t));
+    // Advanced: source type filter
+    const srcOk = !advOpen || srcTypes.length === 0 ||
+      srcTypes.some(t => srcType.startsWith(t));
+
+    // Advanced: doc type filter
+    const dtOk = !advOpen || docTypes.length === 0 ||
+      docTypes.some(t => docType.includes(t));
 
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
@@ -754,6 +837,7 @@ function filterDate(btn) {
   document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeDateFilter = btn.dataset.date || '';
+  // Clear custom date inputs when using quick buttons
   const f = document.getElementById('adv-from'); if (f) f.value = '';
   const t = document.getElementById('adv-to');   if (t) t.value = '';
   applyFilters();
@@ -767,14 +851,18 @@ function filterCat(btn) {
 }
 
 function toggleAdv() {
-  document.getElementById('adv-panel').classList.toggle('open');
-  document.getElementById('adv-toggle').classList.toggle('open');
+  const panel  = document.getElementById('adv-panel');
+  const toggle = document.getElementById('adv-toggle');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('open');
 }
 
 function clearAdv() {
+  // Reset advanced checkboxes
   document.querySelectorAll('.adv-srctype,.adv-doctype').forEach(cb => cb.checked = true);
   const f = document.getElementById('adv-from'); if (f) f.value = '';
   const t = document.getElementById('adv-to');   if (t) t.value = '';
+  // Reset date buttons
   document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.date-btn[data-date=""]')?.classList.add('active');
   activeDateFilter = '';
@@ -791,6 +879,8 @@ function toggleGrp(id) {
   chev.textContent = h ? '▶' : '▼';
 }
 
+// ── Cache ─────────────────────────────────────────────────────────────────────
+
 function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch(_){} }
 function loadCache() {
   try {
@@ -801,6 +891,8 @@ function loadCache() {
     return d;
   } catch(_) { return null; }
 }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 async function fetchJSON(url) {
   const r = await fetch(url, {headers:{Accept:'application/json'}});

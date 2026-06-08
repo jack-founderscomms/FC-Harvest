@@ -554,11 +554,26 @@ async function fetchHansard(src) {
   const h = src.house;
   const since = daysAgo(14);
   const today = new Date().toISOString().slice(0,10);
+  const hLower = h.toLowerCase();
 
-  // Try sittings
+  function makeItem(t, sd, sid, summary) {
+    return {
+      item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
+      title: t,
+      url: sid
+        ? `https://hansard.parliament.uk/${hLower}/${sd}/debates/${sid}`
+        : `https://hansard.parliament.uk/${hLower}/${sd}`,
+      published_at: sd,
+      summary: summary||'',
+      doc_type: 'hansard',
+      source_id: src.id, source_label: src.label,
+    };
+  }
+
+  // 1. Primary: hansard-api sittings endpoint
   try {
     const data = await fetchJSON(
-      `https://hansard-api.parliament.uk/overview/${h.toLowerCase()}/sittings.json?startDate=${since}&endDate=${today}`
+      `https://hansard-api.parliament.uk/overview/${hLower}/sittings.json?startDate=${since}&endDate=${today}`
     );
     const sittings = toArr(data) || (data && data.sittings) || [];
     const items = [];
@@ -567,44 +582,66 @@ async function fetchHansard(src) {
       for (const sec of (sitting.sections||sitting.debateSections||[])) {
         const t = (sec.title||sec.Title||'').trim();
         if (!t || t.length < 4) continue;
-        const sid = sec.id||sec.externalId||'';
-        items.push({
-          item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
-          title: t,
-          url: sid
-            ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
-            : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
-          published_at: sd,
-          summary: sec.summary||'',
-          doc_type: 'hansard',
-          source_id: src.id, source_label: src.label,
-        });
+        items.push(makeItem(t, sd, sec.id||sec.externalId||'', sec.summary||''));
       }
     }
     if (items.length) return items;
   } catch(_) {}
 
-  // Fallback: search endpoint
-  const data = await fetchJSON(
-    `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
-  );
-  const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
-  return results.map(r => {
-    const t = (r.title||r.debateTitle||'').trim();
-    const sd = (r.sittingDate||r.date||'').slice(0,10);
-    const sid = r.id||r.externalId||'';
-    return {
-      item_id: `hansard_${h}_${sd}_${sid}`,
-      title: t,
-      url: sid
-        ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
-        : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
-      published_at: sd,
-      summary: r.summary||'',
-      doc_type: 'hansard',
-      source_id: src.id, source_label: src.label,
-    };
-  }).filter(i => i.title);
+  // 2. Secondary: parliament.uk API sittings search (covers broader date range)
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/sittings/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const sittings = toArr(data) || (data && (data.sittings||data.results)) || [];
+    const items = [];
+    for (const sitting of sittings) {
+      const sd = (sitting.date||sitting.sitting_date||'').slice(0,10);
+      // Each sitting may have debates/sections
+      const sections = sitting.sections||sitting.debates||sitting.contributions||[];
+      if (sections.length) {
+        for (const sec of sections) {
+          const t = (sec.title||sec.heading||sec.slug||'').replace(/-/g,' ').trim();
+          if (!t || t.length < 4) continue;
+          items.push(makeItem(t, sd, sec.id||sec.slug||'', sec.summary||sec.extract||''));
+        }
+      } else {
+        // Sitting-level entry
+        const t = (sitting.title||sitting.heading||'').trim();
+        if (t && t.length >= 4) items.push(makeItem(t, sd, sitting.id||sitting.slug||'', ''));
+      }
+    }
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 3. Fallback: hansard-api search endpoint
+  try {
+    const data = await fetchJSON(
+      `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
+    );
+    const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
+    const items = results.map(r => {
+      const t = (r.title||r.debateTitle||'').trim();
+      const sd = (r.sittingDate||r.date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.externalId||'', r.summary||'') : null;
+    }).filter(Boolean);
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 4. Last resort: parliament.uk contributions search
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/contributions/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const results = toArr(data) || (data && (data.contributions||data.results)) || [];
+    return results.map(r => {
+      const t = (r.title||r.debate_title||r.heading||'').trim();
+      const sd = (r.date||r.sitting_date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.slug||'', r.text||r.extract||'') : null;
+    }).filter(Boolean);
+  } catch(_) {}
+
+  return [];
 }
 
 // ── Keyword matching ──────────────────────────────────────────────────────────

@@ -30,6 +30,12 @@ a:hover{text-decoration:underline}
 .badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
 .badge-ok{background:#dcfce7;color:var(--ok)}
 .badge-err{background:var(--err-bg);color:var(--err)}
+.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
+          background:var(--accent);color:#fff;border:none;border-radius:6px;
+          font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;
+          transition:opacity .15s}
+.btn-run:hover{opacity:.88;text-decoration:none;color:#fff}
+.btn-run svg{flex-shrink:0}
 
 .toolbar{padding:14px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
           border-bottom:1px solid var(--border);background:var(--surface)}
@@ -85,7 +91,18 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .tag{font-size:10px;padding:1px 6px;border-radius:4px;background:var(--tag);color:var(--muted)}
 .tag.kw{background:var(--kw-bg);color:var(--kw-text);font-weight:500}
 
-.empty{padding:48px;text-align:center;color:var(--muted)}
+.empty{padding:48px 24px;text-align:center;color:var(--muted)}
+.empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
+.empty-sub{font-size:13px;margin-bottom:20px}
+.empty-steps{display:inline-block;text-align:left;background:var(--surface);
+              border:1px solid var(--border);border-radius:8px;padding:20px 24px;
+              margin-bottom:24px;max-width:520px;width:100%}
+.empty-steps ol{padding-left:20px;font-size:13px;line-height:2}
+.empty-steps li strong{color:var(--text)}
+.empty-steps code{font-size:11px;background:var(--tag);padding:1px 5px;
+                   border-radius:3px;font-family:monospace}
+.run-cta{display:flex;flex-direction:column;align-items:center;gap:10px}
+.run-note{font-size:11px;color:var(--muted);max-width:400px}
 
 .topic-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);
              background:var(--surface);padding:0 24px}
@@ -126,8 +143,16 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
     <div class="header-meta">UK Parliament &amp; Government Monitor</div>
   </div>
   <div class="header-right">
-    <span class="header-meta">No harvests yet — run <code>python run.py harvest</code> locally</span>
-    <span class="badge badge-ok">0 items</span>
+    <span class="header-meta" id="last-run-meta">No harvests yet</span>
+    <span class="badge badge-ok" id="item-count-badge">0 items</span>
+    <a class="btn-run"
+       href="https://github.com/jack-founderscomms/FC-Harvest/actions/workflows/harvest.yml"
+       target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm1.6 4.8L6.4 8l3.2 3.2-.9.9L5.1 8.9a1.28 1.28 0 0 1 0-1.8l3.6-3.6.9.9z"/>
+      </svg>
+      Run harvest
+    </a>
   </div>
 </div>
 
@@ -138,19 +163,41 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
 </div>
 
-<div class="topic-tabs"><button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button><button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count">0</span></button><button class="topic-tab tab-ai" data-cat="ai" onclick="filterCat(this)">AI<span class="tab-count">0</span></button><button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count">0</span></button><button class="topic-tab tab-tax" data-cat="tax" onclick="filterCat(this)">Tax<span class="tab-count">0</span></button></div>
+<div class="topic-tabs">
+  <button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button>
+  <button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count">0</span></button>
+  <button class="topic-tab tab-ai" data-cat="ai" onclick="filterCat(this)">AI<span class="tab-count">0</span></button>
+  <button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count">0</span></button>
+  <button class="topic-tab tab-tax" data-cat="tax" onclick="filterCat(this)">Tax<span class="tab-count">0</span></button>
+</div>
 
 <div class="content">
   <div id="groups-container">
     <div class="empty">
-      <p style="font-size:15px;font-weight:600;margin-bottom:8px">No items yet</p>
-      <p>Run a harvest from your local machine to populate this dashboard with real data:</p>
-      <pre style="display:inline-block;background:#f0f1f3;padding:10px 16px;border-radius:6px;margin-top:12px;text-align:left;font-size:12px">git clone https://github.com/jack-founderscomms/FC-Harvest.git
-cd FC-Harvest
-pip install -r requirements.txt
-python run.py harvest
-python run.py static
-git add docs/index.html &amp;&amp; git commit -m "refresh" &amp;&amp; git push origin main</pre>
+      <div class="empty-title">No items yet</div>
+      <div class="empty-sub">Click <strong>Run harvest</strong> above to fetch the latest from GOV.UK and Parliament — it takes about 2–3 minutes.</div>
+
+      <div class="empty-steps">
+        <ol>
+          <li><strong>Click “Run harvest”</strong> (top-right) — opens GitHub Actions</li>
+          <li>On that page, click the <strong>“Run workflow”</strong> dropdown → <strong>Run workflow</strong></li>
+          <li>Wait ~2–3 min for it to complete</li>
+          <li><strong>Reload this page</strong> — real articles will appear</li>
+        </ol>
+      </div>
+
+      <div class="run-cta">
+        <a class="btn-run"
+           href="https://github.com/jack-founderscomms/FC-Harvest/actions/workflows/harvest.yml"
+           target="_blank" rel="noopener"
+           style="font-size:13px;padding:10px 20px">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right:2px">
+            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 8.7l-5 3a.75.75 0 0 1-1.1-.65v-6a.75.75 0 0 1 1.1-.65l5 3a.75.75 0 0 1 0 1.3z"/>
+          </svg>
+          Open GitHub Actions &rarr; Run harvest
+        </a>
+        <span class="run-note">Runs automatically every weekday at 7am. You can also trigger it manually any time from that page. You need to be logged in to GitHub to trigger a run.</span>
+      </div>
     </div>
   </div>
 </div>
@@ -173,8 +220,8 @@ function toggle(id) {
   chev.textContent = hidden ? '▶' : '▼';
 }
 
-function expandAll()  { document.querySelectorAll('[id^="body-"]').forEach(el => { el.classList.remove('hidden'); }); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▼'); }
-function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(el => { el.classList.add('hidden'); }); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▶'); }
+function expandAll()  { document.querySelectorAll('[id^="body-"]').forEach(el => el.classList.remove('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▼'); }
+function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(el => el.classList.add('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▶'); }
 
 let activeKw = null;
 let activeCat = null;
@@ -189,32 +236,25 @@ function filterCat(btn) {
 function filterKw(btn) {
   const kw = btn.textContent.replace(/\d+$/,'').trim().toLowerCase();
   if (activeKw === kw) { activeKw = null; btn.classList.remove('active'); }
-  else {
-    document.querySelectorAll('.kw-pill').forEach(b => b.classList.remove('active'));
-    activeKw = kw; btn.classList.add('active');
-  }
+  else { document.querySelectorAll('.kw-pill').forEach(b => b.classList.remove('active')); activeKw = kw; btn.classList.add('active'); }
   applyFilters();
 }
 
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase();
   const kwOnly = document.getElementById('kw-only').checked;
-
   document.querySelectorAll('.item').forEach(item => {
     const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
     const tags = Array.from(item.querySelectorAll('.tag.kw')).map(t => t.textContent.toLowerCase());
     const cats = Array.from(item.querySelectorAll('.cat-badge')).map(b => b.dataset.cat || '');
     const hasKw = tags.length > 0;
-    const matchesSearch = !q || title.includes(q);
-    const matchesKwOnly = !kwOnly || hasKw;
-    const matchesActiveKw = !activeKw || tags.some(t => t.includes(activeKw));
-    const matchesCat = !activeCat || cats.includes(activeCat);
-    item.classList.toggle('hidden', !matchesSearch || !matchesKwOnly || !matchesActiveKw || !matchesCat);
+    item.classList.toggle('hidden',
+      !((!q || title.includes(q)) && (!kwOnly || hasKw) &&
+        (!activeKw || tags.some(t => t.includes(activeKw))) &&
+        (!activeCat || cats.includes(activeCat))));
   });
-
   document.querySelectorAll('.group').forEach(grp => {
-    const visible = grp.querySelectorAll('.item:not(.hidden)').length;
-    grp.classList.toggle('hidden', visible === 0);
+    grp.classList.toggle('hidden', grp.querySelectorAll('.item:not(.hidden)').length === 0);
   });
 }
 </script>

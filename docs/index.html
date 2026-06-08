@@ -17,98 +17,46 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+     background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 
 .header{background:var(--surface);border-bottom:1px solid var(--border);
-         padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-         position:sticky;top:0;z-index:10}
-.header h1{font-size:16px;font-weight:700;letter-spacing:-.3px}
-.header-meta{font-size:12px;color:var(--muted)}
-.header-right{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+        padding:14px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+        position:sticky;top:0;z-index:10}
+.header h1{font-size:16px;font-weight:700;letter-spacing:-.3px;white-space:nowrap}
+.header-sub{font-size:12px;color:var(--muted)}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
 .badge-ok{background:#dcfce7;color:var(--ok)}
 .badge-err{background:var(--err-bg);color:var(--err)}
-.btn-run{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;
-          background:var(--accent);color:#fff;border:none;border-radius:6px;
-          font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;
-          transition:opacity .15s}
-.btn-run:hover{opacity:.88;text-decoration:none;color:#fff}
-.btn-run svg{flex-shrink:0}
+#last-updated{font-size:11px;color:var(--muted)}
 
-.toolbar{padding:14px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-          border-bottom:1px solid var(--border);background:var(--surface)}
+.btn-refresh{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;
+             background:var(--accent);color:#fff;border:none;border-radius:6px;
+             font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn-refresh:hover{opacity:.85}
+.btn-refresh:disabled{opacity:.5;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning .spin-icon{animation:spin .8s linear infinite;display:inline-block}
+
+.toolbar{padding:12px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+         border-bottom:1px solid var(--border);background:var(--surface)}
 .toolbar label{font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer}
 input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .search-box{padding:5px 10px;border:1px solid var(--border);border-radius:6px;
-             font-size:13px;outline:none;width:220px}
+            font-size:13px;outline:none;width:220px}
 .search-box:focus{border-color:var(--accent)}
 .btn-sm{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;
-          cursor:pointer;border:1px solid var(--border);background:var(--tag);color:var(--text)}
+        cursor:pointer;border:1px solid var(--border);background:var(--tag);color:var(--text)}
 .btn-sm:hover{background:var(--border)}
+#filter-status{font-size:11px;color:var(--muted);margin-left:auto}
 
-.content{padding:20px 24px;max-width:1100px;margin:0 auto}
-
-.error-panel{background:var(--err-bg);border:1px solid var(--err-border);
-              border-radius:8px;padding:14px 16px;margin-bottom:18px}
-.error-panel h3{font-size:13px;font-weight:600;color:var(--err);margin-bottom:8px}
-.error-panel .note{font-size:11px;font-weight:400;color:var(--muted)}
-.err-list{list-style:none;font-size:12px}
-.err-list li{padding:5px 0;border-bottom:1px solid var(--err-border)}
-.err-list li:last-child{border:none}
-.err-msg{color:var(--muted)}
-
-.kw-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.kw-pill{font-size:11px;padding:3px 9px;border-radius:12px;background:var(--kw-bg);
-           color:var(--kw-text);font-weight:500;cursor:pointer;border:none}
-.kw-pill span{opacity:.6;margin-left:3px}
-.kw-pill.active{outline:2px solid var(--ok)}
-
-.group{background:var(--surface);border:1px solid var(--border);
-        border-radius:8px;margin-bottom:10px;overflow:hidden}
-.group-header{display:flex;align-items:center;gap:8px;padding:10px 16px;
-               background:var(--bg);border-bottom:1px solid var(--border);
-               cursor:pointer;user-select:none}
-.group-title{font-size:13px;font-weight:600;flex:1}
-.count{font-size:11px;background:var(--tag);color:var(--muted);padding:1px 7px;border-radius:10px}
-.badge-kw{font-size:11px;background:var(--kw-bg);color:var(--kw-text);
-           padding:1px 7px;border-radius:10px;font-weight:500}
-.chev{font-size:10px;color:var(--muted)}
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.dot.ok{background:var(--ok)}.dot.error{background:var(--err)}
-.dot.warning{background:var(--warn)}.dot.unknown{background:var(--border)}
-
-.item{padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s}
-.item:last-child{border:none}
-.item:hover{background:var(--accent-light)}
-.item-title{font-size:13px;font-weight:500;line-height:1.4}
-.item-summary{font-size:12px;color:var(--muted);margin-top:3px;
-               overflow:hidden;display:-webkit-box;
-               -webkit-line-clamp:2;-webkit-box-orient:vertical}
-.item-meta{display:flex;gap:12px;margin-top:4px;font-size:11px;color:var(--muted)}
-.item-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
-.tag{font-size:10px;padding:1px 6px;border-radius:4px;background:var(--tag);color:var(--muted)}
-.tag.kw{background:var(--kw-bg);color:var(--kw-text);font-weight:500}
-
-.empty{padding:48px 24px;text-align:center;color:var(--muted)}
-.empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px}
-.empty-sub{font-size:13px;margin-bottom:20px}
-.empty-steps{display:inline-block;text-align:left;background:var(--surface);
-              border:1px solid var(--border);border-radius:8px;padding:20px 24px;
-              margin-bottom:24px;max-width:520px;width:100%}
-.empty-steps ol{padding-left:20px;font-size:13px;line-height:2}
-.empty-steps li strong{color:var(--text)}
-.empty-steps code{font-size:11px;background:var(--tag);padding:1px 5px;
-                   border-radius:3px;font-family:monospace}
-.run-cta{display:flex;flex-direction:column;align-items:center;gap:10px}
-.run-note{font-size:11px;color:var(--muted);max-width:400px}
-
-.topic-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);
-             background:var(--surface);padding:0 24px}
-.topic-tab{padding:9px 16px;font-size:12px;font-weight:500;cursor:pointer;
-            border:none;background:none;border-bottom:3px solid transparent;
-            color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.topic-tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);
+            background:var(--surface);padding:0 24px}
+.topic-tab{padding:9px 16px;font-size:12px;font-weight:500;cursor:pointer;border:none;
+           background:none;border-bottom:3px solid transparent;color:var(--muted);
+           white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
 .topic-tab:hover{color:var(--text)}
 .topic-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .topic-tab .tab-count{font-size:10px;padding:1px 5px;border-radius:8px;background:var(--tag)}
@@ -122,14 +70,60 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .topic-tab.tab-tax.active{color:var(--cat-tax-text);border-bottom-color:var(--cat-tax-text)}
 .topic-tab.tab-tax.active .tab-count{background:var(--cat-tax-bg);color:var(--cat-tax-text)}
 
-.cat-badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;border:1px solid;white-space:nowrap}
+.content{padding:20px 24px;max-width:1100px;margin:0 auto}
+
+.loading-panel{text-align:center;padding:60px 24px}
+.loading-panel p{color:var(--muted);font-size:13px;margin-top:8px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);
+         border-top-color:var(--accent);border-radius:50%;
+         animation:spin .8s linear infinite;margin:0 auto}
+.progress-list{list-style:none;display:inline-block;text-align:left;
+               margin-top:16px;font-size:12px;color:var(--muted);min-width:280px}
+.progress-list li{padding:2px 0}
+.progress-list li::before{margin-right:6px}
+.progress-list li.loading::before{content:"⏳"}
+.progress-list li.done{color:var(--ok)}
+.progress-list li.done::before{content:"✓"}
+.progress-list li.err{color:var(--err)}
+.progress-list li.err::before{content:"✗"}
+
+.error-panel{background:var(--err-bg);border:1px solid var(--err-border);
+             border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px}
+.error-panel summary{cursor:pointer;font-weight:600;color:var(--err);font-size:13px}
+.error-panel ul{margin-top:8px;padding-left:16px;color:var(--muted)}
+
+.group{background:var(--surface);border:1px solid var(--border);
+       border-radius:8px;margin-bottom:10px;overflow:hidden}
+.group-header{display:flex;align-items:center;gap:8px;padding:10px 16px;
+              background:var(--bg);border-bottom:1px solid var(--border);
+              cursor:pointer;user-select:none}
+.group-title{font-size:13px;font-weight:600;flex:1}
+.count{font-size:11px;background:var(--tag);color:var(--muted);padding:1px 7px;border-radius:10px}
+.badge-kw{font-size:11px;background:var(--kw-bg);color:var(--kw-text);
+          padding:1px 7px;border-radius:10px;font-weight:500}
+.chev{font-size:10px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.ok{background:var(--ok)}.dot.error{background:var(--err)}
+.dot.warning{background:var(--warn)}.dot.unknown{background:var(--border)}
+
+.item{padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s}
+.item:last-child{border:none}
+.item:hover{background:var(--accent-light)}
+.item-title{font-size:13px;font-weight:500;line-height:1.4}
+.item-summary{font-size:12px;color:var(--muted);margin-top:3px;
+              overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item-meta{display:flex;gap:8px;margin-top:5px;font-size:11px;color:var(--muted);
+           align-items:center;flex-wrap:wrap}
+.cat-badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;
+           border:1px solid;white-space:nowrap}
 .cat-energy{background:var(--cat-energy-bg);color:var(--cat-energy-text);border-color:var(--cat-energy-border)}
 .cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
 .cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
+.doc-type{font-size:10px;background:var(--tag);color:var(--muted);padding:1px 6px;border-radius:4px}
 
 .footer{padding:16px 24px;font-size:11px;color:var(--muted);
-         border-top:1px solid var(--border);margin-top:32px}
+        border-top:1px solid var(--border);margin-top:32px}
 
 .hidden{display:none!important}
 @media(max-width:600px){.content{padding:12px}.toolbar{flex-direction:column;align-items:start}}
@@ -140,19 +134,14 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 <div class="header">
   <div>
     <h1>FC-Harvest</h1>
-    <div class="header-meta">UK Parliament &amp; Government Monitor</div>
+    <div class="header-sub">UK Parliament &amp; Government Monitor</div>
   </div>
   <div class="header-right">
-    <span class="header-meta" id="last-run-meta">No harvests yet</span>
-    <span class="badge badge-ok" id="item-count-badge">0 items</span>
-    <a class="btn-run"
-       href="https://github.com/jack-founderscomms/FC-Harvest/actions/workflows/harvest.yml"
-       target="_blank" rel="noopener">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm1.6 4.8L6.4 8l3.2 3.2-.9.9L5.1 8.9a1.28 1.28 0 0 1 0-1.8l3.6-3.6.9.9z"/>
-      </svg>
-      Run harvest
-    </a>
+    <span id="last-updated"></span>
+    <span id="item-count" class="badge badge-ok hidden">0 items</span>
+    <button class="btn-refresh" id="refresh-btn" onclick="doRefresh()">
+      <span class="spin-icon">&#8635;</span> Refresh
+    </button>
   </div>
 </div>
 
@@ -161,70 +150,461 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
   <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
+  <span id="filter-status"></span>
 </div>
 
 <div class="topic-tabs">
   <button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button>
-  <button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count">0</span></button>
-  <button class="topic-tab tab-ai" data-cat="ai" onclick="filterCat(this)">AI<span class="tab-count">0</span></button>
-  <button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count">0</span></button>
-  <button class="topic-tab tab-tax" data-cat="tax" onclick="filterCat(this)">Tax<span class="tab-count">0</span></button>
+  <button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count" id="tc-energy">0</span></button>
+  <button class="topic-tab tab-ai"     data-cat="ai"     onclick="filterCat(this)">AI<span class="tab-count" id="tc-ai">0</span></button>
+  <button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count" id="tc-health">0</span></button>
+  <button class="topic-tab tab-tax"    data-cat="tax"    onclick="filterCat(this)">Tax<span class="tab-count" id="tc-tax">0</span></button>
 </div>
 
 <div class="content">
-  <div id="groups-container">
-    <div class="empty">
-      <div class="empty-title">No items yet</div>
-      <div class="empty-sub">Click <strong>Run harvest</strong> above to fetch the latest from GOV.UK and Parliament — it takes about 2–3 minutes.</div>
-
-      <div class="empty-steps">
-        <ol>
-          <li><strong>Click “Run harvest”</strong> (top-right) — opens GitHub Actions</li>
-          <li>On that page, click the <strong>“Run workflow”</strong> dropdown → <strong>Run workflow</strong></li>
-          <li>Wait ~2–3 min for it to complete</li>
-          <li><strong>Reload this page</strong> — real articles will appear</li>
-        </ol>
-      </div>
-
-      <div class="run-cta">
-        <a class="btn-run"
-           href="https://github.com/jack-founderscomms/FC-Harvest/actions/workflows/harvest.yml"
-           target="_blank" rel="noopener"
-           style="font-size:13px;padding:10px 20px">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right:2px">
-            <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 8.7l-5 3a.75.75 0 0 1-1.1-.65v-6a.75.75 0 0 1 1.1-.65l5 3a.75.75 0 0 1 0 1.3z"/>
-          </svg>
-          Open GitHub Actions &rarr; Run harvest
-        </a>
-        <span class="run-note">Runs automatically every weekday at 7am. You can also trigger it manually any time from that page. You need to be logged in to GitHub to trigger a run.</span>
-      </div>
-    </div>
+  <div id="loading-panel" class="loading-panel">
+    <div class="spinner"></div>
+    <p>Fetching from GOV.UK and Parliament APIs…</p>
+    <ul class="progress-list" id="progress-list"></ul>
   </div>
+  <details id="error-panel" class="error-panel hidden">
+    <summary id="error-summary">Some sources failed to load</summary>
+    <ul id="error-list"></ul>
+  </details>
+  <div id="groups-container" class="hidden"></div>
 </div>
 
 <div class="footer">
-  FC-Harvest &middot;
-  Sources: GOV.UK Search API, committees-api.parliament.uk, hansard-api.parliament.uk,
-  questions-statements-api.parliament.uk, whatson-api.parliament.uk &middot;
+  FC-Harvest · Live data from GOV.UK Search API, committees-api.parliament.uk,
+  hansard-api.parliament.uk, questions-statements-api.parliament.uk ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>
 
 <script>
-const KEYWORDS = [];
-const CAT_COUNTS = {"energy": 0, "ai": 0, "health": 0, "tax": 0};
+const KEYWORD_CATEGORIES = {
+  energy: ['energy','net zero','climate change','renewable energy','solar','offshore wind',
+    'onshore wind','wind power','nuclear','hydrogen','carbon','emissions','decarbonisation',
+    'decarbonization','electricity','national grid','ofgem','energy security','oil and gas',
+    'heat pump','energy efficiency','electric vehicle','ev charging','neso','green energy',
+    'fossil fuel','carbon capture','energy storage','battery storage','power station','grid',
+    'carbon budget','clean energy','green hydrogen','energy transition'],
+  ai: [' ai ','artificial intelligence','machine learning','large language model','llm',
+    'generative ai','foundation model','automation','algorithm','frontier ai','ai safety',
+    'aisi','responsible ai','autonomous systems','deep learning','neural network','compute',
+    'ai regulation','ai governance','digital infrastructure','semiconductor','cyber',
+    'cybersecurity','broadband','telecoms','quantum','innovation','r&d',
+    'research and development','online safety','gdpr','data protection','science'],
+  health: ['health','nhs','healthcare','social care','medicine','pharmaceutical','drug',
+    'vaccine','mental health','patient','hospital','primary care','public health',
+    'nice','cqc','life sciences','biotech','biotechnology','clinical trial','cancer',
+    'obesity','waiting list','elective care','mhra','health service','medical device',
+    'genomics','health data','integrated care','dhsc','adult social care'],
+  tax: ['taxation','hmrc','income tax','corporation tax','vat','fiscal','spending review',
+    'national insurance','capital gains','inheritance tax','stamp duty','business rates',
+    'windfall tax','tax relief','r&d tax credit','global minimum tax','pillar two','obr',
+    'autumn statement','spring statement','public spending','public finances',
+    'government borrowing','deficit','excise duty','customs','tariff'],
+};
 
-function toggle(id) {
-  const body = document.getElementById('body-' + id);
-  const chev = document.getElementById('chev-' + id);
-  const hidden = body.classList.toggle('hidden');
-  chev.textContent = hidden ? '▶' : '▼';
+const GOVUK_SOURCES = [
+  {id:'govuk_dsit',    label:'DSIT',            org:'department-for-science-innovation-and-technology'},
+  {id:'govuk_treasury',label:'HM Treasury',     org:'hm-treasury'},
+  {id:'govuk_cabinet', label:'Cabinet Office',  org:'cabinet-office'},
+  {id:'govuk_no10',    label:'No.10',            org:'prime-ministers-office-10-downing-street'},
+  {id:'govuk_dbt',     label:'DBT',              org:'department-for-business-and-trade'},
+  {id:'govuk_dhsc',    label:'DHSC',             org:'department-of-health-and-social-care'},
+  {id:'govuk_desnz',   label:'DESNZ',            org:'department-for-energy-security-and-net-zero'},
+  {id:'govuk_hmrc',    label:'HMRC',             org:'hm-revenue-customs'},
+];
+
+const COMMITTEE_SOURCES = [
+  {id:'cmt_sit',   label:'SIT Committee (Commons)',          searchName:'Science, Innovation and Technology', house:'Commons'},
+  {id:'cmt_st',    label:'Science & Technology (Lords)',     searchName:'Science and Technology',            house:'Lords'},
+  {id:'cmt_bt',    label:'Business & Trade (Commons)',       searchName:'Business and Trade',                house:'Commons'},
+  {id:'cmt_cd',    label:'Communications & Digital (Lords)', searchName:'Communications and Digital',        house:'Lords'},
+  {id:'cmt_ea',    label:'Economic Affairs (Lords)',         searchName:'Economic Affairs',                  house:'Lords'},
+  {id:'cmt_ir',    label:'Industry & Regulators (Lords)',    searchName:'Industry and Regulators',           house:'Lords'},
+  {id:'cmt_treas', label:'Treasury Committee (Commons)',     searchName:'Treasury',                          house:'Commons'},
+];
+
+const WRITTEN_SOURCES = [
+  {id:'written_commons', label:'Written Statements (Commons)', house:'Commons'},
+  {id:'written_lords',   label:'Written Statements (Lords)',   house:'Lords'},
+];
+
+const HANSARD_SOURCES = [
+  {id:'hansard_commons', label:'Hansard (Commons)', house:'Commons'},
+  {id:'hansard_lords',   label:'Hansard (Lords)',   house:'Lords'},
+];
+
+const ALL_SOURCES = [...GOVUK_SOURCES, ...COMMITTEE_SOURCES, ...WRITTEN_SOURCES, ...HANSARD_SOURCES];
+const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
+const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
+                   'speech','written_statement','government_response','guidance'];
+const CACHE_KEY = 'fc-harvest-v5';
+const CACHE_TTL = 6 * 60 * 60 * 1000;
+
+let allItems = [];
+let sourceErrors = {};
+let activeCat = null;
+let committeeLists = {};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const cached = loadCache();
+  if (cached) {
+    allItems = cached.items || [];
+    sourceErrors = cached.errors || {};
+    renderAll();
+    const ago = Math.round((Date.now() - cached.ts) / 60000);
+    setStatus(ago < 2 ? 'Updated just now' : `Updated ${ago} min ago · click Refresh`);
+  } else {
+    fetchAll();
+  }
+});
+
+function doRefresh() { fetchAll(); }
+
+async function fetchAll() {
+  setRefreshing(true);
+  show('loading-panel'); hide('groups-container'); hide('error-panel'); hide('item-count');
+  allItems = []; sourceErrors = {}; committeeLists = {};
+
+  const prog = document.getElementById('progress-list');
+  prog.innerHTML = '';
+
+  function mkProg(id, label) {
+    const li = document.createElement('li');
+    li.id = 'p-' + id; li.className = 'loading'; li.textContent = label;
+    prog.appendChild(li);
+  }
+  function doneProg(id) { setProg(id, 'done'); }
+  function errProg(id, msg) { setProg(id, 'err', msg); }
+  function setProg(id, cls, suffix) {
+    const el = document.getElementById('p-' + id);
+    if (!el) return;
+    el.className = cls;
+    if (suffix) el.textContent += ' — ' + suffix;
+  }
+
+  mkProg('cmt-lists', 'Looking up committee IDs…');
+  try {
+    const [cd, ld] = await Promise.all([
+      fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Commons&currentCommitteesOnly=true'),
+      fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Lords&currentCommitteesOnly=true'),
+    ]);
+    committeeLists.Commons = toArr(cd);
+    committeeLists.Lords   = toArr(ld);
+    doneProg('cmt-lists');
+  } catch (e) {
+    committeeLists.Commons = []; committeeLists.Lords = [];
+    errProg('cmt-lists', e.message);
+  }
+
+  const tasks = [];
+  for (const src of GOVUK_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchGovUK(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of COMMITTEE_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchCommittee(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of WRITTEN_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchWritten(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of HANSARD_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchHansard(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+
+  await Promise.allSettled(tasks);
+  saveCache({ items: allItems, errors: sourceErrors, ts: Date.now() });
+  hide('loading-panel');
+  renderAll();
+  setRefreshing(false);
+  setStatus('Updated just now');
 }
 
-function expandAll()  { document.querySelectorAll('[id^="body-"]').forEach(el => el.classList.remove('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▼'); }
-function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(el => el.classList.add('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(el => el.textContent='▶'); }
+function pushItems(items) {
+  for (const item of items) {
+    item.matched_cats = matchCats(item.title, item.summary || '');
+    allItems.push(item);
+  }
+}
 
-let activeKw = null;
-let activeCat = null;
+async function fetchGovUK(src) {
+  const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count:'30'});
+  DOC_TYPES.forEach(t => p.append('filter_content_store_document_type[]', t));
+  const data = await fetchJSON('https://www.gov.uk/api/search.json?' + p);
+  return (data.results || []).map(r => ({
+    item_id: r.link,
+    title: (r.title || '').trim(),
+    url: r.link ? (r.link.startsWith('/') ? 'https://www.gov.uk' + r.link : r.link) : '',
+    published_at: r.public_timestamp || '',
+    summary: (r.description || '').trim(),
+    doc_type: r.content_store_document_type || '',
+    source_id: src.id, source_label: src.label,
+  })).filter(i => i.title);
+}
+
+async function fetchCommittee(src) {
+  const list = committeeLists[src.house] || [];
+  const nl = src.searchName.toLowerCase();
+  let cmt = list.find(c => (c.name||c.Name||'').toLowerCase().includes(nl));
+  if (!cmt) {
+    const words = new Set(nl.split(/\s+/).filter(w => w.length > 3));
+    let best, bestScore = 0;
+    for (const c of list) {
+      const cn = (c.name||c.Name||'').toLowerCase();
+      const score = [...words].filter(w => cn.includes(w)).length;
+      if (score > bestScore) { bestScore = score; best = c; }
+    }
+    if (bestScore >= 2) cmt = best;
+  }
+  if (!cmt) throw new Error('Not found: ' + src.searchName);
+
+  const id = cmt.id || cmt.Id;
+  const items = [];
+
+  try {
+    const nd = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/NewsArticles?take=25`);
+    for (const r of (toArr(nd) || [])) {
+      const t = (r.title||r.Title||'').trim();
+      if (!t) continue;
+      const aid = r.id||r.Id||'';
+      items.push({
+        item_id: `cmt_news_${id}_${aid}`,
+        title: t,
+        url: r.url||r.Url||`https://committees.parliament.uk/committee/${id}/news/${aid}`,
+        published_at: r.publishedDate||r.PublishedDate||'',
+        summary: (r.summary||r.Summary||'').slice(0,500),
+        doc_type: 'committee news',
+        source_id: src.id, source_label: src.label,
+      });
+    }
+  } catch(_) {}
+
+  try {
+    const iq = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/Inquiries?take=15`);
+    for (const r of (toArr(iq) || [])) {
+      const t = (r.title||r.Title||r.inquiryTitle||'').trim();
+      if (!t) continue;
+      const iid = r.id||r.Id||r.inquiryId||'';
+      items.push({
+        item_id: `cmt_inq_${id}_${iid}`,
+        title: t,
+        url: r.url||r.Url||`https://committees.parliament.uk/committee/${id}/inquiries`,
+        published_at: r.dateCreated||r.DateCreated||r.startDate||'',
+        summary: (r.description||r.Description||r.summary||'').slice(0,500),
+        doc_type: 'inquiry',
+        source_id: src.id, source_label: src.label,
+      });
+    }
+  } catch(_) {}
+
+  return items;
+}
+
+async function fetchWritten(src) {
+  const data = await fetchJSON(
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(30)}&take=40&skip=0`
+  );
+  const results = toArr(data) || toArr(data && data.results) || [];
+  return results.map(r => {
+    const id = r.id||r.uin||r.UIN||'';
+    const body = r.answeringBodyName||r.AnsweringBodyName||r.department||'';
+    let title = (r.title||r.Title||'Written Statement').trim();
+    if (body) title += ' — ' + body;
+    const raw = r.text||r.Text||r.answerText||'';
+    return {
+      item_id: `ws_${src.house}_${id}`,
+      title,
+      url: id ? `https://questions-statements.parliament.uk/written-statements/detail/${id}` : '',
+      published_at: r.dateMade||r.DateMade||r.date||'',
+      summary: raw.replace(/<[^>]+>/g,' ').trim().slice(0,500),
+      doc_type: 'written statement',
+      source_id: src.id, source_label: src.label,
+    };
+  }).filter(i => i.title && i.item_id !== `ws_${src.house}_`);
+}
+
+async function fetchHansard(src) {
+  const h = src.house;
+  const since = daysAgo(14);
+  const today = new Date().toISOString().slice(0,10);
+
+  try {
+    const data = await fetchJSON(
+      `https://hansard-api.parliament.uk/overview/${h.toLowerCase()}/sittings.json?startDate=${since}&endDate=${today}`
+    );
+    const sittings = toArr(data) || (data && data.sittings) || [];
+    const items = [];
+    for (const sitting of sittings) {
+      const sd = (sitting.date||sitting.SittingDate||'').slice(0,10);
+      for (const sec of (sitting.sections||sitting.debateSections||[])) {
+        const t = (sec.title||sec.Title||'').trim();
+        if (!t || t.length < 4) continue;
+        const sid = sec.id||sec.externalId||'';
+        items.push({
+          item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
+          title: t,
+          url: sid
+            ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
+            : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
+          published_at: sd,
+          summary: sec.summary||'',
+          doc_type: 'hansard',
+          source_id: src.id, source_label: src.label,
+        });
+      }
+    }
+    if (items.length) return items;
+  } catch(_) {}
+
+  const data = await fetchJSON(
+    `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
+  );
+  const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
+  return results.map(r => {
+    const t = (r.title||r.debateTitle||'').trim();
+    const sd = (r.sittingDate||r.date||'').slice(0,10);
+    const sid = r.id||r.externalId||'';
+    return {
+      item_id: `hansard_${h}_${sd}_${sid}`,
+      title: t,
+      url: sid
+        ? `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}/debates/${sid}`
+        : `https://hansard.parliament.uk/${h.toLowerCase()}/${sd}`,
+      published_at: sd,
+      summary: r.summary||'',
+      doc_type: 'hansard',
+      source_id: src.id, source_label: src.label,
+    };
+  }).filter(i => i.title);
+}
+
+function matchCats(title, summary) {
+  const text = (' ' + (title+' '+summary).toLowerCase() + ' ');
+  const cats = [];
+  for (const [cat, kws] of Object.entries(KEYWORD_CATEGORIES)) {
+    if (kws.some(kw => text.includes(kw.toLowerCase()))) cats.push(cat);
+  }
+  if (!cats.includes('tax') && /\btax\b/.test(text)) cats.push('tax');
+  if (!cats.includes('ai') && /\bai\b/i.test(title+' '+summary)) cats.push('ai');
+  return cats;
+}
+
+function renderAll() {
+  const container = document.getElementById('groups-container');
+  container.innerHTML = '';
+  show('groups-container');
+
+  const catCounts = {energy:0, ai:0, health:0, tax:0};
+  for (const item of allItems)
+    for (const c of (item.matched_cats||[]))
+      if (c in catCounts) catCounts[c]++;
+  for (const [c, n] of Object.entries(catCounts)) {
+    const el = document.getElementById('tc-' + c);
+    if (el) el.textContent = n;
+  }
+
+  const badge = document.getElementById('item-count');
+  badge.textContent = allItems.length + ' items';
+  show('item-count');
+
+  const errKeys = Object.keys(sourceErrors);
+  if (errKeys.length) {
+    document.getElementById('error-summary').textContent =
+      errKeys.length + ' source' + (errKeys.length > 1 ? 's' : '') + ' failed to load';
+    document.getElementById('error-list').innerHTML =
+      errKeys.map(k => `<li><strong>${esc(k)}</strong>: ${esc(sourceErrors[k])}</li>`).join('');
+    show('error-panel');
+  }
+
+  const grouped = {};
+  for (const item of allItems)
+    (grouped[item.source_id] = grouped[item.source_id] || []).push(item);
+
+  for (const sid of SOURCE_ORDER) {
+    if (!grouped[sid]) continue;
+    const items = grouped[sid];
+    const src = ALL_SOURCES.find(s => s.id === sid);
+    const label = src ? src.label : sid;
+    const kwCount = items.filter(i => i.matched_cats && i.matched_cats.length).length;
+    const dotCls = sourceErrors[sid] ? 'error' : 'ok';
+    const kwBadge = kwCount ? `<span class="badge-kw">${kwCount} matched</span>` : '';
+
+    const grp = document.createElement('div');
+    grp.className = 'group'; grp.id = 'grp-' + sid;
+    grp.innerHTML = `
+      <div class="group-header" onclick="toggleGrp('${sid}')">
+        <span class="dot ${dotCls}"></span>
+        <span class="group-title">${esc(label)}</span>
+        <span class="count">${items.length}</span>
+        ${kwBadge}
+        <span class="chev" id="chev-${sid}">▼</span>
+      </div>
+      <div id="body-${sid}"></div>`;
+
+    const body = grp.querySelector('#body-' + sid);
+    for (const item of items) body.appendChild(makeItemEl(item));
+    container.appendChild(grp);
+  }
+
+  applyFilters();
+}
+
+function makeItemEl(item) {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.dataset.cats = (item.matched_cats || []).join(',');
+  div.dataset.kw   = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
+
+  const titleHtml = item.url
+    ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
+    : esc(item.title);
+  const summaryHtml = item.summary
+    ? `<div class="item-summary">${esc(item.summary)}</div>` : '';
+  const date = (item.published_at || '').slice(0, 10);
+  const catBadges = (item.matched_cats || []).map(c =>
+    `<span class="cat-badge cat-${c}" data-cat="${c}">${c === 'ai' ? 'AI' : cap(c)}</span>`
+  ).join('');
+  const docBadge = item.doc_type ? `<span class="doc-type">${esc(item.doc_type)}</span>` : '';
+
+  div.innerHTML = `
+    <div class="item-title">${titleHtml}</div>
+    ${summaryHtml}
+    <div class="item-meta">
+      ${date ? `<span>${esc(date)}</span>` : ''}
+      ${catBadges}${docBadge}
+    </div>`;
+  return div;
+}
+
+function applyFilters() {
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly = document.getElementById('kw-only').checked;
+  let shown = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
+    const cats = (item.dataset.cats || '').split(',').filter(Boolean);
+    const ok = (!q || title.includes(q))
+            && (!kwOnly || item.dataset.kw === '1')
+            && (!activeCat || cats.includes(activeCat));
+    item.classList.toggle('hidden', !ok);
+    if (ok) shown++;
+  });
+  document.querySelectorAll('.group').forEach(grp => {
+    grp.classList.toggle('hidden', grp.querySelectorAll('.item:not(.hidden)').length === 0);
+  });
+  const fs = document.getElementById('filter-status');
+  if (fs) fs.textContent = (q || kwOnly || activeCat) ? shown + ' results' : '';
+}
 
 function filterCat(btn) {
   document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
@@ -233,29 +613,51 @@ function filterCat(btn) {
   applyFilters();
 }
 
-function filterKw(btn) {
-  const kw = btn.textContent.replace(/\d+$/,'').trim().toLowerCase();
-  if (activeKw === kw) { activeKw = null; btn.classList.remove('active'); }
-  else { document.querySelectorAll('.kw-pill').forEach(b => b.classList.remove('active')); activeKw = kw; btn.classList.add('active'); }
-  applyFilters();
+function expandAll()   { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.remove('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▼'); }
+function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.add('hidden'));    document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▶'); }
+function toggleGrp(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  if (!body) return;
+  const h = body.classList.toggle('hidden');
+  chev.textContent = h ? '▶' : '▼';
 }
 
-function applyFilters() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const kwOnly = document.getElementById('kw-only').checked;
-  document.querySelectorAll('.item').forEach(item => {
-    const title = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
-    const tags = Array.from(item.querySelectorAll('.tag.kw')).map(t => t.textContent.toLowerCase());
-    const cats = Array.from(item.querySelectorAll('.cat-badge')).map(b => b.dataset.cat || '');
-    const hasKw = tags.length > 0;
-    item.classList.toggle('hidden',
-      !((!q || title.includes(q)) && (!kwOnly || hasKw) &&
-        (!activeKw || tags.some(t => t.includes(activeKw))) &&
-        (!activeCat || cats.includes(activeCat))));
-  });
-  document.querySelectorAll('.group').forEach(grp => {
-    grp.classList.toggle('hidden', grp.querySelectorAll('.item:not(.hidden)').length === 0);
-  });
+function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch(_){} }
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.ts || Date.now() - d.ts > CACHE_TTL) return null;
+    return d;
+  } catch(_) { return null; }
+}
+
+async function fetchJSON(url) {
+  const r = await fetch(url, {headers:{Accept:'application/json'}});
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+function toArr(d) {
+  if (Array.isArray(d)) return d;
+  if (d && typeof d === 'object') return d.items || d.value || d.results || d.searchResults || null;
+  return null;
+}
+
+function daysAgo(n) { return new Date(Date.now() - n*86400000).toISOString().slice(0,10); }
+function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+function shortErr(e) { const m = e.message || ''; return m.length > 40 ? m.slice(0,40)+'…' : m; }
+function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
+function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
+function setStatus(t) { const el = document.getElementById('last-updated'); if (el) el.textContent = t; }
+function setRefreshing(on) {
+  const btn = document.getElementById('refresh-btn');
+  if (!btn) return;
+  btn.disabled = on;
+  btn.classList.toggle('spinning', on);
 }
 </script>
 </body>

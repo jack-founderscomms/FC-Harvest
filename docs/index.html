@@ -181,6 +181,88 @@ input[type=date]:focus{border-color:var(--accent)}
 
 .doc-type{font-size:10px;background:var(--tag);color:var(--muted);padding:1px 6px;border-radius:4px}
 
+/* ── Add-to-calendar button & dropdown ── */
+.cal-wrap{position:relative;display:inline-flex}
+.btn-cal{font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);
+         background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;
+         transition:all .1s;display:inline-flex;align-items:center;gap:3px}
+.btn-cal:hover{border-color:var(--accent);color:var(--accent)}
+.cal-drop{position:absolute;bottom:calc(100% + 4px);left:0;background:var(--surface);
+          border:1px solid var(--border);border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.1);
+          min-width:170px;z-index:100;display:none;overflow:hidden}
+.cal-drop.open{display:block}
+.cal-drop a,.cal-drop button{display:flex;align-items:center;gap:7px;width:100%;padding:8px 12px;
+  font-size:12px;border:none;background:none;color:var(--text);cursor:pointer;
+  text-decoration:none;text-align:left}
+.cal-drop a:hover,.cal-drop button:hover{background:var(--accent-light);color:var(--accent)}
+.cal-drop .drop-sep{height:1px;background:var(--border);margin:2px 0}
+
+/* ── Item highlight (keyword match) ── */
+.item.kw-match{border-left:3px solid var(--accent)}
+.item.kw-match .item-title a{color:var(--accent)}
+
+/* ── Calendar view ── */
+.view-toggle{display:flex;gap:4px;margin-left:auto}
+.view-btn{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;
+          border:1px solid var(--border);background:var(--tag);color:var(--muted);
+          display:inline-flex;align-items:center;gap:4px}
+.view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.cal-view{padding:16px 24px;max-width:1100px;margin:0 auto}
+.cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.cal-nav h2{font-size:15px;font-weight:700;flex:1}
+.cal-nav button{padding:4px 11px;border-radius:6px;border:1px solid var(--border);
+                background:var(--surface);cursor:pointer;font-size:12px}
+.cal-nav button:hover{background:var(--tag)}
+.btn-ics-export{padding:5px 12px;border-radius:6px;border:1px solid var(--accent);
+                background:var(--accent-light);color:var(--accent);font-size:12px;
+                font-weight:600;cursor:pointer;white-space:nowrap}
+.btn-ics-export:hover{background:var(--accent);color:#fff}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);
+          border-radius:8px;overflow:hidden;background:var(--surface)}
+.cal-day-header{padding:6px 0;text-align:center;font-size:11px;font-weight:700;
+                color:var(--muted);background:var(--bg);border-bottom:1px solid var(--border);
+                text-transform:uppercase;letter-spacing:.04em}
+.cal-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+          min-height:90px;padding:4px;vertical-align:top;position:relative;cursor:pointer;
+          transition:background .1s}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:var(--accent-light)}
+.cal-cell.other-month{background:#f9fafb;opacity:.55}
+.cal-cell.today .cal-date{background:var(--accent);color:#fff;border-radius:50%;
+                           width:22px;height:22px;display:flex;align-items:center;
+                           justify-content:center;font-weight:700}
+.cal-date{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:3px;
+          width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.cal-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin:1px;
+         flex-shrink:0;cursor:pointer}
+.cal-dots{display:flex;flex-wrap:wrap;gap:1px;margin-top:2px}
+.cal-chips{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.cal-chip{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;
+          overflow:hidden;text-overflow:ellipsis;max-width:100%;border:none;
+          cursor:pointer;text-align:left;line-height:1.3}
+.cal-chip.kw{font-weight:700;border-left:2px solid #1d4ed8}
+.cal-more{font-size:10px;color:var(--muted);padding:1px 4px;cursor:pointer}
+.cal-more:hover{color:var(--accent)}
+
+/* ── Day detail panel ── */
+.day-panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+           padding:16px;margin-top:12px;position:relative}
+.day-panel h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.day-panel .close-day{position:absolute;top:12px;right:12px;background:none;border:none;
+                       cursor:pointer;font-size:16px;color:var(--muted)}
+.day-panel .close-day:hover{color:var(--text)}
+.day-item{padding:10px 12px;border-radius:6px;border:1px solid var(--border);
+          margin-bottom:8px;transition:background .1s}
+.day-item.kw-match{border-left:3px solid var(--accent);background:var(--accent-light)}
+.day-item:last-child{margin-bottom:0}
+.day-item-title{font-size:13px;font-weight:500}
+.day-item-title a{color:var(--text);text-decoration:none}
+.day-item-title a:hover{color:var(--accent);text-decoration:underline}
+.day-item-meta{display:flex;gap:8px;margin-top:5px;font-size:11px;color:var(--muted);
+               align-items:center;flex-wrap:wrap}
+
 .footer{padding:16px 24px;font-size:11px;color:var(--muted);
         border-top:1px solid var(--border);margin-top:32px}
 
@@ -209,7 +291,16 @@ input[type=date]:focus{border-color:var(--accent)}
   <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
+  <button class="btn-ics-export" onclick="exportICS()" title="Download matched events as .ics calendar file">📅 Export .ics</button>
   <span id="filter-status"></span>
+  <div class="view-toggle">
+    <button class="view-btn active" id="view-list" onclick="setView('list')" title="List view">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M2 4h12v1.5H2V4zm0 3.5h12V9H2V7.5zm0 3.5h12v1.5H2V11z"/></svg> List
+    </button>
+    <button class="view-btn" id="view-cal" onclick="setView('cal')" title="Calendar view">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg> Calendar
+    </button>
+  </div>
 </div>
 
 <!-- Source group filter bar -->
@@ -305,6 +396,17 @@ input[type=date]:focus{border-color:var(--accent)}
     <ul id="error-list"></ul>
   </details>
   <div id="groups-container" class="hidden"></div>
+  <div id="cal-container" class="hidden cal-view">
+    <div class="cal-nav">
+      <button onclick="calPrev()">&#8592;</button>
+      <h2 id="cal-title"></h2>
+      <button onclick="calNext()">&#8594;</button>
+      <button class="btn-sm" onclick="calToday()">Today</button>
+      <button class="btn-ics-export" onclick="exportICS()">📅 Export visible .ics</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div id="day-panel" class="hidden"></div>
+  </div>
 </div>
 
 <div class="footer">
@@ -892,7 +994,15 @@ function matchCats(title, summary) {
 function renderAll() {
   const container = document.getElementById('groups-container');
   container.innerHTML = '';
-  show('groups-container');
+  if (currentView === 'cal') {
+    hide('groups-container');
+    show('cal-container');
+    const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
+    renderCalendar();
+  } else {
+    show('groups-container');
+    hide('cal-container');
+  }
 
   // Tab counts
   const catCounts = {energy:0, ai:0, health:0, tax:0};
@@ -974,12 +1084,15 @@ function makeItemEl(item) {
   ).join('');
   const docBadge = item.doc_type ? `<span class="doc-type">${esc(item.doc_type)}</span>` : '';
 
+  if (item.matched_cats && item.matched_cats.length) div.classList.add('kw-match');
+
   div.innerHTML = `
     <div class="item-title">${titleHtml}</div>
     ${summaryHtml}
     <div class="item-meta">
       ${date ? `<span>${esc(date)}</span>` : ''}
       ${catBadges}${docBadge}
+      ${calDropHtml(item)}
     </div>`;
   return div;
 }
@@ -987,6 +1100,7 @@ function makeItemEl(item) {
 // ── Filter / expand ───────────────────────────────────────────────────────────
 
 function applyFilters() {
+  if (currentView === 'cal') { renderCalendar(); return; }
   const q        = (document.getElementById('search').value || '').toLowerCase();
   const kwOnly   = document.getElementById('kw-only').checked;
   const advFrom  = document.getElementById('adv-from')?.value || '';
@@ -1128,6 +1242,282 @@ function clearAdv() {
 
 function expandAll()   { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.remove('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▼'); }
 function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.add('hidden'));    document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▶'); }
+
+// ── View toggle (list / calendar) ────────────────────────────────────────────
+
+let currentView = 'list';
+let calYear, calMonth;
+
+function setView(mode) {
+  currentView = mode;
+  document.getElementById('view-list').classList.toggle('active', mode === 'list');
+  document.getElementById('view-cal').classList.toggle('active', mode === 'cal');
+  if (mode === 'list') {
+    show('groups-container');
+    hide('cal-container');
+  } else {
+    hide('groups-container');
+    show('cal-container');
+    if (!calYear) { const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth(); }
+    renderCalendar();
+  }
+}
+
+// ── Calendar renderer ─────────────────────────────────────────────────────────
+
+const SRC_COLORS = {
+  govuk:'#1d4ed8', bills:'#0891b2', committee:'#7c3aed',
+  votes:'#d97706', oraq:'#059669', written:'#9d174d',
+  hansard:'#374151', now:'#dc2626',
+};
+
+function calPrev()  { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
+function calNext()  { calMonth++; if (calMonth > 11) { calMonth = 0;  calYear++; } renderCalendar(); }
+function calToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); renderCalendar(); }
+
+function getVisibleItems() {
+  // Return items that pass current filters (source group, topic, search)
+  const q      = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly = document.getElementById('kw-only').checked;
+  return allItems.filter(item => {
+    if (activeSrcGroup && srcGroup(item.source_id || '') !== activeSrcGroup) return false;
+    if (activeCat && !(item.matched_cats || []).includes(activeCat)) return false;
+    if (kwOnly && !(item.matched_cats && item.matched_cats.length)) return false;
+    if (q && !(item.title || '').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderCalendar() {
+  const monthNames = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+  document.getElementById('cal-title').textContent = `${monthNames[calMonth]} ${calYear}`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  // Day headers
+  for (const d of ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) {
+    const h = document.createElement('div');
+    h.className = 'cal-day-header'; h.textContent = d;
+    grid.appendChild(h);
+  }
+
+  // Build date→items map from visible items
+  const byDate = {};
+  for (const item of getVisibleItems()) {
+    const ds = (item.published_at || '').slice(0, 10);
+    if (!ds) continue;
+    if (!byDate[ds]) byDate[ds] = [];
+    byDate[ds].push(item);
+  }
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay  = new Date(calYear, calMonth + 1, 0);
+  // Start from Monday of the week containing 1st
+  let startMon = new Date(firstDay);
+  const dow = (firstDay.getDay() + 6) % 7; // 0=Mon
+  startMon.setDate(startMon.getDate() - dow);
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(startMon);
+    d.setDate(startMon.getDate() + i);
+    const ds = d.toISOString().slice(0, 10);
+    const inMonth = d.getMonth() === calMonth;
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + (inMonth ? '' : ' other-month') + (ds === todayStr ? ' today' : '');
+    cell.dataset.date = ds;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'cal-date';
+    dateEl.textContent = d.getDate();
+    cell.appendChild(dateEl);
+
+    const items = byDate[ds] || [];
+    if (items.length) {
+      const chips = document.createElement('div');
+      chips.className = 'cal-chips';
+      const show3 = items.slice(0, 3);
+      const rest  = items.slice(3);
+      for (const item of show3) {
+        const chip = document.createElement('button');
+        chip.className = 'cal-chip' + ((item.matched_cats && item.matched_cats.length) ? ' kw' : '');
+        const grp = srcGroup(item.source_id || '');
+        chip.style.background = (SRC_COLORS[grp] || '#94a3b8') + '1a';
+        chip.style.color = SRC_COLORS[grp] || '#374151';
+        chip.textContent = item.title;
+        chip.title = item.title;
+        chip.onclick = (e) => { e.stopPropagation(); openDayPanel(ds, items); };
+        chips.appendChild(chip);
+      }
+      if (rest.length) {
+        const more = document.createElement('div');
+        more.className = 'cal-more';
+        more.textContent = `+${rest.length} more`;
+        more.onclick = (e) => { e.stopPropagation(); openDayPanel(ds, items); };
+        chips.appendChild(more);
+      }
+      cell.appendChild(chips);
+    }
+
+    cell.onclick = () => openDayPanel(ds, items);
+    grid.appendChild(cell);
+  }
+
+  hide('day-panel');
+}
+
+function openDayPanel(ds, items) {
+  const panel = document.getElementById('day-panel');
+  if (!items.length) { hide('day-panel'); return; }
+
+  const fmt = new Date(ds + 'T12:00:00').toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  let html = `<h3>${fmt} <span style="font-size:12px;color:var(--muted);font-weight:400">(${items.length} item${items.length > 1?'s':''})</span></h3>
+  <button class="close-day" onclick="hide('day-panel')" title="Close">✕</button>`;
+
+  for (const item of items) {
+    const isKw = item.matched_cats && item.matched_cats.length;
+    const grp  = srcGroup(item.source_id || '');
+    const color = SRC_COLORS[grp] || '#374151';
+    const catBadges = (item.matched_cats || []).map(c =>
+      `<span class="cat-badge cat-${c}">${c === 'ai' ? 'AI' : cap(c)}</span>`).join('');
+    const titleHtml = item.url
+      ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
+      : esc(item.title);
+    html += `<div class="day-item${isKw ? ' kw-match' : ''}" style="${isKw ? `border-left-color:${color}` : ''}">
+      <div class="day-item-title">${titleHtml}</div>
+      ${item.summary ? `<div style="font-size:12px;color:var(--muted);margin-top:3px">${esc(item.summary)}</div>` : ''}
+      <div class="day-item-meta">
+        <span style="background:${color}1a;color:${color};padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600">${esc(item.source_label || grp)}</span>
+        ${catBadges}
+        ${calDropHtml(item)}
+      </div>
+    </div>`;
+  }
+
+  panel.innerHTML = html;
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── Add-to-calendar ────────────────────────────────────────────────────────────
+
+function calDropHtml(item) {
+  const id = (item.item_id || '').replace(/[^a-z0-9_-]/gi, '');
+  const gcal = googleCalUrl(item);
+  const oc   = outlookCalUrl(item);
+  return `<div class="cal-wrap">
+    <button class="btn-cal" onclick="toggleCalDrop(event,'drop-${id}')">📅 Add to calendar ▾</button>
+    <div class="cal-drop" id="drop-${id}">
+      <a href="${gcal}" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285f4"><path d="M19.5 3h-2V1h-2v2h-7V1h-2v2h-2C2.67 3 2 3.67 2 4.5v15C2 20.33 2.67 21 3.5 21h17c.83 0 1.5-.67 1.5-1.5v-15C22 3.67 21.33 3 20.5 3zM20 19H4V8h16v11z"/></svg>
+        Google Calendar
+      </a>
+      <a href="${oc}" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#0078d4"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
+        Outlook / Office 365
+      </a>
+      <div class="drop-sep"></div>
+      <button onclick="downloadSingleICS(${JSON.stringify(item).replace(/</g,'\\u003c')})">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.1a.5.5 0 0 1 1 0v2.1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V10.4a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+        Download .ics
+      </button>
+    </div>
+  </div>`;
+}
+
+function toggleCalDrop(e, id) {
+  e.stopPropagation();
+  // Close all others first
+  document.querySelectorAll('.cal-drop.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+  document.getElementById(id)?.classList.toggle('open');
+}
+document.addEventListener('click', () => document.querySelectorAll('.cal-drop.open').forEach(d => d.classList.remove('open')));
+
+function itemDate(item) {
+  const ds = (item.published_at || '').slice(0, 10);
+  return ds.replace(/-/g, '') || '';
+}
+
+function googleCalUrl(item) {
+  const dt = itemDate(item);
+  const start = dt || new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const end   = start; // all-day
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: item.title || '',
+    dates: `${start}/${start}`,
+    details: (item.summary || '') + (item.url ? '\n\n' + item.url : ''),
+    sprop: `website:${item.url || ''}`,
+  });
+  return `https://calendar.google.com/calendar/render?${p}`;
+}
+
+function outlookCalUrl(item) {
+  const dt = (item.published_at || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
+  const p = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: item.title || '',
+    startdt: dt,
+    enddt: dt,
+    body: (item.summary || '') + (item.url ? '\n\n' + item.url : ''),
+  });
+  return `https://outlook.office.com/calendar/deeplink/compose?${p}`;
+}
+
+function makeICSEvent(item) {
+  const uid = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-harvest';
+  const dt  = itemDate(item);
+  const dtStamp = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
+  const title   = (item.title || '').replace(/\n/g,' ');
+  const desc    = ((item.summary || '') + (item.url ? '\n\n' + item.url : '')).replace(/\n/g,'\\n');
+  return [
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtStamp}`,
+    dt ? `DTSTART;VALUE=DATE:${dt}` : `DTSTART;VALUE=DATE:${new Date().toISOString().slice(0,10).replace(/-/g,'')}`,
+    dt ? `DTEND;VALUE=DATE:${dt}`   : '',
+    `SUMMARY:${title}`,
+    desc ? `DESCRIPTION:${desc}` : '',
+    item.url ? `URL:${item.url}` : '',
+    'END:VEVENT',
+  ].filter(Boolean).join('\r\n');
+}
+
+function buildICS(items) {
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//FC-Harvest//Parliamentary Monitor//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    ...items.map(makeICSEvent),
+    'END:VCALENDAR',
+  ].join('\r\n');
+}
+
+function downloadICSBlob(content, filename) {
+  const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function downloadSingleICS(item) {
+  downloadICSBlob(buildICS([item]), `${(item.title||'event').slice(0,40).replace(/[^a-z0-9]/gi,'-')}.ics`);
+}
+
+function exportICS() {
+  const items = getVisibleItems().filter(i => i.published_at);
+  if (!items.length) { alert('No items with dates to export.'); return; }
+  downloadICSBlob(buildICS(items), `fc-harvest-${new Date().toISOString().slice(0,10)}.ics`);
+}
 function toggleGrp(id) {
   const body = document.getElementById('body-' + id);
   const chev = document.getElementById('chev-' + id);

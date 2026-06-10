@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import db as database
 from .filters import match_keywords
+from .emailer import send_digest
 from .fetchers import (
     govuk,
     parliament_rss,
@@ -19,6 +20,10 @@ from .fetchers import (
     parliament_committee_news,
     parliament_committees_api,
     whatson_scrape,
+    bills,
+    commons_votes,
+    oral_questions,
+    now_parliament,
 )
 
 logger = logging.getLogger(__name__)
@@ -34,12 +39,31 @@ FETCHER_MAP = {
     "hansard_api": hansard,
     "parliament_inquiries_scrape": parliament_inquiries,
     "whatson_scrape": whatson_scrape,
+    "bills_api": bills,
+    "commons_votes_api": commons_votes,
+    "oral_questions_api": oral_questions,
+    "now_parliament_api": now_parliament,
 }
 
 
 def load_config() -> dict:
     with open(CONFIG_PATH) as f:
         return yaml.safe_load(f)
+
+
+def _flatten_keywords(config: dict) -> list[str]:
+    """Return a deduplicated flat keyword list from keyword_categories (or legacy keywords)."""
+    cats = config.get("keyword_categories")
+    if cats:
+        seen: set[str] = set()
+        result: list[str] = []
+        for kws in cats.values():
+            for kw in kws:
+                if kw not in seen:
+                    seen.add(kw)
+                    result.append(kw)
+        return result
+    return config.get("keywords", [])
 
 
 def run_harvest(config: dict | None = None) -> dict:
@@ -52,13 +76,14 @@ def run_harvest(config: dict | None = None) -> dict:
     if config is None:
         config = load_config()
 
-    keywords = config.get("keywords", [])
+    keywords = _flatten_keywords(config)
     sources_cfg = config.get("sources", {})
 
     database.init_db()
 
     errors: list[dict] = []
     total_new = 0
+    new_items_list: list[dict] = []  # collected for email digest
 
     with database.get_db() as conn:
         run_id = database.log_run_start(conn)
@@ -101,6 +126,7 @@ def run_harvest(config: dict | None = None) -> dict:
                 is_new = database.upsert_item(conn, source_id, item)
                 if is_new:
                     new_count += 1
+                    new_items_list.append({"source_id": source_id, **item})
 
             status = "ok" if raw_items else "warning"
             health_msg = "" if raw_items else "Fetched successfully but returned 0 items"
@@ -115,6 +141,21 @@ def run_harvest(config: dict | None = None) -> dict:
 
     summary = {"new_items": total_new, "errors": errors, "run_id": run_id}
     logger.info("Harvest complete. New items: %d, Errors: %d", total_new, len(errors))
+
+    # Send email digest if enabled
+    if new_items_list:
+        label_map = {
+            src["id"]: src.get("label", src["id"])
+            for group in sources_cfg.values()
+            for src in group
+        }
+        try:
+            sent = send_digest(new_items_list, config, label_map)
+            if sent:
+                logger.info("Digest email sent.")
+        except Exception as exc:
+            logger.error("Failed to send digest email: %s", exc, exc_info=True)
+
     return summary
 
 

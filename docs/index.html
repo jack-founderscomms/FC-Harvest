@@ -121,6 +121,23 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
 /* ── Date filter bar ── */
+/* Source group filter bar */
+.src-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+         border-bottom:1px solid var(--border);background:#fafbfc}
+.src-bar-label{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;margin-right:2px}
+.src-btn{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+         border:1px solid var(--border);background:var(--surface);color:var(--muted);
+         transition:all .12s;white-space:nowrap}
+.src-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+.src-btn[data-src="govuk"].active{background:#1d4ed8;border-color:#1d4ed8}
+.src-btn[data-src="committee"].active{background:#7c3aed;border-color:#7c3aed}
+.src-btn[data-src="bills"].active{background:#0891b2;border-color:#0891b2}
+.src-btn[data-src="votes"].active{background:#d97706;border-color:#d97706}
+.src-btn[data-src="oraq"].active{background:#059669;border-color:#059669}
+.src-btn[data-src="written"].active{background:#9d174d;border-color:#9d174d}
+.src-btn[data-src="hansard"].active{background:#374151;border-color:#374151}
+.src-btn[data-src="now"].active{background:#dc2626;border-color:#dc2626}
+
 .date-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
           border-bottom:1px solid var(--border);background:#fafbfc}
 .date-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
@@ -195,6 +212,20 @@ input[type=date]:focus{border-color:var(--accent)}
   <span id="filter-status"></span>
 </div>
 
+<!-- Source group filter bar -->
+<div class="src-bar">
+  <span class="src-bar-label">Source:</span>
+  <button class="src-btn active" data-src="" onclick="filterSrc(this)">All</button>
+  <button class="src-btn" data-src="govuk"     onclick="filterSrc(this)">GOV.UK</button>
+  <button class="src-btn" data-src="bills"     onclick="filterSrc(this)">Bills</button>
+  <button class="src-btn" data-src="committee" onclick="filterSrc(this)">Committees</button>
+  <button class="src-btn" data-src="votes"     onclick="filterSrc(this)">Votes</button>
+  <button class="src-btn" data-src="oraq"      onclick="filterSrc(this)">Oral Questions</button>
+  <button class="src-btn" data-src="written"   onclick="filterSrc(this)">Written Statements</button>
+  <button class="src-btn" data-src="hansard"   onclick="filterSrc(this)">Hansard</button>
+  <button class="src-btn" data-src="now"       onclick="filterSrc(this)">🔴 Live Now</button>
+</div>
+
 <!-- Date filter bar -->
 <div class="date-bar">
   <span class="date-bar-label">Date:</span>
@@ -215,9 +246,13 @@ input[type=date]:focus{border-color:var(--accent)}
     <div class="adv-section">
       <h4>Source type</h4>
       <label><input type="checkbox" class="adv-srctype" value="govuk" checked onchange="applyFilters()"> GOV.UK departments</label>
-      <label><input type="checkbox" class="adv-srctype" value="committee" checked onchange="applyFilters()"> Parliamentary committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="bills" checked onchange="applyFilters()"> Bills</label>
+      <label><input type="checkbox" class="adv-srctype" value="committee" checked onchange="applyFilters()"> Committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="votes" checked onchange="applyFilters()"> Votes &amp; divisions</label>
+      <label><input type="checkbox" class="adv-srctype" value="oraq" checked onchange="applyFilters()"> Oral questions</label>
       <label><input type="checkbox" class="adv-srctype" value="written" checked onchange="applyFilters()"> Written statements</label>
       <label><input type="checkbox" class="adv-srctype" value="hansard" checked onchange="applyFilters()"> Hansard</label>
+      <label><input type="checkbox" class="adv-srctype" value="now" checked onchange="applyFilters()"> Live Now</label>
     </div>
     <div class="adv-section">
       <h4>Document type</h4>
@@ -228,6 +263,10 @@ input[type=date]:focus{border-color:var(--accent)}
       <label><input type="checkbox" class="adv-doctype" value="committee news" checked onchange="applyFilters()"> Committee news</label>
       <label><input type="checkbox" class="adv-doctype" value="written statement" checked onchange="applyFilters()"> Written statements</label>
       <label><input type="checkbox" class="adv-doctype" value="hansard" checked onchange="applyFilters()"> Hansard debates</label>
+      <label><input type="checkbox" class="adv-doctype" value="bill" checked onchange="applyFilters()"> Bills</label>
+      <label><input type="checkbox" class="adv-doctype" value="division" checked onchange="applyFilters()"> Votes &amp; divisions</label>
+      <label><input type="checkbox" class="adv-doctype" value="oral question" checked onchange="applyFilters()"> Oral questions</label>
+      <label><input type="checkbox" class="adv-doctype" value="live" checked onchange="applyFilters()"> Live Now</label>
     </div>
     <div class="adv-section">
       <h4>Custom date range</h4>
@@ -258,7 +297,7 @@ input[type=date]:focus{border-color:var(--accent)}
 <div class="content">
   <div id="loading-panel" class="loading-panel">
     <div class="spinner"></div>
-    <p>Fetching from GOV.UK and Parliament APIs…</p>
+    <p>Fetching from GOV.UK, Bills, Votes, Oral Questions, Committees, Hansard, and Live Now APIs…</p>
     <ul class="progress-list" id="progress-list"></ul>
   </div>
   <details id="error-panel" class="error-panel hidden">
@@ -269,8 +308,8 @@ input[type=date]:focus{border-color:var(--accent)}
 </div>
 
 <div class="footer">
-  FC-Harvest · Live data from GOV.UK Search API, committees-api.parliament.uk,
-  hansard-api.parliament.uk, questions-statements-api.parliament.uk ·
+  FC-Harvest · Live data from GOV.UK · bills-api · commonsvotes-api · lordsvotes-api ·
+  committees-api · oralquestionsandmotions-api · questions-statements-api · hansard-api · now-api ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>
 
@@ -333,13 +372,36 @@ const HANSARD_SOURCES = [
   {id:'hansard_lords',   label:'Hansard (Lords)',   house:'Lords'},
 ];
 
-const ALL_SOURCES = [...GOVUK_SOURCES, ...COMMITTEE_SOURCES, ...WRITTEN_SOURCES, ...HANSARD_SOURCES];
+const BILLS_SOURCES = [
+  {id:'bills_commons', label:'Bills (Commons)', house:'Commons'},
+  {id:'bills_lords',   label:'Bills (Lords)',   house:'Lords'},
+];
+
+const VOTES_SOURCES = [
+  {id:'votes_commons', label:'Commons Divisions', house:'Commons'},
+  {id:'votes_lords',   label:'Lords Divisions',   house:'Lords'},
+];
+
+const ORAQ_SOURCES = [
+  {id:'oraq_commons', label:'Oral Questions (Commons)', house:'Commons'},
+];
+
+const NOW_SOURCES = [
+  {id:'now_commons', label:'Commons — Live Now', house:'Commons'},
+  {id:'now_lords',   label:'Lords — Live Now',   house:'Lords'},
+];
+
+const ALL_SOURCES = [
+  ...GOVUK_SOURCES, ...BILLS_SOURCES, ...COMMITTEE_SOURCES,
+  ...VOTES_SOURCES, ...ORAQ_SOURCES, ...WRITTEN_SOURCES,
+  ...HANSARD_SOURCES, ...NOW_SOURCES,
+];
 const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-harvest-v5';
+const CACHE_KEY = 'fc-harvest-v6';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -348,6 +410,7 @@ let allItems = [];
 let sourceErrors = {};
 let activeCat = null;
 let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
+let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
 let committeeLists = {};
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
@@ -432,6 +495,26 @@ async function fetchAll() {
   for (const src of HANSARD_SOURCES) {
     mkProg(src.id, src.label);
     tasks.push(fetchHansard(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of BILLS_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchBills(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of VOTES_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchVotes(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of ORAQ_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchOralQuestions(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of NOW_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchNow(src).then(items => { pushItems(items); doneProg(src.id); })
       .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
   }
 
@@ -644,6 +727,151 @@ async function fetchHansard(src) {
   return [];
 }
 
+// ── Bills ─────────────────────────────────────────────────────────────────────
+
+async function fetchBills(src) {
+  const since = daysAgo(30); // Bills update slowly — use 30d window
+  const params = new URLSearchParams({
+    lastUpdatedFrom: since,
+    currentHouse: src.house,
+    sortOrder: 'DateUpdatedDescending',
+    take: 25, skip: 0,
+  });
+  const data = await fetchJSON(`https://bills-api.parliament.uk/api/v1/Bills?${params}`);
+  const items = toArr(data) || (data && data.items) || [];
+  return items.map(b => {
+    const billId = b.billId || b.id || '';
+    const title  = (b.shortTitle || b.longTitle || '').trim();
+    const stage  = b.currentStage?.description || b.currentStage || '';
+    return {
+      item_id: `bills_${src.house}_${billId}`,
+      title: title || `Bill ${billId}`,
+      url: billId ? `https://bills.parliament.uk/bills/${billId}` : 'https://bills.parliament.uk',
+      published_at: (b.lastUpdate || b.introducedSessionId || '').slice(0, 10),
+      summary: stage ? `Stage: ${stage}` : '',
+      doc_type: 'bill',
+      source_id: src.id, source_label: src.label,
+    };
+  }).filter(i => i.title);
+}
+
+// ── Votes / Divisions ─────────────────────────────────────────────────────────
+
+async function fetchVotes(src) {
+  const since = daysAgo(14);
+  if (src.house === 'Commons') {
+    const params = new URLSearchParams({
+      'queryParameters.startDate': since,
+      'queryParameters.take': 25,
+      'queryParameters.skip': 0,
+    });
+    const data = await fetchJSON(`https://commonsvotes-api.parliament.uk/data/Divisions.json/search?${params}`);
+    const items = toArr(data) || [];
+    return items.map(d => ({
+      item_id: `votes_commons_${d.DivisionId || d.divisionId || ''}`,
+      title: (d.Title || d.title || '').trim(),
+      url: d.DivisionId
+        ? `https://votes.parliament.uk/Votes/Commons/Division/${d.DivisionId}`
+        : 'https://votes.parliament.uk',
+      published_at: (d.Date || d.date || '').slice(0, 10),
+      summary: `Ayes: ${d.AyeCount ?? d.ayeCount ?? '?'} · Noes: ${d.NoCount ?? d.noeCount ?? d.nayCount ?? '?'}`,
+      doc_type: 'division',
+      source_id: src.id, source_label: src.label,
+    })).filter(i => i.title);
+  } else {
+    // Lords votes
+    const params = new URLSearchParams({
+      'queryParameters.startDate': since,
+      'queryParameters.take': 25,
+      'queryParameters.skip': 0,
+    });
+    const data = await fetchJSON(`https://lordsvotes-api.parliament.uk/data/Divisions/search?${params}`);
+    const items = toArr(data) || (data && data.items) || [];
+    return items.map(d => ({
+      item_id: `votes_lords_${d.DivisionId || d.divisionId || ''}`,
+      title: (d.Title || d.title || d.DivisionTitle || '').trim(),
+      url: d.DivisionId
+        ? `https://votes.parliament.uk/Votes/Lords/Division/${d.DivisionId}`
+        : 'https://votes.parliament.uk',
+      published_at: (d.Date || d.date || '').slice(0, 10),
+      summary: `Contents: ${d.ContentCount ?? d.ayeCount ?? '?'} · Not-Contents: ${d.NotContentCount ?? d.noeCount ?? '?'}`,
+      doc_type: 'division',
+      source_id: src.id, source_label: src.label,
+    })).filter(i => i.title);
+  }
+}
+
+// ── Oral Questions ────────────────────────────────────────────────────────────
+
+async function fetchOralQuestions(src) {
+  // Try upcoming oral questions list for next 7 days, then recent
+  const items = [];
+  for (let offset = -7; offset <= 7; offset++) {
+    const d = new Date(Date.now() + offset * 86400000).toISOString().slice(0, 10);
+    try {
+      const data = await fetchJSON(
+        `https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`
+      );
+      const qs = toArr(data) || (data && (data.Response || data.results)) || [];
+      for (const q of qs) {
+        const id = q.Id || q.id || '';
+        const text = (q.QuestionText || q.questionText || q.Text || '').trim();
+        const body = (q.AnsweringBodyName || q.answeringBodyName || '').trim();
+        const member = (q.AskingMemberName || q.askingMemberName || '').trim();
+        if (!text) continue;
+        items.push({
+          item_id: `oraq_${id || (d + '_' + text.slice(0, 20))}`,
+          title: body ? `[${body}] ${text}` : text,
+          url: `https://questions-statements.parliament.uk/oral-questions`,
+          published_at: (q.OralAnswerDate || q.oralAnswerDate || d).slice(0, 10),
+          summary: member ? `Asked by ${member}` : '',
+          doc_type: 'oral question',
+          source_id: src.id, source_label: src.label,
+        });
+      }
+    } catch(_) {}
+  }
+  // Deduplicate by item_id
+  const seen = new Set();
+  return items.filter(i => { if (seen.has(i.item_id)) return false; seen.add(i.item_id); return true; });
+}
+
+// ── Live Now (now-api.parliament.uk) ─────────────────────────────────────────
+
+async function fetchNow(src) {
+  const endpoint = src.house === 'Commons' ? 'CommonsBusiness' : 'LordsBusiness';
+  const data = await fetchJSON(`https://now-api.parliament.uk/api/${endpoint}`);
+
+  // Response is a list of business items currently happening / scheduled today
+  const items = [];
+  const businesses = toArr(data) || (data && (data.CurrentAdjournment || data.BusinessItems || data.items)) || [];
+
+  function addBiz(b) {
+    const title = (b.Title || b.title || b.Description || b.description || '').trim();
+    if (!title || title.length < 3) return;
+    items.push({
+      item_id: `now_${src.house}_${(b.Id || b.id || title).toString().slice(0, 40)}`,
+      title,
+      url: `https://www.parliament.uk/business/live/`,
+      published_at: new Date().toISOString().slice(0, 10),
+      summary: (b.Category || b.category || b.SubTitle || b.subtitle || '').trim(),
+      doc_type: 'live',
+      source_id: src.id, source_label: src.label,
+    });
+  }
+
+  if (Array.isArray(businesses)) {
+    for (const b of businesses) {
+      addBiz(b);
+      // Some responses nest items
+      for (const sub of (b.BusinessItems || b.items || [])) addBiz(sub);
+    }
+  } else if (data && typeof data === 'object') {
+    addBiz(data);
+  }
+  return items;
+}
+
 // ── Keyword matching ──────────────────────────────────────────────────────────
 
 function matchCats(title, summary) {
@@ -728,11 +956,12 @@ function renderAll() {
 function makeItemEl(item) {
   const div = document.createElement('div');
   div.className = 'item';
-  div.dataset.cats    = (item.matched_cats || []).join(',');
-  div.dataset.kw      = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
-  div.dataset.date    = (item.published_at || '').slice(0, 10);
-  div.dataset.srctype = item.source_id || '';
-  div.dataset.doctype = item.doc_type  || '';
+  div.dataset.cats     = (item.matched_cats || []).join(',');
+  div.dataset.kw       = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
+  div.dataset.date     = (item.published_at || '').slice(0, 10);
+  div.dataset.srctype  = item.source_id || '';
+  div.dataset.doctype  = item.doc_type  || '';
+  div.dataset.srcgroup = srcGroup(item.source_id || '');
 
   const titleHtml = item.url
     ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
@@ -808,9 +1037,13 @@ function applyFilters() {
       }
     }
 
+    // Source group quick-filter (top bar)
+    const grp = item.dataset.srcgroup || '';
+    const grpOk = !activeSrcGroup || grp === activeSrcGroup;
+
     // Advanced: source type filter
     const srcOk = !advOpen || srcTypes.length === 0 ||
-      srcTypes.some(t => srcType.startsWith(t));
+      srcTypes.some(t => srcType.startsWith(t) || grp === t);
 
     // Advanced: doc type filter
     const dtOk = !advOpen || docTypes.length === 0 ||
@@ -819,7 +1052,7 @@ function applyFilters() {
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
             && (!activeCat || cats.includes(activeCat))
-            && dateOk && srcOk && dtOk;
+            && grpOk && dateOk && srcOk && dtOk;
     item.classList.toggle('hidden', !ok);
     if (ok) shown++;
   });
@@ -829,7 +1062,7 @@ function applyFilters() {
   });
 
   const fs = document.getElementById('filter-status');
-  const anyFilter = q || kwOnly || activeCat || activeDateFilter || advFrom || advTo;
+  const anyFilter = q || kwOnly || activeCat || activeDateFilter || activeSrcGroup || advFrom || advTo;
   if (fs) fs.textContent = anyFilter ? shown + ' results' : '';
 }
 
@@ -841,6 +1074,26 @@ function filterDate(btn) {
   const f = document.getElementById('adv-from'); if (f) f.value = '';
   const t = document.getElementById('adv-to');   if (t) t.value = '';
   applyFilters();
+}
+
+function filterSrc(btn) {
+  document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSrcGroup = btn.dataset.src || '';
+  applyFilters();
+}
+
+function srcGroup(sourceId) {
+  if (!sourceId) return '';
+  if (sourceId.startsWith('govuk_'))    return 'govuk';
+  if (sourceId.startsWith('bills_'))    return 'bills';
+  if (sourceId.startsWith('cmt_'))      return 'committee';
+  if (sourceId.startsWith('votes_'))    return 'votes';
+  if (sourceId.startsWith('oraq_'))     return 'oraq';
+  if (sourceId.startsWith('written_'))  return 'written';
+  if (sourceId.startsWith('hansard_'))  return 'hansard';
+  if (sourceId.startsWith('now_'))      return 'now';
+  return '';
 }
 
 function filterCat(btn) {
@@ -862,6 +1115,10 @@ function clearAdv() {
   document.querySelectorAll('.adv-srctype,.adv-doctype').forEach(cb => cb.checked = true);
   const f = document.getElementById('adv-from'); if (f) f.value = '';
   const t = document.getElementById('adv-to');   if (t) t.value = '';
+  // Reset source group buttons
+  document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.src-btn[data-src=""]')?.classList.add('active');
+  activeSrcGroup = '';
   // Reset date buttons
   document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.date-btn[data-date=""]')?.classList.add('active');

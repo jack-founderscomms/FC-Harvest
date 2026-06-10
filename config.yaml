@@ -390,6 +390,54 @@ sources:
       type: hansard_api
       house: "Lords"
 
+  # ── Bills ─────────────────────────────────────────────────────────────────
+  # Official API: https://bills-api.parliament.uk/index.html
+  bills:
+    - id: bills_commons
+      label: "Bills (Commons)"
+      type: bills_api
+      house: "Commons"
+
+    - id: bills_lords
+      label: "Bills (Lords)"
+      type: bills_api
+      house: "Lords"
+
+  # ── Votes / Divisions ─────────────────────────────────────────────────────
+  # Commons: https://commonsvotes-api.parliament.uk/swagger/docs/v1
+  # Lords:   https://lordsvotes-api.parliament.uk
+  votes:
+    - id: votes_commons
+      label: "Commons Divisions"
+      type: commons_votes_api
+      house: "Commons"
+
+    - id: votes_lords
+      label: "Lords Divisions"
+      type: commons_votes_api
+      house: "Lords"
+
+  # ── Oral Questions ────────────────────────────────────────────────────────
+  # Official API: https://oralquestionsandmotions-api.parliament.uk/swagger/ui/index
+  oral_questions:
+    - id: oraq_commons
+      label: "Oral Questions (Commons)"
+      type: oral_questions_api
+      house: "Commons"
+
+  # ── Live Now ──────────────────────────────────────────────────────────────
+  # Official API: https://now-api.parliament.uk/index.html
+  now:
+    - id: now_commons
+      label: "Commons — Live Now"
+      type: now_parliament_api
+      house: "Commons"
+
+    - id: now_lords
+      label: "Lords — Live Now"
+      type: now_parliament_api
+      house: "Lords"
+
   # ── What's On in Parliament ───────────────────────────────────────────────
   # Official API: https://whatson-api.parliament.uk/swagger/ui/index
   # Falls back to HTML scrape if the API returns no events.

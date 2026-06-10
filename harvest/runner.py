@@ -20,6 +20,10 @@ from .fetchers import (
     parliament_committee_news,
     parliament_committees_api,
     whatson_scrape,
+    bills,
+    commons_votes,
+    oral_questions,
+    now_parliament,
 )
 
 logger = logging.getLogger(__name__)
@@ -35,6 +39,10 @@ FETCHER_MAP = {
     "hansard_api": hansard,
     "parliament_inquiries_scrape": parliament_inquiries,
     "whatson_scrape": whatson_scrape,
+    "bills_api": bills,
+    "commons_votes_api": commons_votes,
+    "oral_questions_api": oral_questions,
+    "now_parliament_api": now_parliament,
 }
 
 

@@ -387,7 +387,8 @@ input[type=date]:focus{border-color:var(--accent)}
       <label><input type="checkbox" class="adv-doctype" value="news_story,press_release" checked onchange="applyFilters()"> News &amp; press releases</label>
       <label><input type="checkbox" class="adv-doctype" value="consultation,policy_paper,government_response" checked onchange="applyFilters()"> Consultations &amp; policy</label>
       <label><input type="checkbox" class="adv-doctype" value="speech" checked onchange="applyFilters()"> Speeches</label>
-      <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries</label>
+      <label><input type="checkbox" class="adv-doctype" value="parliament event,committee hearing,oral questions" checked onchange="applyFilters()"> Parliament hearings &amp; events</label>
+      <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries &amp; calls for evidence</label>
       <label><input type="checkbox" class="adv-doctype" value="committee news" checked onchange="applyFilters()"> Committee news</label>
       <label><input type="checkbox" class="adv-doctype" value="written statement" checked onchange="applyFilters()"> Written statements</label>
       <label><input type="checkbox" class="adv-doctype" value="hansard" checked onchange="applyFilters()"> Hansard debates</label>
@@ -545,7 +546,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-harvest-v7';
+const CACHE_KEY = 'fc-harvest-v8';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -753,6 +754,32 @@ async function fetchCommittee(src) {
         summary: (r.description||r.Description||r.summary||'').slice(0,500),
         doc_type: 'inquiry',
         source_id: src.id, source_label: src.label,
+      });
+    }
+  } catch(_) {}
+
+  // Evidence sessions (scheduled committee hearings with witnesses)
+  try {
+    const since = daysAgo(7);
+    const until = daysAgo(-42);
+    const es = await fetchJSON(
+      `https://committees-api.parliament.uk/api/Committees/${id}/EvidenceSessions?startDate=${since}&endDate=${until}&take=20`
+    );
+    for (const r of (toArr(es) || [])) {
+      const t = (r.title||r.Title||r.sessionTitle||r.inquiry?.title||'').trim()
+             || `${src.label} — Evidence Session`;
+      const sid = r.id||r.Id||r.sessionId||'';
+      const when = (r.startDate||r.StartDate||r.date||r.Date||'').slice(0,10);
+      const witnesses = (r.witnesses||r.Witnesses||[]).map(w => w.name||w.Name||w).join(', ');
+      items.push({
+        item_id:      `cmt_es_${id}_${sid||when}`,
+        title:        t,
+        url:          r.url||r.Url||`https://committees.parliament.uk/committee/${id}/hearings`,
+        published_at: when,
+        summary:      witnesses ? `Witnesses: ${witnesses}` : (r.description||r.Description||'').slice(0,300),
+        doc_type:     'committee hearing',
+        source_id:    src.id, source_label: src.label,
+        _is_event:    true,
       });
     }
   } catch(_) {}
@@ -1022,69 +1049,125 @@ async function fetchNow(src) {
   return items;
 }
 
-// ── What's On / Parliament Events (whatson-api.parliament.uk) ────────────────
+// ── What's On / Parliament Events ─────────────────────────────────────────────
+// Sources tried in order:
+//   1. whatson-api.parliament.uk (official What's On calendar)
+//   2. committees-api /EvidenceSessions (cross-committee hearing sweep)
+//   3. oralquestionsandmotions-api (upcoming oral questions as events)
+//   4. now-api as scheduled business fallback
+
+function parseWhatsonEvent(ev, house, src) {
+  const title = (ev.Title||ev.title||ev.Name||ev.name||ev.Subject||ev.subject||'').trim();
+  if (!title) return null;
+  const evId  = ev.Id||ev.id||ev.EventId||ev.eventId||'';
+  const start = (ev.StartDate||ev.startDate||ev.StartTime||ev.startTime||ev.Date||ev.date||'').slice(0,10);
+  const cat   = ev.Category||ev.category||ev.Type||ev.type||ev.EventType||'';
+  const loc   = (ev.Location?.Description||ev.location||ev.Location||ev.Place||ev.place||'').toString().trim();
+  const desc  = (ev.Description||ev.description||ev.Summary||ev.summary||'').replace(/<[^>]+>/g,' ').trim();
+  return {
+    item_id:      `events_${house}_${evId||title.slice(0,30).replace(/\s+/g,'_')}_${start}`,
+    title,
+    url:          ev.Url||ev.url||ev.Link||ev.link||'https://www.parliament.uk/business/what-is-on/',
+    published_at: start,
+    summary:      [cat,loc,desc].filter(Boolean).join(' · ').slice(0,250),
+    doc_type:     'parliament event',
+    source_id:    src.id, source_label: src.label,
+    _is_event:    true,
+  };
+}
 
 async function fetchWhatson(src) {
-  const since = daysAgo(7);                                    // 1 week back
-  const until = daysAgo(-42);                                  // 6 weeks forward
+  const since = daysAgo(7);
+  const until = daysAgo(-42);
   const house = src.house;
+  const items = [];
+  const seen  = new Set();
+  function add(item) {
+    if (!item || seen.has(item.item_id)) return;
+    seen.add(item.item_id);
+    items.push(item);
+  }
 
-  // Try events endpoint with date range
+  // 1. whatson-api — try multiple endpoint shapes
+  for (const url of [
+    `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}`,
+    `https://whatson-api.parliament.uk/api/Events?startDate=${since}&endDate=${until}`,
+    `https://whatson-api.parliament.uk/api/v1/events?startDate=${since}&endDate=${until}`,
+    `https://whatson-api.parliament.uk/api/events?house=${house}&startDate=${since}&endDate=${until}`,
+  ]) {
+    try {
+      const data = await fetchJSON(url);
+      const evs  = toArr(data) || (data && (data.Events||data.events||data.Results||data.results||data.items)) || [];
+      if (!evs.length) continue;
+      for (const ev of evs) {
+        // Filter by house where possible
+        const evHouse = (ev.House||ev.house||ev.ChamberName||'').toLowerCase();
+        if (evHouse && !evHouse.includes(house.toLowerCase()) && house !== 'All') continue;
+        add(parseWhatsonEvent(ev, house, src));
+      }
+      if (items.length) break; // got results, stop trying variants
+    } catch(_) {}
+  }
+
+  // 2. committees-api EvidenceSessions — broad sweep (all committees, date range)
   try {
     const data = await fetchJSON(
-      `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}`
+      `https://committees-api.parliament.uk/api/EvidenceSessions?startDate=${since}&endDate=${until}&house=${house}&take=50`
     );
-    const events = toArr(data) || (data && (data.Events || data.events || data.results)) || [];
-    const items = [];
-    for (const ev of events) {
-      // Filter to the relevant house if specified
-      const evHouse = ev.House || ev.house || ev.Location?.House || '';
-      if (evHouse && house !== 'All' && !evHouse.toLowerCase().includes(house.toLowerCase())) continue;
-
-      const title = (ev.Title || ev.title || ev.Name || ev.name || '').trim();
-      if (!title) continue;
-      const evId   = ev.Id || ev.id || ev.EventId || '';
-      const start  = (ev.StartDate || ev.startDate || ev.Date || ev.date || '').slice(0, 10);
-      const cat    = ev.Category || ev.category || ev.Type || ev.type || '';
-      const loc    = ev.Location?.Description || ev.location || ev.Location || '';
-      const desc   = (ev.Description || ev.description || '').replace(/<[^>]+>/g,' ').trim();
-
-      items.push({
-        item_id:      `events_${house}_${evId || title.slice(0,30)}_${start}`,
-        title,
-        url:          ev.Url || ev.url || `https://www.parliament.uk/business/what-is-on/`,
-        published_at: start,
-        summary:      [cat, loc, desc].filter(Boolean).join(' · ').slice(0, 200),
-        doc_type:     'parliament event',
-        source_id:    src.id, source_label: src.label,
-        _is_event:    true,   // flag: show add-to-cal button
-      });
-    }
-    return items;
-  } catch(_) {}
-
-  // Fallback: try /api/Events (capital E)
-  try {
-    const data = await fetchJSON(
-      `https://whatson-api.parliament.uk/api/Events?startDate=${since}&endDate=${until}`
-    );
-    const events = toArr(data) || [];
-    return events.map(ev => {
-      const title = (ev.Title || ev.title || '').trim();
-      const start = (ev.StartDate || ev.startDate || '').slice(0, 10);
-      return title ? {
-        item_id:      `events_${house}_${ev.Id || title.slice(0,30)}_${start}`,
-        title,
-        url:          ev.Url || ev.url || 'https://www.parliament.uk/business/what-is-on/',
-        published_at: start,
-        summary:      (ev.Category || ev.Description || '').trim().slice(0, 200),
-        doc_type:     'parliament event',
+    for (const r of (toArr(data) || [])) {
+      const t = (r.title||r.Title||r.sessionTitle||r.inquiry?.title||'').trim();
+      if (!t) continue;
+      const sid  = r.id||r.Id||r.sessionId||'';
+      const when = (r.startDate||r.StartDate||r.date||r.Date||'').slice(0,10);
+      const cmtName = r.committee?.name||r.committeeName||r.CommitteeName||'';
+      const witnesses = (r.witnesses||r.Witnesses||[]).map(w=>w.name||w.Name||w).filter(Boolean).join(', ');
+      add({
+        item_id:      `events_es_${sid||when+'_'+t.slice(0,20)}`,
+        title:        cmtName ? `${cmtName}: ${t}` : t,
+        url:          r.url||r.Url||'https://committees.parliament.uk/',
+        published_at: when,
+        summary:      witnesses ? `Witnesses: ${witnesses}` : (r.description||r.Description||'').slice(0,250),
+        doc_type:     'committee hearing',
         source_id:    src.id, source_label: src.label,
         _is_event:    true,
-      } : null;
-    }).filter(Boolean);
+      });
+    }
   } catch(_) {}
-  return [];
+
+  // 3. oralquestionsandmotions-api — upcoming oral questions as scheduled events
+  try {
+    for (let offset = 0; offset <= 14; offset++) {
+      const d = daysAgo(-offset);
+      const data = await fetchJSON(
+        `https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`
+      );
+      const qs = toArr(data) || (data && (data.Response||data.results||data.value)) || [];
+      if (!qs.length) continue;
+      // Group by answering body + date to avoid one entry per question
+      const byBody = {};
+      for (const q of qs) {
+        const body = (q.AnsweringBodyName||q.answeringBodyName||'Questions').trim();
+        const answerDate = (q.OralAnswerDate||q.oralAnswerDate||d).slice(0,10);
+        const key = `${answerDate}_${body}`;
+        if (!byBody[key]) byBody[key] = { body, date: answerDate, count: 0 };
+        byBody[key].count++;
+      }
+      for (const [key, grp] of Object.entries(byBody)) {
+        add({
+          item_id:      `events_oraq_${key}`,
+          title:        `Oral Questions: ${grp.body}`,
+          url:          'https://questions-statements.parliament.uk/oral-questions',
+          published_at: grp.date,
+          summary:      `${grp.count} question${grp.count>1?'s':''} scheduled`,
+          doc_type:     'oral questions',
+          source_id:    src.id, source_label: src.label,
+          _is_event:    true,
+        });
+      }
+    }
+  } catch(_) {}
+
+  return items;
 }
 
 // ── Keyword matching ──────────────────────────────────────────────────────────

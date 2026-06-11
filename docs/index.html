@@ -1050,26 +1050,22 @@ async function fetchNow(src) {
 }
 
 // ── What's On / Parliament Events ─────────────────────────────────────────────
-// Sources tried in order:
-//   1. whatson-api.parliament.uk (official What's On calendar)
-//   2. committees-api /EvidenceSessions (cross-committee hearing sweep)
-//   3. oralquestionsandmotions-api (upcoming oral questions as events)
-//   4. now-api as scheduled business fallback
 
 function parseWhatsonEvent(ev, house, src) {
-  const title = (ev.Title||ev.title||ev.Name||ev.name||ev.Subject||ev.subject||'').trim();
+  const title = (ev.Title||ev.title||ev.Name||ev.name||ev.Subject||ev.subject||ev.summary||'').trim();
   if (!title) return null;
-  const evId  = ev.Id||ev.id||ev.EventId||ev.eventId||'';
-  const start = (ev.StartDate||ev.startDate||ev.StartTime||ev.startTime||ev.Date||ev.date||'').slice(0,10);
-  const cat   = ev.Category||ev.category||ev.Type||ev.type||ev.EventType||'';
+  const evId  = ev.Id||ev.id||ev.EventId||ev.eventId||ev.uid||'';
+  const rawStart = ev.StartDate||ev.startDate||ev.StartTime||ev.startTime||ev.Date||ev.date||ev.dtstart||'';
+  const start = rawStart.toString().replace(/T.*/,'').slice(0,10);
+  const cat   = (ev.Category||ev.category||ev.Type||ev.type||ev.EventType||ev.eventType||'').toString();
   const loc   = (ev.Location?.Description||ev.location||ev.Location||ev.Place||ev.place||'').toString().trim();
-  const desc  = (ev.Description||ev.description||ev.Summary||ev.summary||'').replace(/<[^>]+>/g,' ').trim();
+  const desc  = (ev.Description||ev.description||ev.Details||ev.details||'').toString().replace(/<[^>]+>/g,' ').trim();
   return {
-    item_id:      `events_${house}_${evId||title.slice(0,30).replace(/\s+/g,'_')}_${start}`,
+    item_id:      `events_${house}_${evId||title.slice(0,30).replace(/\W+/g,'_')}_${start}`,
     title,
-    url:          ev.Url||ev.url||ev.Link||ev.link||'https://www.parliament.uk/business/what-is-on/',
+    url:          ev.Url||ev.url||ev.Link||ev.link||ev.htmlLink||'https://whatson.parliament.uk',
     published_at: start,
-    summary:      [cat,loc,desc].filter(Boolean).join(' · ').slice(0,250),
+    summary:      [cat,loc,desc].filter(Boolean).join(' · ').slice(0,300),
     doc_type:     'parliament event',
     source_id:    src.id, source_label: src.label,
     _is_event:    true,
@@ -1077,49 +1073,99 @@ function parseWhatsonEvent(ev, house, src) {
 }
 
 async function fetchWhatson(src) {
-  const since = daysAgo(7);
+  const since = daysAgo(3);
   const until = daysAgo(-42);
   const house = src.house;
   const items = [];
   const seen  = new Set();
+  const errors = [];
+
   function add(item) {
     if (!item || seen.has(item.item_id)) return;
-    seen.add(item.item_id);
-    items.push(item);
+    seen.add(item.item_id); items.push(item);
   }
 
-  // 1. whatson-api — try multiple endpoint shapes
+  // 1. whatson-api — every known endpoint variant, fail loudly for diagnosis
   for (const url of [
     `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}`,
     `https://whatson-api.parliament.uk/api/Events?startDate=${since}&endDate=${until}`,
+    `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}&house=${house}`,
     `https://whatson-api.parliament.uk/api/v1/events?startDate=${since}&endDate=${until}`,
-    `https://whatson-api.parliament.uk/api/events?house=${house}&startDate=${since}&endDate=${until}`,
+    `https://whatson-api.parliament.uk/api/events`,
+    `https://whatson-api.parliament.uk/api/CommonsBusiness`,
+    `https://whatson-api.parliament.uk/api/LordsBusiness`,
   ]) {
     try {
-      const data = await fetchJSON(url);
-      const evs  = toArr(data) || (data && (data.Events||data.events||data.Results||data.results||data.items)) || [];
-      if (!evs.length) continue;
+      const r = await fetch(url, {headers:{Accept:'application/json, */*'}});
+      if (!r.ok) { errors.push(`${url}: HTTP ${r.status}`); continue; }
+      const data = await r.json();
+      // Probe every possible array key
+      let evs = Array.isArray(data) ? data : null;
+      if (!evs) {
+        for (const key of ['Events','events','Results','results','items','BusinessItems','value','data']) {
+          if (Array.isArray(data[key]) && data[key].length) { evs = data[key]; break; }
+        }
+      }
+      if (!evs || !evs.length) { errors.push(`${url}: 0 events in response`); continue; }
       for (const ev of evs) {
-        // Filter by house where possible
-        const evHouse = (ev.House||ev.house||ev.ChamberName||'').toLowerCase();
-        if (evHouse && !evHouse.includes(house.toLowerCase()) && house !== 'All') continue;
+        const evHouse = (ev.House||ev.house||ev.ChamberName||ev.chamberName||'').toLowerCase();
+        if (evHouse && house !== 'All' && !evHouse.includes(house.toLowerCase()) && !evHouse.includes('both')) continue;
         add(parseWhatsonEvent(ev, house, src));
       }
-      if (items.length) break; // got results, stop trying variants
-    } catch(_) {}
+      if (items.length) break;
+    } catch(e) { errors.push(`${url}: ${e.message}`); }
   }
 
-  // 2. committees-api EvidenceSessions — broad sweep (all committees, date range)
+  // 2. Commons/Lords Business Atom/RSS feeds (contains Westminster Hall, main chamber)
+  const feedUrls = house === 'Commons' ? [
+    'https://commonsbusiness.parliament.uk/Feed/Atom/WeeklyChamberBusiness',
+    'https://commonsbusiness.parliament.uk/Feed/Rss/WeeklyChamberBusiness',
+    'https://commonsbusiness.parliament.uk/Feed/Atom/DailyChamberBusiness',
+  ] : [
+    'https://lordsbusiness.parliament.uk/Feed/Atom/WeeklyLordsBusiness',
+    'https://lordsbusiness.parliament.uk/Feed/Atom/DailyLordsBusiness',
+  ];
+  for (const feedUrl of feedUrls) {
+    try {
+      const r = await fetch(feedUrl);
+      if (!r.ok) { errors.push(`Feed ${feedUrl}: HTTP ${r.status}`); continue; }
+      const text = await r.text();
+      const xml  = new DOMParser().parseFromString(text, 'application/xml');
+      const entries = [...xml.querySelectorAll('entry, item')];
+      if (!entries.length) continue;
+      for (const entry of entries) {
+        const title   = (entry.querySelector('title')?.textContent||'').replace(/<!\[CDATA\[|\]\]>/g,'').trim();
+        if (!title) continue;
+        const link    = entry.querySelector('link')?.getAttribute('href')||entry.querySelector('link')?.textContent||'';
+        const pubDate = (entry.querySelector('published,updated,pubDate')?.textContent||'').replace(/T.*/,'').slice(0,10);
+        const body    = (entry.querySelector('summary,description,content')?.textContent||'').replace(/<[^>]+>/g,' ').replace(/<!\[CDATA\[|\]\]>/g,'').trim();
+        const uid     = entry.querySelector('id')?.textContent||title;
+        add({
+          item_id:      `events_feed_${house}_${uid.replace(/\W+/g,'_').slice(-40)}`,
+          title,
+          url:          link||`https://${house.toLowerCase()}business.parliament.uk`,
+          published_at: pubDate,
+          summary:      body.slice(0,300),
+          doc_type:     'parliament event',
+          source_id:    src.id, source_label: src.label,
+          _is_event:    true,
+        });
+      }
+      if (items.length) break;
+    } catch(e) { errors.push(`Feed ${feedUrl}: ${e.message}`); }
+  }
+
+  // 3. committees-api EvidenceSessions broad sweep
   try {
     const data = await fetchJSON(
       `https://committees-api.parliament.uk/api/EvidenceSessions?startDate=${since}&endDate=${until}&house=${house}&take=50`
     );
-    for (const r of (toArr(data) || [])) {
+    for (const r of (toArr(data)||[])) {
       const t = (r.title||r.Title||r.sessionTitle||r.inquiry?.title||'').trim();
       if (!t) continue;
       const sid  = r.id||r.Id||r.sessionId||'';
       const when = (r.startDate||r.StartDate||r.date||r.Date||'').slice(0,10);
-      const cmtName = r.committee?.name||r.committeeName||r.CommitteeName||'';
+      const cmtName = (r.committee?.name||r.committeeName||r.CommitteeName||'').trim();
       const witnesses = (r.witnesses||r.Witnesses||[]).map(w=>w.name||w.Name||w).filter(Boolean).join(', ');
       add({
         item_id:      `events_es_${sid||when+'_'+t.slice(0,20)}`,
@@ -1132,41 +1178,41 @@ async function fetchWhatson(src) {
         _is_event:    true,
       });
     }
-  } catch(_) {}
+  } catch(e) { errors.push(`EvidenceSessions: ${e.message}`); }
 
-  // 3. oralquestionsandmotions-api — upcoming oral questions as scheduled events
-  try {
-    for (let offset = 0; offset <= 14; offset++) {
-      const d = daysAgo(-offset);
-      const data = await fetchJSON(
-        `https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`
-      );
-      const qs = toArr(data) || (data && (data.Response||data.results||data.value)) || [];
-      if (!qs.length) continue;
-      // Group by answering body + date to avoid one entry per question
-      const byBody = {};
-      for (const q of qs) {
-        const body = (q.AnsweringBodyName||q.answeringBodyName||'Questions').trim();
-        const answerDate = (q.OralAnswerDate||q.oralAnswerDate||d).slice(0,10);
-        const key = `${answerDate}_${body}`;
-        if (!byBody[key]) byBody[key] = { body, date: answerDate, count: 0 };
-        byBody[key].count++;
+  // 4. Oral questions as grouped events
+  if (house === 'Commons') {
+    try {
+      for (let offset = 0; offset <= 14; offset++) {
+        const d = daysAgo(-offset);
+        const data = await fetchJSON(`https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`);
+        const qs = toArr(data)||(data&&(data.Response||data.results||data.value))||[];
+        const byBody = {};
+        for (const q of qs) {
+          const body = (q.AnsweringBodyName||q.answeringBodyName||'Questions').trim();
+          const ans  = (q.OralAnswerDate||q.oralAnswerDate||d).slice(0,10);
+          const key  = `${ans}_${body}`;
+          if (!byBody[key]) byBody[key]={body,date:ans,count:0};
+          byBody[key].count++;
+        }
+        for (const grp of Object.values(byBody)) {
+          add({
+            item_id:`events_oraq_${grp.date}_${grp.body.replace(/\W+/g,'_').slice(0,30)}`,
+            title:`Oral Questions: ${grp.body}`,
+            url:'https://questions-statements.parliament.uk/oral-questions',
+            published_at:grp.date,
+            summary:`${grp.count} question${grp.count>1?'s':''} scheduled`,
+            doc_type:'oral questions',
+            source_id:src.id, source_label:src.label, _is_event:true,
+          });
+        }
       }
-      for (const [key, grp] of Object.entries(byBody)) {
-        add({
-          item_id:      `events_oraq_${key}`,
-          title:        `Oral Questions: ${grp.body}`,
-          url:          'https://questions-statements.parliament.uk/oral-questions',
-          published_at: grp.date,
-          summary:      `${grp.count} question${grp.count>1?'s':''} scheduled`,
-          doc_type:     'oral questions',
-          source_id:    src.id, source_label: src.label,
-          _is_event:    true,
-        });
-      }
-    }
-  } catch(_) {}
+    } catch(e) { errors.push(`OralQ: ${e.message}`); }
+  }
 
+  if (!items.length) {
+    throw new Error(`Parliament APIs returned 0 events. Errors: ${errors.slice(0,3).join(' | ')}`);
+  }
   return items;
 }
 

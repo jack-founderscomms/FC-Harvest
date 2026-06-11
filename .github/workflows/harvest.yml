@@ -2,12 +2,12 @@ name: Harvest & Publish
 
 on:
   schedule:
-    # 7:05am UK time (UTC — add 1h manually when BST is in effect if needed)
-    - cron: "5 7 * * 1-5"   # weekdays only; change to "5 7 * * *" for every day
-  workflow_dispatch:          # also lets you click "Run workflow" manually in GitHub
+    # 7:05am UK time (UTC — BST is UTC+1 so this runs at 8:05am during summer)
+    - cron: "5 7 * * 1-5"   # weekdays only
+  workflow_dispatch:          # manual trigger from GitHub Actions UI
 
 permissions:
-  contents: write   # needed to commit the generated docs/index.html back to the repo
+  contents: write   # needed to commit docs/index.html back to the repo
 
 jobs:
   harvest:
@@ -18,13 +18,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ── Restore SQLite DB from cache so items accumulate across runs ──────
+      # Persist the SQLite DB between runs so items accumulate
       - name: Restore harvest DB cache
         uses: actions/cache@v4
         with:
           path: harvest.db
-          key: harvest-db-${{ github.ref_name }}
-          restore-keys: harvest-db-
+          key: harvest-db-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: harvest-db-${{ github.ref_name }}-
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,23 +35,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Run the harvest ───────────────────────────────────────────────────
       - name: Run harvest
         run: python run.py harvest
         env:
           PYTHONUNBUFFERED: "1"
 
-      # ── Generate static site ──────────────────────────────────────────────
       - name: Generate static site
         run: python generate_static.py
 
-      # ── Commit docs/index.html back to the branch ────────────────────────
       - name: Commit and push static site
         run: |
           git config user.name  "fc-harvest[bot]"
           git config user.email "fc-harvest[bot]@users.noreply.github.com"
           git add docs/index.html
-          # Only commit if there are actual changes
           if git diff --cached --quiet; then
             echo "No changes to docs/index.html — skipping commit"
           else

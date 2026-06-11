@@ -137,6 +137,31 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .src-btn[data-src="written"].active{background:#9d174d;border-color:#9d174d}
 .src-btn[data-src="hansard"].active{background:#374151;border-color:#374151}
 .src-btn[data-src="now"].active{background:#dc2626;border-color:#dc2626}
+.src-btn[data-src="events"].active{background:#0e7490;border-color:#0e7490}
+
+/* ── Keyword editor panel ── */
+.kw-panel{background:var(--surface);border-bottom:2px solid var(--accent);
+          padding:20px 24px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.kw-panel-inner{max-width:900px}
+.kw-header{display:flex;align-items:center;justify-content:space-between;
+           font-size:14px;font-weight:700;margin-bottom:8px}
+.kw-cat-box{font-size:12px}
+.kw-cat-box h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+               color:var(--muted);margin-bottom:8px}
+.kw-tags{display:flex;flex-wrap:wrap;gap:5px;min-height:28px;margin-bottom:8px}
+.kw-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;
+        background:var(--accent-light);color:var(--accent);border:1px solid #bfdbfe;
+        font-size:11px;font-weight:500}
+.kw-tag button{background:none;border:none;cursor:pointer;color:var(--accent);
+               font-size:12px;padding:0;line-height:1;opacity:.7}
+.kw-tag button:hover{opacity:1}
+.kw-add-row{display:flex;gap:6px;margin-top:4px}
+.kw-add-row input{flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;
+                  font-size:12px;outline:none}
+.kw-add-row input:focus{border-color:var(--accent)}
+.kw-add-btn{padding:4px 10px;border-radius:5px;background:var(--accent);color:#fff;
+            border:none;cursor:pointer;font-size:12px;white-space:nowrap}
+.kw-add-btn:hover{opacity:.88}
 
 .date-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
           border-bottom:1px solid var(--border);background:#fafbfc}
@@ -291,7 +316,7 @@ input[type=date]:focus{border-color:var(--accent)}
   <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
-  <button class="btn-ics-export" onclick="exportICS()" title="Download matched events as .ics calendar file">📅 Export .ics</button>
+  <button class="btn-sm" onclick="toggleKwEditor()" title="Edit your keyword lists">⚙ Keywords</button>
   <span id="filter-status"></span>
   <div class="view-toggle">
     <button class="view-btn active" id="view-list" onclick="setView('list')" title="List view">
@@ -303,31 +328,45 @@ input[type=date]:focus{border-color:var(--accent)}
   </div>
 </div>
 
+<!-- Keyword editor panel -->
+<div class="kw-panel hidden" id="kw-panel">
+  <div class="kw-panel-inner">
+    <div class="kw-header">
+      <span>Edit keyword categories</span>
+      <button onclick="toggleKwEditor()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Items matching these keywords are highlighted and tagged. Changes are saved in your browser.</p>
+    <div id="kw-editor-grid" class="adv-grid"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn-adv-apply" onclick="saveKeywords()">Save &amp; apply</button>
+      <button class="btn-adv-clear" onclick="resetKeywords()">Reset to defaults</button>
+    </div>
+  </div>
+</div>
+
 <!-- Source group filter bar -->
 <div class="src-bar">
   <span class="src-bar-label">Source:</span>
   <button class="src-btn active" data-src="" onclick="filterSrc(this)">All</button>
   <button class="src-btn" data-src="govuk"     onclick="filterSrc(this)">GOV.UK</button>
+  <button class="src-btn" data-src="events"    onclick="filterSrc(this)">📅 Parliament Events</button>
   <button class="src-btn" data-src="bills"     onclick="filterSrc(this)">Bills</button>
   <button class="src-btn" data-src="committee" onclick="filterSrc(this)">Committees</button>
   <button class="src-btn" data-src="votes"     onclick="filterSrc(this)">Votes</button>
-  <button class="src-btn" data-src="oraq"      onclick="filterSrc(this)">Oral Questions</button>
-  <button class="src-btn" data-src="written"   onclick="filterSrc(this)">Written Statements</button>
   <button class="src-btn" data-src="hansard"   onclick="filterSrc(this)">Hansard</button>
-  <button class="src-btn" data-src="now"       onclick="filterSrc(this)">🔴 Live Now</button>
 </div>
 
 <!-- Date filter bar -->
 <div class="date-bar">
   <span class="date-bar-label">Date:</span>
-  <button class="date-btn active" data-date="" onclick="filterDate(this)">All time</button>
-  <button class="date-btn" data-date="today" onclick="filterDate(this)">Today</button>
-  <button class="date-btn" data-date="last7" onclick="filterDate(this)">Last 7 days</button>
-  <button class="date-btn" data-date="last30" onclick="filterDate(this)">Last 30 days</button>
-  <button class="date-btn" data-date="next7" onclick="filterDate(this)">Coming week</button>
+  <button class="date-btn active" data-date="" onclick="filterDate(this)">All</button>
+  <button class="date-btn" data-date="today"  onclick="filterDate(this)">Today</button>
+  <button class="date-btn" data-date="last7"  onclick="filterDate(this)">This week</button>
+  <button class="date-btn" data-date="next7"  onclick="filterDate(this)">Coming week</button>
+  <button class="date-btn" data-date="next30" onclick="filterDate(this)">Coming month</button>
   <button class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
     <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm2 4h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm2 4h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"/></svg>
-    Advanced search
+    Filters
   </button>
 </div>
 
@@ -336,14 +375,12 @@ input[type=date]:focus{border-color:var(--accent)}
   <div class="adv-grid">
     <div class="adv-section">
       <h4>Source type</h4>
-      <label><input type="checkbox" class="adv-srctype" value="govuk" checked onchange="applyFilters()"> GOV.UK departments</label>
-      <label><input type="checkbox" class="adv-srctype" value="bills" checked onchange="applyFilters()"> Bills</label>
-      <label><input type="checkbox" class="adv-srctype" value="committee" checked onchange="applyFilters()"> Committees</label>
-      <label><input type="checkbox" class="adv-srctype" value="votes" checked onchange="applyFilters()"> Votes &amp; divisions</label>
-      <label><input type="checkbox" class="adv-srctype" value="oraq" checked onchange="applyFilters()"> Oral questions</label>
-      <label><input type="checkbox" class="adv-srctype" value="written" checked onchange="applyFilters()"> Written statements</label>
-      <label><input type="checkbox" class="adv-srctype" value="hansard" checked onchange="applyFilters()"> Hansard</label>
-      <label><input type="checkbox" class="adv-srctype" value="now" checked onchange="applyFilters()"> Live Now</label>
+      <label><input type="checkbox" class="adv-srctype" value="govuk"     checked onchange="applyFilters()"> GOV.UK departments</label>
+      <label><input type="checkbox" class="adv-srctype" value="events"   checked onchange="applyFilters()"> Parliament events</label>
+      <label><input type="checkbox" class="adv-srctype" value="bills"    checked onchange="applyFilters()"> Bills</label>
+      <label><input type="checkbox" class="adv-srctype" value="committee"checked onchange="applyFilters()"> Committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="votes"    checked onchange="applyFilters()"> Votes &amp; oral questions</label>
+      <label><input type="checkbox" class="adv-srctype" value="hansard"  checked onchange="applyFilters()"> Hansard &amp; written statements</label>
     </div>
     <div class="adv-section">
       <h4>Document type</h4>
@@ -388,7 +425,7 @@ input[type=date]:focus{border-color:var(--accent)}
 <div class="content">
   <div id="loading-panel" class="loading-panel">
     <div class="spinner"></div>
-    <p>Fetching from GOV.UK, Bills, Votes, Oral Questions, Committees, Hansard, and Live Now APIs…</p>
+    <p>Fetching from GOV.UK, Parliament Events, Bills, Committees, Votes, and Hansard APIs…</p>
     <ul class="progress-list" id="progress-list"></ul>
   </div>
   <details id="error-panel" class="error-panel hidden">
@@ -493,8 +530,13 @@ const NOW_SOURCES = [
   {id:'now_lords',   label:'Lords — Live Now',   house:'Lords'},
 ];
 
+const WHATSON_SOURCES = [
+  {id:'events_commons', label:'Parliament Events (Commons)', house:'Commons'},
+  {id:'events_lords',   label:'Parliament Events (Lords)',   house:'Lords'},
+];
+
 const ALL_SOURCES = [
-  ...GOVUK_SOURCES, ...BILLS_SOURCES, ...COMMITTEE_SOURCES,
+  ...GOVUK_SOURCES, ...WHATSON_SOURCES, ...BILLS_SOURCES, ...COMMITTEE_SOURCES,
   ...VOTES_SOURCES, ...ORAQ_SOURCES, ...WRITTEN_SOURCES,
   ...HANSARD_SOURCES, ...NOW_SOURCES,
 ];
@@ -503,7 +545,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-harvest-v6';
+const CACHE_KEY = 'fc-harvest-v7';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -518,6 +560,7 @@ let committeeLists = {};
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
+  loadUserKeywords();
   const cached = loadCache();
   if (cached) {
     allItems = cached.items || [];
@@ -619,6 +662,11 @@ async function fetchAll() {
     tasks.push(fetchNow(src).then(items => { pushItems(items); doneProg(src.id); })
       .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
   }
+  for (const src of WHATSON_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchWhatson(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
 
   await Promise.allSettled(tasks);
   saveCache({ items: allItems, errors: sourceErrors, ts: Date.now() });
@@ -714,7 +762,7 @@ async function fetchCommittee(src) {
 
 async function fetchWritten(src) {
   const data = await fetchJSON(
-    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(30)}&take=40&skip=0`
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40&skip=0`
   );
   const results = toArr(data) || toArr(data && data.results) || [];
   return results.map(r => {
@@ -737,7 +785,7 @@ async function fetchWritten(src) {
 
 async function fetchHansard(src) {
   const h = src.house;
-  const since = daysAgo(14);
+  const since = daysAgo(42);
   const today = new Date().toISOString().slice(0,10);
   const hLower = h.toLowerCase();
 
@@ -832,7 +880,7 @@ async function fetchHansard(src) {
 // ── Bills ─────────────────────────────────────────────────────────────────────
 
 async function fetchBills(src) {
-  const since = daysAgo(30); // Bills update slowly — use 30d window
+  const since = daysAgo(42); // Bills update slowly — use 30d window
   const params = new URLSearchParams({
     lastUpdatedFrom: since,
     currentHouse: src.house,
@@ -860,7 +908,7 @@ async function fetchBills(src) {
 // ── Votes / Divisions ─────────────────────────────────────────────────────────
 
 async function fetchVotes(src) {
-  const since = daysAgo(14);
+  const since = daysAgo(42);
   if (src.house === 'Commons') {
     const params = new URLSearchParams({
       'queryParameters.startDate': since,
@@ -972,6 +1020,71 @@ async function fetchNow(src) {
     addBiz(data);
   }
   return items;
+}
+
+// ── What's On / Parliament Events (whatson-api.parliament.uk) ────────────────
+
+async function fetchWhatson(src) {
+  const since = daysAgo(7);                                    // 1 week back
+  const until = daysAgo(-42);                                  // 6 weeks forward
+  const house = src.house;
+
+  // Try events endpoint with date range
+  try {
+    const data = await fetchJSON(
+      `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}`
+    );
+    const events = toArr(data) || (data && (data.Events || data.events || data.results)) || [];
+    const items = [];
+    for (const ev of events) {
+      // Filter to the relevant house if specified
+      const evHouse = ev.House || ev.house || ev.Location?.House || '';
+      if (evHouse && house !== 'All' && !evHouse.toLowerCase().includes(house.toLowerCase())) continue;
+
+      const title = (ev.Title || ev.title || ev.Name || ev.name || '').trim();
+      if (!title) continue;
+      const evId   = ev.Id || ev.id || ev.EventId || '';
+      const start  = (ev.StartDate || ev.startDate || ev.Date || ev.date || '').slice(0, 10);
+      const cat    = ev.Category || ev.category || ev.Type || ev.type || '';
+      const loc    = ev.Location?.Description || ev.location || ev.Location || '';
+      const desc   = (ev.Description || ev.description || '').replace(/<[^>]+>/g,' ').trim();
+
+      items.push({
+        item_id:      `events_${house}_${evId || title.slice(0,30)}_${start}`,
+        title,
+        url:          ev.Url || ev.url || `https://www.parliament.uk/business/what-is-on/`,
+        published_at: start,
+        summary:      [cat, loc, desc].filter(Boolean).join(' · ').slice(0, 200),
+        doc_type:     'parliament event',
+        source_id:    src.id, source_label: src.label,
+        _is_event:    true,   // flag: show add-to-cal button
+      });
+    }
+    return items;
+  } catch(_) {}
+
+  // Fallback: try /api/Events (capital E)
+  try {
+    const data = await fetchJSON(
+      `https://whatson-api.parliament.uk/api/Events?startDate=${since}&endDate=${until}`
+    );
+    const events = toArr(data) || [];
+    return events.map(ev => {
+      const title = (ev.Title || ev.title || '').trim();
+      const start = (ev.StartDate || ev.startDate || '').slice(0, 10);
+      return title ? {
+        item_id:      `events_${house}_${ev.Id || title.slice(0,30)}_${start}`,
+        title,
+        url:          ev.Url || ev.url || 'https://www.parliament.uk/business/what-is-on/',
+        published_at: start,
+        summary:      (ev.Category || ev.Description || '').trim().slice(0, 200),
+        doc_type:     'parliament event',
+        source_id:    src.id, source_label: src.label,
+        _is_event:    true,
+      } : null;
+    }).filter(Boolean);
+  } catch(_) {}
+  return [];
 }
 
 // ── Keyword matching ──────────────────────────────────────────────────────────
@@ -1092,7 +1205,7 @@ function makeItemEl(item) {
     <div class="item-meta">
       ${date ? `<span>${esc(date)}</span>` : ''}
       ${catBadges}${docBadge}
-      ${calDropHtml(item)}
+      ${item._is_event ? calDropHtml(item) : ''}
     </div>`;
   return div;
 }
@@ -1121,12 +1234,12 @@ function applyFilters() {
   } else if (activeDateFilter === 'last7') {
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
     winStart = new Date(today); winStart.setDate(winStart.getDate()-7);
-  } else if (activeDateFilter === 'last30') {
-    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
-    winStart = new Date(today); winStart.setDate(winStart.getDate()-30);
   } else if (activeDateFilter === 'next7') {
     winStart = today;
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+8);
+  } else if (activeDateFilter === 'next30') {
+    winStart = today;
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+31);
   }
   // Custom date range overrides quick buttons when set
   if (advFrom) winStart = new Date(advFrom);
@@ -1176,7 +1289,7 @@ function applyFilters() {
   });
 
   const fs = document.getElementById('filter-status');
-  const anyFilter = q || kwOnly || activeCat || activeDateFilter || activeSrcGroup || advFrom || advTo;
+  const anyFilter = q || kwOnly || activeCat || (activeDateFilter && activeDateFilter !== '') || activeSrcGroup || advFrom || advTo;
   if (fs) fs.textContent = anyFilter ? shown + ' results' : '';
 }
 
@@ -1200,13 +1313,14 @@ function filterSrc(btn) {
 function srcGroup(sourceId) {
   if (!sourceId) return '';
   if (sourceId.startsWith('govuk_'))    return 'govuk';
+  if (sourceId.startsWith('events_'))   return 'events';
   if (sourceId.startsWith('bills_'))    return 'bills';
   if (sourceId.startsWith('cmt_'))      return 'committee';
   if (sourceId.startsWith('votes_'))    return 'votes';
-  if (sourceId.startsWith('oraq_'))     return 'oraq';
-  if (sourceId.startsWith('written_'))  return 'written';
+  if (sourceId.startsWith('oraq_'))     return 'votes';    // merged into votes group
+  if (sourceId.startsWith('written_'))  return 'hansard';  // merged into hansard group
   if (sourceId.startsWith('hansard_'))  return 'hansard';
-  if (sourceId.startsWith('now_'))      return 'now';
+  if (sourceId.startsWith('now_'))      return 'events';   // live now = events group
   return '';
 }
 
@@ -1266,9 +1380,8 @@ function setView(mode) {
 // ── Calendar renderer ─────────────────────────────────────────────────────────
 
 const SRC_COLORS = {
-  govuk:'#1d4ed8', bills:'#0891b2', committee:'#7c3aed',
-  votes:'#d97706', oraq:'#059669', written:'#9d174d',
-  hansard:'#374151', now:'#dc2626',
+  govuk:'#1d4ed8', events:'#0e7490', bills:'#0891b2', committee:'#7c3aed',
+  votes:'#d97706', hansard:'#374151',
 };
 
 function calPrev()  { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
@@ -1518,6 +1631,96 @@ function exportICS() {
   if (!items.length) { alert('No items with dates to export.'); return; }
   downloadICSBlob(buildICS(items), `fc-harvest-${new Date().toISOString().slice(0,10)}.ics`);
 }
+// ── Keyword editor ────────────────────────────────────────────────────────────
+
+const KW_STORAGE_KEY = 'fc-harvest-keywords';
+const DEFAULT_KW_CATEGORIES = JSON.parse(JSON.stringify(KEYWORD_CATEGORIES)); // deep copy
+
+function loadUserKeywords() {
+  try {
+    const stored = localStorage.getItem(KW_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Merge: add user keywords to each category
+      for (const [cat, kws] of Object.entries(parsed)) {
+        if (KEYWORD_CATEGORIES[cat]) {
+          const existing = new Set(KEYWORD_CATEGORIES[cat]);
+          for (const kw of kws) if (!existing.has(kw)) KEYWORD_CATEGORIES[cat].push(kw);
+        }
+      }
+    }
+  } catch(_) {}
+}
+
+function toggleKwEditor() {
+  const panel = document.getElementById('kw-panel');
+  const isOpen = !panel.classList.contains('hidden');
+  if (isOpen) { panel.classList.add('hidden'); return; }
+  buildKwEditor();
+  panel.classList.remove('hidden');
+}
+
+function buildKwEditor() {
+  const grid = document.getElementById('kw-editor-grid');
+  grid.innerHTML = '';
+  for (const [cat, kws] of Object.entries(KEYWORD_CATEGORIES)) {
+    const box = document.createElement('div');
+    box.className = 'kw-cat-box adv-section';
+    box.id = 'kw-box-' + cat;
+    const color = {energy:'#c2410c', ai:'#1d4ed8', health:'#9d174d', tax:'#15803d'}[cat] || '#374151';
+    box.innerHTML = `<h4 style="color:${color}">${cat === 'ai' ? 'AI' : cap(cat)}</h4>
+      <div class="kw-tags" id="kw-tags-${cat}"></div>
+      <div class="kw-add-row">
+        <input type="text" id="kw-input-${cat}" placeholder="Add keyword…" onkeydown="if(event.key==='Enter')addKw('${cat}')">
+        <button class="kw-add-btn" onclick="addKw('${cat}')">Add</button>
+      </div>`;
+    grid.appendChild(box);
+    renderKwTags(cat, kws);
+  }
+}
+
+function renderKwTags(cat, kws) {
+  const container = document.getElementById('kw-tags-' + cat);
+  if (!container) return;
+  container.innerHTML = kws.map((kw, i) => `
+    <span class="kw-tag">
+      ${esc(kw)}
+      <button onclick="removeKw('${cat}', ${i})" title="Remove">✕</button>
+    </span>`).join('');
+}
+
+function addKw(cat) {
+  const input = document.getElementById('kw-input-' + cat);
+  const kw = (input.value || '').trim().toLowerCase();
+  if (!kw) return;
+  if (!KEYWORD_CATEGORIES[cat].includes(kw)) {
+    KEYWORD_CATEGORIES[cat].push(kw);
+    renderKwTags(cat, KEYWORD_CATEGORIES[cat]);
+  }
+  input.value = '';
+}
+
+function removeKw(cat, idx) {
+  KEYWORD_CATEGORIES[cat].splice(idx, 1);
+  renderKwTags(cat, KEYWORD_CATEGORIES[cat]);
+}
+
+function saveKeywords() {
+  localStorage.setItem(KW_STORAGE_KEY, JSON.stringify(KEYWORD_CATEGORIES));
+  // Re-run matching on existing items
+  for (const item of allItems) item.matched_cats = matchCats(item.title, item.summary || '');
+  renderAll();
+  document.getElementById('kw-panel').classList.add('hidden');
+}
+
+function resetKeywords() {
+  localStorage.removeItem(KW_STORAGE_KEY);
+  for (const [cat, kws] of Object.entries(DEFAULT_KW_CATEGORIES)) {
+    KEYWORD_CATEGORIES[cat] = [...kws];
+  }
+  buildKwEditor();
+}
+
 function toggleGrp(id) {
   const body = document.getElementById('body-' + id);
   const chev = document.getElementById('chev-' + id);

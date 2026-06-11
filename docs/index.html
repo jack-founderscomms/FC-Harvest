@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FC-Harvest — Parliamentary Monitor</title>
+<title>FC Monitoring — Parliamentary Monitor</title>
 <style>
 :root{
   --bg:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#1a1a2e;--muted:#6b7280;
@@ -299,7 +299,7 @@ input[type=date]:focus{border-color:var(--accent)}
 
 <div class="header">
   <div>
-    <h1>FC-Harvest</h1>
+    <h1>FC Monitoring</h1>
     <div class="header-sub">UK Parliament &amp; Government Monitor</div>
   </div>
   <div class="header-right">
@@ -448,7 +448,7 @@ input[type=date]:focus{border-color:var(--accent)}
 </div>
 
 <div class="footer">
-  FC-Harvest · Live data from GOV.UK · bills-api · commonsvotes-api · lordsvotes-api ·
+  FC Monitoring · Live data from GOV.UK · bills-api · commonsvotes-api · lordsvotes-api ·
   committees-api · oralquestionsandmotions-api · questions-statements-api · hansard-api · now-api ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>
@@ -546,7 +546,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-harvest-v8';
+const CACHE_KEY = 'fc-monitoring-v9';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -1712,7 +1712,7 @@ function outlookCalUrl(item) {
 }
 
 function makeICSEvent(item) {
-  const uid = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-harvest';
+  const uid = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-monitoring';
   const dt  = itemDate(item);
   const dtStamp = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
   const title   = (item.title || '').replace(/\n/g,' ');
@@ -1734,7 +1734,7 @@ function buildICS(items) {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//FC-Harvest//Parliamentary Monitor//EN',
+    'PRODID:-//FC Monitoring//Parliamentary Monitor//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     ...items.map(makeICSEvent),
@@ -1758,11 +1758,11 @@ function downloadSingleICS(item) {
 function exportICS() {
   const items = getVisibleItems().filter(i => i.published_at);
   if (!items.length) { alert('No items with dates to export.'); return; }
-  downloadICSBlob(buildICS(items), `fc-harvest-${new Date().toISOString().slice(0,10)}.ics`);
+  downloadICSBlob(buildICS(items), `fc-monitoring-${new Date().toISOString().slice(0,10)}.ics`);
 }
 // ── Keyword editor ────────────────────────────────────────────────────────────
 
-const KW_STORAGE_KEY = 'fc-harvest-keywords';
+const KW_STORAGE_KEY = 'fc-monitoring-keywords';
 const DEFAULT_KW_CATEGORIES = JSON.parse(JSON.stringify(KEYWORD_CATEGORIES)); // deep copy
 
 function loadUserKeywords() {

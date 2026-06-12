@@ -383,10 +383,10 @@ input[type=date]:focus{border-color:var(--accent)}
 <div class="date-bar">
   <span class="date-bar-label">Date:</span>
   <button class="date-btn active" data-date="" onclick="filterDate(this)">All</button>
-  <button class="date-btn" data-date="today"  onclick="filterDate(this)">Today</button>
-  <button class="date-btn" data-date="last7"  onclick="filterDate(this)">This week</button>
-  <button class="date-btn" data-date="next7"  onclick="filterDate(this)">Coming week</button>
-  <button class="date-btn" data-date="next30" onclick="filterDate(this)">Coming month</button>
+  <button class="date-btn" data-date="today"     onclick="filterDate(this)">Today</button>
+  <button class="date-btn" data-date="last7"     onclick="filterDate(this)">This week</button>
+  <button class="date-btn" data-date="next_week" onclick="filterDate(this)">Next week</button>
+  <button class="date-btn" data-date="next30"    onclick="filterDate(this)">Next 30 days</button>
   <button class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
     <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm2 4h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm2 4h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"/></svg>
     Filters
@@ -516,13 +516,14 @@ const GOVUK_SOURCES = [
 ];
 
 const COMMITTEE_SOURCES = [
-  {id:'cmt_sit',   label:'SIT Committee (Commons)',          searchName:'Science, Innovation and Technology', house:'Commons'},
-  {id:'cmt_st',    label:'Science & Technology (Lords)',     searchName:'Science and Technology',            house:'Lords'},
-  {id:'cmt_bt',    label:'Business & Trade (Commons)',       searchName:'Business and Trade',                house:'Commons'},
-  {id:'cmt_cd',    label:'Communications & Digital (Lords)', searchName:'Communications and Digital',        house:'Lords'},
-  {id:'cmt_ea',    label:'Economic Affairs (Lords)',         searchName:'Economic Affairs',                  house:'Lords'},
-  {id:'cmt_ir',    label:'Industry & Regulators (Lords)',    searchName:'Industry and Regulators',           house:'Lords'},
-  {id:'cmt_treas', label:'Treasury Committee (Commons)',     searchName:'Treasury',                          house:'Commons'},
+  {id:'cmt_hsc',   label:'Health & Social Care Committee (Commons)', searchName:'Health and Social Care',            house:'Commons'},
+  {id:'cmt_sit',   label:'SIT Committee (Commons)',                  searchName:'Science, Innovation and Technology', house:'Commons'},
+  {id:'cmt_st',    label:'Science & Technology (Lords)',             searchName:'Science and Technology',            house:'Lords'},
+  {id:'cmt_bt',    label:'Business & Trade (Commons)',               searchName:'Business and Trade',                house:'Commons'},
+  {id:'cmt_cd',    label:'Communications & Digital (Lords)',         searchName:'Communications and Digital',        house:'Lords'},
+  {id:'cmt_ea',    label:'Economic Affairs (Lords)',                 searchName:'Economic Affairs',                  house:'Lords'},
+  {id:'cmt_ir',    label:'Industry & Regulators (Lords)',            searchName:'Industry and Regulators',           house:'Lords'},
+  {id:'cmt_treas', label:'Treasury Committee (Commons)',             searchName:'Treasury',                          house:'Commons'},
 ];
 
 const WRITTEN_SOURCES = [
@@ -569,7 +570,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v13';
+const CACHE_KEY = 'fc-monitoring-v14';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -1134,7 +1135,12 @@ async function fetchWhatson(src) {
   //    https://whatson-api.parliament.uk/calendar/events/list.json
   //    31-day max per call — split into past 3 days + next 31 days
   const calBase = 'https://whatson-api.parliament.uk/calendar/events/list.json';
-  for (const [rangeStart, rangeEnd] of [[since, daysAgo(0)], [daysAgo(0), until]]) {
+  // API max = 31 days per call; split into 3 windows to cover 6 weeks ahead
+  for (const [rangeStart, rangeEnd] of [
+    [since,         daysAgo(0)],    // past 3 days → today
+    [daysAgo(0),    daysAgo(-21)],  // today → +21 days (covers coming 3 weeks)
+    [daysAgo(-21),  daysAgo(-42)],  // +21 → +42 days
+  ]) {
     const p = new URLSearchParams({
       'queryParameters.startDate': rangeStart + 'T00:00:00',
       'queryParameters.endDate':   rangeEnd   + 'T23:59:59',
@@ -1397,9 +1403,12 @@ function applyFilters() {
   } else if (activeDateFilter === 'last7') {
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
     winStart = new Date(today); winStart.setDate(winStart.getDate()-7);
-  } else if (activeDateFilter === 'next7') {
-    winStart = today;
-    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+8);
+  } else if (activeDateFilter === 'next_week') {
+    // Monday–Sunday of next calendar week
+    const dow = today.getDay(); // 0=Sun,1=Mon…
+    const daysToNextMon = dow === 0 ? 1 : 8 - dow;
+    winStart = new Date(today); winStart.setDate(today.getDate() + daysToNextMon);
+    winEnd   = new Date(winStart); winEnd.setDate(winStart.getDate() + 7);
   } else if (activeDateFilter === 'next30') {
     winStart = today;
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+31);

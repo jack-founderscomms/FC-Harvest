@@ -569,7 +569,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v11';
+const CACHE_KEY = 'fc-monitoring-v12';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -1150,6 +1150,8 @@ async function fetchWhatson(src) {
           doc_type:     docType,
           source_id:    src.id, source_label: src.label,
           _is_event:    true,
+          start_time:   ev.StartTime || '',
+          end_time:     ev.EndTime   || '',
         });
       }
     } catch(e) { errors.push(`Calendar API: ${e.message}`); }
@@ -1690,51 +1692,102 @@ function toggleCalDrop(e, id) {
 document.addEventListener('click', () => document.querySelectorAll('.cal-drop.open').forEach(d => d.classList.remove('open')));
 
 function itemDate(item) {
-  const ds = (item.published_at || '').slice(0, 10);
-  return ds.replace(/-/g, '') || '';
+  return (item.published_at || '').slice(0, 10).replace(/-/g, '') || '';
+}
+
+// Parse "HH:MM" or "HH:MMam/pm" → "HHMMSS" UTC-naive for ICS, or ISO string for URLs
+function parseTime(timeStr) {
+  if (!timeStr) return null;
+  // Strip any am/pm suffix that Parliament sometimes includes
+  const clean = timeStr.trim().replace(/\s*(am|pm)$/i, '');
+  const [h, m] = clean.split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return null;
+  return { h, m, ics: `${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`, iso: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}` };
+}
+
+function calDescription(item) {
+  const parts = [];
+  if (item.doc_type)      parts.push(item.doc_type.replace(/^\w/, c => c.toUpperCase()));
+  if (item.summary)       parts.push(cleanText(item.summary));
+  if (item.source_label)  parts.push(`Source: ${item.source_label}`);
+  if (item.url)           parts.push(item.url);
+  return parts.join('\n\n');
 }
 
 function googleCalUrl(item) {
-  const dt = itemDate(item);
-  const start = dt || new Date().toISOString().slice(0,10).replace(/-/g,'');
-  const end   = start; // all-day
+  const dateStr = (item.published_at || '').slice(0, 10);
+  const st = parseTime(item.start_time);
+  const et = parseTime(item.end_time);
+  let dates;
+  if (st && dateStr) {
+    // Timed event: format YYYYMMDDTHHMMSS / YYYYMMDDTHHMMSS (local, no Z = floating)
+    const d = dateStr.replace(/-/g, '');
+    const endT = et ? et.ics : String(st.h + 1).padStart(2,'0') + st.ics.slice(2); // +1h default
+    dates = `${d}T${st.ics}/${d}T${endT}`;
+  } else {
+    const d = dateStr.replace(/-/g,'') || new Date().toISOString().slice(0,10).replace(/-/g,'');
+    dates = `${d}/${d}`;
+  }
   const p = new URLSearchParams({
     action: 'TEMPLATE',
-    text: item.title || '',
-    dates: `${start}/${start}`,
-    details: (item.summary || '') + (item.url ? '\n\n' + item.url : ''),
-    sprop: `website:${item.url || ''}`,
+    text: cleanText(item.title) || '',
+    dates,
+    details: calDescription(item),
+    location: '',
   });
   return `https://calendar.google.com/calendar/render?${p}`;
 }
 
 function outlookCalUrl(item) {
-  const dt = (item.published_at || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
+  const dateStr = (item.published_at || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
+  const st = parseTime(item.start_time);
+  const et = parseTime(item.end_time);
+  let startdt, enddt;
+  if (st) {
+    startdt = `${dateStr}T${st.iso}:00`;
+    enddt   = et ? `${dateStr}T${et.iso}:00` : `${dateStr}T${String(st.h+1).padStart(2,'0')}:${String(st.m).padStart(2,'0')}:00`;
+  } else {
+    startdt = dateStr;
+    enddt   = dateStr;
+  }
   const p = new URLSearchParams({
     path: '/calendar/action/compose',
     rru: 'addevent',
-    subject: item.title || '',
-    startdt: dt,
-    enddt: dt,
-    body: (item.summary || '') + (item.url ? '\n\n' + item.url : ''),
+    subject: cleanText(item.title) || '',
+    startdt,
+    enddt,
+    body: calDescription(item),
   });
   return `https://outlook.office.com/calendar/deeplink/compose?${p}`;
 }
 
 function makeICSEvent(item) {
-  const uid = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-monitoring';
-  const dt  = itemDate(item);
+  const uid     = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-monitoring';
+  const dateStr = (item.published_at || '').slice(0, 10);
+  const d       = dateStr.replace(/-/g,'');
   const dtStamp = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
-  const title   = (item.title || '').replace(/\n/g,' ');
-  const desc    = ((item.summary || '') + (item.url ? '\n\n' + item.url : '')).replace(/\n/g,'\\n');
+  const title   = cleanText(item.title || '');
+  const desc    = calDescription(item).replace(/\n/g,'\\n');
+  const st = parseTime(item.start_time);
+  const et = parseTime(item.end_time);
+
+  let dtStart, dtEnd;
+  if (st && d) {
+    dtStart = `DTSTART;TZID=Europe/London:${d}T${st.ics}`;
+    const endHour = et ? et.ics : String(st.h + 1).padStart(2,'0') + st.ics.slice(2);
+    dtEnd   = `DTEND;TZID=Europe/London:${d}T${endHour}`;
+  } else {
+    dtStart = d ? `DTSTART;VALUE=DATE:${d}` : `DTSTART;VALUE=DATE:${new Date().toISOString().slice(0,10).replace(/-/g,'')}`;
+    dtEnd   = d ? `DTEND;VALUE=DATE:${d}` : '';
+  }
   return [
     'BEGIN:VEVENT',
     `UID:${uid}`,
     `DTSTAMP:${dtStamp}`,
-    dt ? `DTSTART;VALUE=DATE:${dt}` : `DTSTART;VALUE=DATE:${new Date().toISOString().slice(0,10).replace(/-/g,'')}`,
-    dt ? `DTEND;VALUE=DATE:${dt}`   : '',
+    dtStart,
+    dtEnd,
     `SUMMARY:${title}`,
-    desc ? `DESCRIPTION:${desc}` : '',
+    desc    ? `DESCRIPTION:${desc}` : '',
     item.url ? `URL:${item.url}` : '',
     'END:VEVENT',
   ].filter(Boolean).join('\r\n');

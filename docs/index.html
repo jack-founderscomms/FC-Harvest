@@ -546,7 +546,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v9';
+const CACHE_KEY = 'fc-monitoring-v10';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -1085,41 +1085,83 @@ async function fetchWhatson(src) {
     seen.add(item.item_id); items.push(item);
   }
 
-  // 1. whatson-api — every known endpoint variant, fail loudly for diagnosis
-  for (const url of [
-    `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}`,
-    `https://whatson-api.parliament.uk/api/Events?startDate=${since}&endDate=${until}`,
-    `https://whatson-api.parliament.uk/api/events?startDate=${since}&endDate=${until}&house=${house}`,
-    `https://whatson-api.parliament.uk/api/v1/events?startDate=${since}&endDate=${until}`,
-    `https://whatson-api.parliament.uk/api/events`,
-    `https://whatson-api.parliament.uk/api/CommonsBusiness`,
-    `https://whatson-api.parliament.uk/api/LordsBusiness`,
-  ]) {
+  // 1. Official UK Parliament Calendar API
+  //    https://whatson-api.parliament.uk/calendar/events/list.json
+  //    31-day max per call — split into past 3 days + next 31 days
+  const calBase = 'https://whatson-api.parliament.uk/calendar/events/list.json';
+  for (const [start, end] of [[since, daysAgo(0)], [daysAgo(0), until]]) {
+    const p = new URLSearchParams({
+      'queryParameters.startDate': start + 'T00:00:00',
+      'queryParameters.endDate':   end   + 'T23:59:59',
+      'queryParameters.house':     house,
+    });
     try {
-      const r = await fetch(url, {headers:{Accept:'application/json, */*'}});
-      if (!r.ok) { errors.push(`${url}: HTTP ${r.status}`); continue; }
+      const r = await fetch(`${calBase}?${p}`, {headers:{Accept:'application/json'}});
+      if (!r.ok) { errors.push(`Calendar API: HTTP ${r.status}`); continue; }
       const data = await r.json();
-      // Probe every possible array key
-      let evs = Array.isArray(data) ? data : null;
-      if (!evs) {
-        for (const key of ['Events','events','Results','results','items','BusinessItems','value','data']) {
-          if (Array.isArray(data[key]) && data[key].length) { evs = data[key]; break; }
-        }
-      }
-      if (!evs || !evs.length) { errors.push(`${url}: 0 events in response`); continue; }
+      const evs = Array.isArray(data) ? data : [];
       for (const ev of evs) {
-        const evHouse = (ev.House||ev.house||ev.ChamberName||ev.chamberName||'').toLowerCase();
-        if (evHouse && house !== 'All' && !evHouse.includes(house.toLowerCase()) && !evHouse.includes('both')) continue;
-        add(parseWhatsonEvent(ev, house, src));
+        const title = (ev.Description||ev.SummarisedDetails||'').trim();
+        if (!title) continue;
+        const evId   = ev.Id||'';
+        const start  = (ev.StartDate||'').slice(0,10);
+        const cat    = (ev.Category||ev.Type||'').trim();
+        const loc    = (ev.Location||'').trim();
+        const time   = ev.StartTime ? `${ev.StartTime}${ev.EndTime ? '–'+ev.EndTime : ''}` : '';
+        const cmt    = ev.Committee?.Description || '';
+        const members = (ev.Members||[]).map(m=>m.Name).filter(Boolean).join(', ');
+        const tags   = (ev.Tags||[]).map(t=>t.Description).filter(Boolean).join(', ');
+        // Determine doc_type from category
+        const catLow = cat.toLowerCase();
+        const docType = catLow.includes('committee') || catLow.includes('evidence') ? 'committee hearing'
+                      : catLow.includes('debate') || catLow.includes('westminster') ? 'parliament event'
+                      : catLow.includes('question') ? 'oral questions'
+                      : 'parliament event';
+        const summaryParts = [time, cat, cmt, loc, tags, members ? `Members: ${members}` : ''].filter(Boolean);
+        add({
+          item_id:      `events_cal_${house}_${evId||start+'_'+title.slice(0,20).replace(/\W+/g,'_')}`,
+          title,
+          url:          (ev.Metadata?.[0]?.Url) || `https://calendar.parliament.uk/`,
+          published_at: start,
+          summary:      summaryParts.join(' · ').slice(0,400),
+          doc_type:     docType,
+          source_id:    src.id, source_label: src.label,
+          _is_event:    true,
+        });
       }
-      if (items.length) break;
-    } catch(e) { errors.push(`${url}: ${e.message}`); }
+    } catch(e) { errors.push(`Calendar API: ${e.message}`); }
   }
 
-  // 2. Commons/Lords Business Atom/RSS feeds (contains Westminster Hall, main chamber)
+  // 2. Non-sitting days (recess periods)
+  try {
+    const p = new URLSearchParams({
+      'queryParameters.startDate': since + 'T00:00:00',
+      'queryParameters.endDate':   until + 'T23:59:59',
+      'queryParameters.house':     house,
+    });
+    const r = await fetch(`https://whatson-api.parliament.uk/calendar/events/nonsitting.json?${p}`, {headers:{Accept:'application/json'}});
+    if (r.ok) {
+      const data = await r.json();
+      for (const ev of (Array.isArray(data) ? data : [])) {
+        const title = (ev.Description||ev.SummarisedDetails||ev.Category||'').trim();
+        if (!title) continue;
+        add({
+          item_id:      `events_nsd_${house}_${ev.Id||title.slice(0,20).replace(/\W+/g,'_')}`,
+          title:        `⛔ ${title}`,
+          url:          'https://calendar.parliament.uk/',
+          published_at: (ev.StartDate||'').slice(0,10),
+          summary:      `${house} non-sitting · ${(ev.StartDate||'').slice(0,10)} to ${(ev.EndDate||'').slice(0,10)}`,
+          doc_type:     'parliament event',
+          source_id:    src.id, source_label: src.label,
+          _is_event:    false,
+        });
+      }
+    }
+  } catch(_) {}
+
+  // 3. Commons/Lords Business Atom feeds — floor debates incl. Westminster Hall
   const feedUrls = house === 'Commons' ? [
     'https://commonsbusiness.parliament.uk/Feed/Atom/WeeklyChamberBusiness',
-    'https://commonsbusiness.parliament.uk/Feed/Rss/WeeklyChamberBusiness',
     'https://commonsbusiness.parliament.uk/Feed/Atom/DailyChamberBusiness',
   ] : [
     'https://lordsbusiness.parliament.uk/Feed/Atom/WeeklyLordsBusiness',
@@ -1155,63 +1197,8 @@ async function fetchWhatson(src) {
     } catch(e) { errors.push(`Feed ${feedUrl}: ${e.message}`); }
   }
 
-  // 3. committees-api EvidenceSessions broad sweep
-  try {
-    const data = await fetchJSON(
-      `https://committees-api.parliament.uk/api/EvidenceSessions?startDate=${since}&endDate=${until}&house=${house}&take=50`
-    );
-    for (const r of (toArr(data)||[])) {
-      const t = (r.title||r.Title||r.sessionTitle||r.inquiry?.title||'').trim();
-      if (!t) continue;
-      const sid  = r.id||r.Id||r.sessionId||'';
-      const when = (r.startDate||r.StartDate||r.date||r.Date||'').slice(0,10);
-      const cmtName = (r.committee?.name||r.committeeName||r.CommitteeName||'').trim();
-      const witnesses = (r.witnesses||r.Witnesses||[]).map(w=>w.name||w.Name||w).filter(Boolean).join(', ');
-      add({
-        item_id:      `events_es_${sid||when+'_'+t.slice(0,20)}`,
-        title:        cmtName ? `${cmtName}: ${t}` : t,
-        url:          r.url||r.Url||'https://committees.parliament.uk/',
-        published_at: when,
-        summary:      witnesses ? `Witnesses: ${witnesses}` : (r.description||r.Description||'').slice(0,250),
-        doc_type:     'committee hearing',
-        source_id:    src.id, source_label: src.label,
-        _is_event:    true,
-      });
-    }
-  } catch(e) { errors.push(`EvidenceSessions: ${e.message}`); }
-
-  // 4. Oral questions as grouped events
-  if (house === 'Commons') {
-    try {
-      for (let offset = 0; offset <= 14; offset++) {
-        const d = daysAgo(-offset);
-        const data = await fetchJSON(`https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`);
-        const qs = toArr(data)||(data&&(data.Response||data.results||data.value))||[];
-        const byBody = {};
-        for (const q of qs) {
-          const body = (q.AnsweringBodyName||q.answeringBodyName||'Questions').trim();
-          const ans  = (q.OralAnswerDate||q.oralAnswerDate||d).slice(0,10);
-          const key  = `${ans}_${body}`;
-          if (!byBody[key]) byBody[key]={body,date:ans,count:0};
-          byBody[key].count++;
-        }
-        for (const grp of Object.values(byBody)) {
-          add({
-            item_id:`events_oraq_${grp.date}_${grp.body.replace(/\W+/g,'_').slice(0,30)}`,
-            title:`Oral Questions: ${grp.body}`,
-            url:'https://questions-statements.parliament.uk/oral-questions',
-            published_at:grp.date,
-            summary:`${grp.count} question${grp.count>1?'s':''} scheduled`,
-            doc_type:'oral questions',
-            source_id:src.id, source_label:src.label, _is_event:true,
-          });
-        }
-      }
-    } catch(e) { errors.push(`OralQ: ${e.message}`); }
-  }
-
   if (!items.length) {
-    throw new Error(`Parliament APIs returned 0 events. Errors: ${errors.slice(0,3).join(' | ')}`);
+    throw new Error(`Parliament Calendar API returned 0 events. Errors: ${errors.slice(0,3).join(' | ')}`);
   }
   return items;
 }

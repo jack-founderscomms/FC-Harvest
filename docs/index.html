@@ -1144,7 +1144,7 @@ async function fetchWhatson(src) {
         add({
           item_id:      `events_cal_${house}_${evId||start+'_'+title.slice(0,20).replace(/\W+/g,'_')}`,
           title,
-          url:          (ev.Metadata?.[0]?.Url) || `https://calendar.parliament.uk/`,
+          url:          (ev.Metadata?.[0]?.Url) || 'https://whatson.parliament.uk',
           published_at: start,
           summary:      summaryParts.join(' · ').slice(0,400),
           doc_type:     docType,
@@ -1173,7 +1173,7 @@ async function fetchWhatson(src) {
         add({
           item_id:      `events_nsd_${house}_${ev.Id||title.slice(0,20).replace(/\W+/g,'_')}`,
           title:        `⛔ ${title}`,
-          url:          'https://calendar.parliament.uk/',
+          url:          'https://whatson.parliament.uk',
           published_at: (ev.StartDate||'').slice(0,10),
           summary:      `${house} non-sitting · ${(ev.StartDate||'').slice(0,10)} to ${(ev.EndDate||'').slice(0,10)}`,
           doc_type:     'parliament event',
@@ -1707,10 +1707,13 @@ function parseTime(timeStr) {
 
 function calDescription(item) {
   const parts = [];
-  if (item.doc_type)      parts.push(item.doc_type.replace(/^\w/, c => c.toUpperCase()));
-  if (item.summary)       parts.push(cleanText(item.summary));
-  if (item.source_label)  parts.push(`Source: ${item.source_label}`);
-  if (item.url)           parts.push(item.url);
+  if (item.doc_type)     parts.push(item.doc_type.replace(/^\w/, c => c.toUpperCase()));
+  if (item.summary)      parts.push(cleanText(item.summary));
+  if (item.source_label) parts.push(`Source: ${item.source_label}`);
+  // Always include a direct link — prefer the event URL, then fall back to What's On
+  const link = item.url && !item.url.includes('calendar.parliament.uk') ? item.url : null;
+  if (link) parts.push(`View event: ${link}`);
+  parts.push(`What's On in Parliament: https://whatson.parliament.uk`);
   return parts.join('\n\n');
 }
 

@@ -569,7 +569,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v12';
+const CACHE_KEY = 'fc-monitoring-v13';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -635,8 +635,8 @@ async function fetchAll() {
       fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Commons&currentCommitteesOnly=true'),
       fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Lords&currentCommitteesOnly=true'),
     ]);
-    committeeLists.Commons = toArr(cd);
-    committeeLists.Lords   = toArr(ld);
+    committeeLists.Commons = toArrDeep(cd);
+    committeeLists.Lords   = toArrDeep(ld);
     doneProg('cmt-lists');
   } catch (e) {
     committeeLists.Commons = [];
@@ -740,13 +740,13 @@ async function fetchCommittee(src) {
   }
   if (!cmt) throw new Error('Not found: ' + src.searchName);
 
-  const id = cmt.id || cmt.Id;
+  const id = cmt.id || cmt.Id || cmt.committeeId || cmt.CommitteeId || cmt.commiteeId;
   const items = [];
 
   // News articles
   try {
     const nd = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/NewsArticles?take=25`);
-    for (const r of (toArr(nd) || [])) {
+    for (const r of (toArrDeep(nd) || [])) {
       const t = (r.title||r.Title||'').trim();
       if (!t) continue;
       const aid = r.id||r.Id||'';
@@ -765,7 +765,7 @@ async function fetchCommittee(src) {
   // Inquiries / calls for evidence
   try {
     const iq = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/Inquiries?take=15`);
-    for (const r of (toArr(iq) || [])) {
+    for (const r of (toArrDeep(iq) || [])) {
       const t = (r.title||r.Title||r.inquiryTitle||'').trim();
       if (!t) continue;
       const iid = r.id||r.Id||r.inquiryId||'';
@@ -811,10 +811,20 @@ async function fetchCommittee(src) {
 }
 
 async function fetchWritten(src) {
-  const data = await fetchJSON(
-    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40&skip=0`
-  );
-  const results = toArr(data) || toArr(data && data.results) || [];
+  // Try multiple URL/param variants — the API has changed its casing over time
+  let data = null;
+  for (const url of [
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40`,
+    `https://questions-statements-api.parliament.uk/api/WrittenStatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40`,
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?House=${src.house}&DateFrom=${daysAgo(42)}&Take=40`,
+  ]) {
+    try {
+      const r = await fetch(url, {headers:{Accept:'application/json'}});
+      if (r.ok) { data = await r.json(); break; }
+    } catch(_) {}
+  }
+  if (!data) return [];
+  const results = toArrDeep(data) || toArr(data && data.results) || [];
   return results.map(r => {
     const id = r.id||r.uin||r.UIN||'';
     const body = r.answeringBodyName||r.AnsweringBodyName||r.department||'';
@@ -937,7 +947,14 @@ async function fetchBills(src) {
     sortOrder: 'DateUpdatedDescending',
     take: 25, skip: 0,
   });
-  const data = await fetchJSON(`https://bills-api.parliament.uk/api/v1/Bills?${params}`);
+  // bills-api may block CORS from some origins — try then return empty rather than error
+  let data;
+  try { data = await fetchJSON(`https://bills-api.parliament.uk/api/v1/Bills?${params}`); }
+  catch(e) {
+    if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch') || e.message.includes('CORS'))
+      return []; // CORS blocked — not a broken API
+    throw e;
+  }
   const items = toArr(data) || (data && data.items) || [];
   return items.map(b => {
     const billId = b.billId || b.id || '';
@@ -1040,7 +1057,12 @@ async function fetchOralQuestions(src) {
 
 async function fetchNow(src) {
   const endpoint = src.house === 'Commons' ? 'CommonsBusiness' : 'LordsBusiness';
-  const data = await fetchJSON(`https://now-api.parliament.uk/api/${endpoint}`);
+  let data;
+  try { data = await fetchJSON(`https://now-api.parliament.uk/api/${endpoint}`); }
+  catch(e) {
+    if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch')) return [];
+    throw e;
+  }
 
   // Response is a list of business items currently happening / scheduled today
   const items = [];
@@ -1112,10 +1134,10 @@ async function fetchWhatson(src) {
   //    https://whatson-api.parliament.uk/calendar/events/list.json
   //    31-day max per call — split into past 3 days + next 31 days
   const calBase = 'https://whatson-api.parliament.uk/calendar/events/list.json';
-  for (const [start, end] of [[since, daysAgo(0)], [daysAgo(0), until]]) {
+  for (const [rangeStart, rangeEnd] of [[since, daysAgo(0)], [daysAgo(0), until]]) {
     const p = new URLSearchParams({
-      'queryParameters.startDate': start + 'T00:00:00',
-      'queryParameters.endDate':   end   + 'T23:59:59',
+      'queryParameters.startDate': rangeStart + 'T00:00:00',
+      'queryParameters.endDate':   rangeEnd   + 'T23:59:59',
       'queryParameters.house':     house,
     });
     try {
@@ -1127,7 +1149,7 @@ async function fetchWhatson(src) {
         const title = cleanText(ev.Description||ev.SummarisedDetails||'');
         if (!title) continue;
         const evId   = ev.Id||'';
-        const start  = (ev.StartDate||'').slice(0,10);
+        const evDate = (ev.StartDate||'').slice(0,10);
         const cat    = cleanText(ev.Category||ev.Type||'');
         const loc    = cleanText(ev.Location||'');
         const time   = ev.StartTime ? `${ev.StartTime}${ev.EndTime ? '–'+ev.EndTime : ''}` : '';
@@ -1142,10 +1164,10 @@ async function fetchWhatson(src) {
                       : 'parliament event';
         const summaryParts = [time, cat, cmt, loc, tags, members ? `Members: ${members}` : ''].filter(Boolean);
         add({
-          item_id:      `events_cal_${house}_${evId||start+'_'+title.slice(0,20).replace(/\W+/g,'_')}`,
+          item_id:      `events_cal_${house}_${evId||evDate+'_'+title.slice(0,20).replace(/\W+/g,'_')}`,
           title,
           url:          (ev.Metadata?.[0]?.Url) || 'https://whatson.parliament.uk',
-          published_at: start,
+          published_at: evDate,
           summary:      summaryParts.join(' · ').slice(0,400),
           doc_type:     docType,
           source_id:    src.id, source_label: src.label,
@@ -1949,6 +1971,21 @@ function toArr(d) {
   if (Array.isArray(d)) return d;
   if (d && typeof d === 'object') return d.items || d.value || d.results || d.searchResults || null;
   return null;
+}
+// Deeper search — also tries Response, data, and first array-valued key found
+function toArrDeep(d) {
+  const quick = toArr(d);
+  if (quick && quick.length) return quick;
+  if (!d || typeof d !== 'object') return [];
+  // Try more keys
+  for (const k of ['Response','response','data','Data','committees','Committees','collection']) {
+    if (Array.isArray(d[k]) && d[k].length) return d[k];
+  }
+  // Last resort: grab the first array-valued key with items
+  for (const v of Object.values(d)) {
+    if (Array.isArray(v) && v.length) return v;
+  }
+  return [];
 }
 
 function daysAgo(n) { return new Date(Date.now() - n*86400000).toISOString().slice(0,10); }

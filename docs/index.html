@@ -16,6 +16,9 @@
   --cat-ai-bg:#eef3ff;--cat-ai-text:#2a3f6a;--cat-ai-border:#c7d4f5;
   --cat-health-bg:#fdf2f8;--cat-health-text:#9d174d;--cat-health-border:#fbcfe8;
   --cat-tax-bg:#f0fdf4;--cat-tax-text:#15803d;--cat-tax-border:#bbf7d0;
+  --cat-education-bg:#fefce8;--cat-education-text:#854d0e;--cat-education-border:#fde68a;
+  --cat-technology-bg:#f0f9ff;--cat-technology-text:#0369a1;--cat-technology-border:#bae6fd;
+  --consultation-bg:#fff8f0;--consultation-border:#fb923c;--consultation-text:#9a3412;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -57,6 +60,11 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .btn-sm{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;
         cursor:pointer;border:1px solid var(--border);background:var(--tag);color:var(--muted)}
 .btn-sm:hover{background:var(--border);color:var(--text)}
+.btn-consultation{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:700;
+  cursor:pointer;border:2px solid var(--consultation-border);
+  background:#fff;color:var(--consultation-text);white-space:nowrap;transition:all .15s}
+.btn-consultation:hover{background:var(--consultation-bg)}
+.btn-consultation.active{background:var(--consultation-border);color:#fff;border-color:var(--consultation-border)}
 #filter-status{font-size:11px;color:var(--muted);margin-left:auto}
 
 /* ── Topic tabs ── */
@@ -77,6 +85,10 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .topic-tab.tab-health.active .tab-count{background:var(--cat-health-bg);color:var(--cat-health-text)}
 .topic-tab.tab-tax.active{color:var(--cat-tax-text);border-bottom-color:var(--cat-tax-text)}
 .topic-tab.tab-tax.active .tab-count{background:var(--cat-tax-bg);color:var(--cat-tax-text)}
+.topic-tab.tab-education.active{color:var(--cat-education-text);border-bottom-color:var(--cat-education-text)}
+.topic-tab.tab-education.active .tab-count{background:var(--cat-education-bg);color:var(--cat-education-text)}
+.topic-tab.tab-technology.active{color:var(--cat-technology-text);border-bottom-color:var(--cat-technology-text)}
+.topic-tab.tab-technology.active .tab-count{background:var(--cat-technology-bg);color:var(--cat-technology-text)}
 
 .content{padding:20px 24px;max-width:1100px;margin:0 auto}
 
@@ -135,6 +147,18 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
 .cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
+.cat-education{background:var(--cat-education-bg);color:var(--cat-education-text);border-color:var(--cat-education-border)}
+.cat-technology{background:var(--cat-technology-bg);color:var(--cat-technology-text);border-color:var(--cat-technology-border)}
+
+/* ── Consultation / call for evidence highlight ── */
+.item.is-consultation{
+  background:var(--consultation-bg);
+  border-left:4px solid var(--consultation-border) !important;
+}
+.item.is-consultation .item-title a{color:var(--consultation-text)}
+.consultation-flag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:10px;background:var(--consultation-border);color:#fff;
+  white-space:nowrap;letter-spacing:.02em}
 
 /* ── Source filter bar ── */
 .src-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
@@ -337,6 +361,7 @@ input[type=date]:focus{border-color:var(--accent)}
 <div class="toolbar">
   <input class="search-box" type="search" id="search" placeholder="Search titles…" oninput="applyFilters()">
   <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
+  <button class="btn-consultation" id="consultation-filter" onclick="toggleConsultationFilter()" title="Show only open consultations and calls for evidence">📋 Consultations &amp; Calls for Evidence</button>
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
   <button class="btn-sm" onclick="toggleKwEditor()" title="Edit your keyword lists">⚙ Keywords</button>
@@ -442,8 +467,10 @@ input[type=date]:focus{border-color:var(--accent)}
   <button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button>
   <button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count" id="tc-energy">0</span></button>
   <button class="topic-tab tab-ai"     data-cat="ai"     onclick="filterCat(this)">AI<span class="tab-count" id="tc-ai">0</span></button>
-  <button class="topic-tab tab-health" data-cat="health" onclick="filterCat(this)">Health<span class="tab-count" id="tc-health">0</span></button>
-  <button class="topic-tab tab-tax"    data-cat="tax"    onclick="filterCat(this)">Tax<span class="tab-count" id="tc-tax">0</span></button>
+  <button class="topic-tab tab-health"     data-cat="health"     onclick="filterCat(this)">Health<span class="tab-count" id="tc-health">0</span></button>
+  <button class="topic-tab tab-tax"        data-cat="tax"        onclick="filterCat(this)">Tax<span class="tab-count" id="tc-tax">0</span></button>
+  <button class="topic-tab tab-education"  data-cat="education"  onclick="filterCat(this)">Education<span class="tab-count" id="tc-education">0</span></button>
+  <button class="topic-tab tab-technology" data-cat="technology" onclick="filterCat(this)">Technology<span class="tab-count" id="tc-technology">0</span></button>
 </div>
 
 <div class="content">
@@ -502,6 +529,18 @@ const KEYWORD_CATEGORIES = {
     'windfall tax','tax relief','r&d tax credit','global minimum tax','pillar two','obr',
     'autumn statement','spring statement','public spending','public finances',
     'government borrowing','deficit','excise duty','customs','tariff'],
+  education: ['education','school','schools','ofsted','pupil','pupils','teacher','teachers',
+    'curriculum','university','universities','college','further education','higher education',
+    'apprenticeship','skills','ofqual','dfe','department for education','student finance',
+    'student loan','school funding','gcse','a-level','special educational needs','sen',
+    'early years','childcare','nursery','free school','academy','academies','tutoring',
+    'literacy','numeracy','stem','school inspection','school standards'],
+  technology: ['technology','tech','software','hardware','computing','computer','digital',
+    'internet','online','platform','startup','scale-up','venture capital','investment',
+    'open source','cloud','data centre','programming','coding','app','algorithm',
+    'chip','microchip','processor','5g','6g','fibre','wifi','spectrum','telecoms','infrastructure',
+    'cyber','cybersecurity','hacking','ransomware','privacy','encryption','digital economy',
+    'digital transformation','govtech','regtech','fintech','healthtech','edtech'],
 };
 
 const GOVUK_SOURCES = [
@@ -570,7 +609,7 @@ const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v14';
+const CACHE_KEY = 'fc-monitoring-v15';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -580,6 +619,7 @@ let sourceErrors = {};
 let activeCat = null;
 let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
 let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
+let activeConsultationFilter = false;
 let committeeLists = {};
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
@@ -1287,7 +1327,7 @@ function renderAll() {
   }
 
   // Tab counts
-  const catCounts = {energy:0, ai:0, health:0, tax:0};
+  const catCounts = {energy:0, ai:0, health:0, tax:0, education:0, technology:0};
   for (const item of allItems)
     for (const c of (item.matched_cats||[]))
       if (c in catCounts) catCounts[c]++;
@@ -1368,12 +1408,17 @@ function makeItemEl(item) {
 
   if (item.matched_cats && item.matched_cats.length) div.classList.add('kw-match');
 
+  const isConsultation = /consultation|inquiry|call for evidence|government_response/i.test(item.doc_type || '');
+  if (isConsultation) div.classList.add('is-consultation');
+  const consultFlag = isConsultation
+    ? `<span class="consultation-flag">📋 Open for responses</span>` : '';
+
   div.innerHTML = `
     <div class="item-title">${titleHtml}</div>
     ${summaryHtml}
     <div class="item-meta">
       ${date ? `<span>${esc(date)}</span>` : ''}
-      ${catBadges}${docBadge}
+      ${catBadges}${docBadge}${consultFlag}
       ${item._is_event ? calDropHtml(item) : ''}
     </div>`;
   return div;
@@ -1448,10 +1493,13 @@ function applyFilters() {
     const dtOk = !advOpen || docTypes.length === 0 ||
       docTypes.some(t => docType.includes(t));
 
+    const isConsultation = /consultation|inquiry|call for evidence|government_response/i.test(docType);
+    const consultOk = !activeConsultationFilter || isConsultation;
+
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
             && (!activeCat || cats.includes(activeCat))
-            && grpOk && dateOk && srcOk && dtOk;
+            && grpOk && dateOk && srcOk && dtOk && consultOk;
     item.classList.toggle('hidden', !ok);
     if (ok) shown++;
   });
@@ -1479,6 +1527,13 @@ function filterSrc(btn) {
   document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeSrcGroup = btn.dataset.src || '';
+  applyFilters();
+}
+
+function toggleConsultationFilter() {
+  activeConsultationFilter = !activeConsultationFilter;
+  const btn = document.getElementById('consultation-filter');
+  if (btn) btn.classList.toggle('active', activeConsultationFilter);
   applyFilters();
 }
 

@@ -409,7 +409,8 @@ input[type=date]:focus{border-color:var(--accent)}
   <span class="date-bar-label">Date:</span>
   <button class="date-btn active" data-date="" onclick="filterDate(this)">All</button>
   <button class="date-btn" data-date="today"     onclick="filterDate(this)">Today</button>
-  <button class="date-btn" data-date="last7"     onclick="filterDate(this)">This week</button>
+  <button class="date-btn" data-date="last7"     onclick="filterDate(this)">Last 7 days</button>
+  <button class="date-btn" data-date="last30"    onclick="filterDate(this)">Last 30 days</button>
   <button class="date-btn" data-date="next_week" onclick="filterDate(this)">Next week</button>
   <button class="date-btn" data-date="next30"    onclick="filterDate(this)">Next 30 days</button>
   <button class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
@@ -1448,6 +1449,9 @@ function applyFilters() {
   } else if (activeDateFilter === 'last7') {
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
     winStart = new Date(today); winStart.setDate(winStart.getDate()-7);
+  } else if (activeDateFilter === 'last30') {
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-30);
   } else if (activeDateFilter === 'next_week') {
     // Monday–Sunday of next calendar week
     const dow = today.getDay(); // 0=Sun,1=Mon…

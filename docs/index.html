@@ -18,6 +18,8 @@
   --cat-tax-bg:#f0fdf4;--cat-tax-text:#15803d;--cat-tax-border:#bbf7d0;
   --cat-education-bg:#fefce8;--cat-education-text:#854d0e;--cat-education-border:#fde68a;
   --cat-technology-bg:#f0f9ff;--cat-technology-text:#0369a1;--cat-technology-border:#bae6fd;
+  --cat-payments-bg:#faf5ff;--cat-payments-text:#7e22ce;--cat-payments-border:#e9d5ff;
+  --cat-custom-bg:#f5f5f4;--cat-custom-text:#44403c;--cat-custom-border:#d6d3d1;
   --consultation-bg:#fff8f0;--consultation-border:#fb923c;--consultation-text:#9a3412;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -89,6 +91,10 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .topic-tab.tab-education.active .tab-count{background:var(--cat-education-bg);color:var(--cat-education-text)}
 .topic-tab.tab-technology.active{color:var(--cat-technology-text);border-bottom-color:var(--cat-technology-text)}
 .topic-tab.tab-technology.active .tab-count{background:var(--cat-technology-bg);color:var(--cat-technology-text)}
+.topic-tab.tab-payments.active{color:var(--cat-payments-text);border-bottom-color:var(--cat-payments-text)}
+.topic-tab.tab-payments.active .tab-count{background:var(--cat-payments-bg);color:var(--cat-payments-text)}
+.topic-tab.tab-custom.active{color:var(--cat-custom-text);border-bottom-color:var(--cat-custom-text)}
+.topic-tab.tab-custom.active .tab-count{background:var(--cat-custom-bg);color:var(--cat-custom-text)}
 
 .content{padding:20px 24px;max-width:1100px;margin:0 auto}
 
@@ -108,10 +114,11 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .progress-list li.err{color:var(--err)}
 .progress-list li.err::before{content:"✗"}
 
-/* ── Error panel ── */
-.error-panel{background:var(--err-bg);border:1px solid var(--err-border);
-             border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px}
-.error-panel summary{cursor:pointer;font-weight:600;color:var(--err);font-size:13px}
+/* ── Error panel (muted, sits at the bottom of the page) ── */
+.error-panel{background:transparent;border:1px dashed var(--border);
+             border-radius:8px;padding:8px 14px;margin:24px auto 8px;max-width:1100px;
+             font-size:11px;opacity:.75}
+.error-panel summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:11px}
 .error-panel ul{margin-top:8px;padding-left:16px;color:var(--muted)}
 
 /* ── Source groups ── */
@@ -149,6 +156,8 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
 .cat-education{background:var(--cat-education-bg);color:var(--cat-education-text);border-color:var(--cat-education-border)}
 .cat-technology{background:var(--cat-technology-bg);color:var(--cat-technology-text);border-color:var(--cat-technology-border)}
+.cat-payments{background:var(--cat-payments-bg);color:var(--cat-payments-text);border-color:var(--cat-payments-border)}
+.cat-custom{background:var(--cat-custom-bg);color:var(--cat-custom-text);border-color:var(--cat-custom-border)}
 
 /* ── Consultation / call for evidence highlight ── */
 .item.is-consultation{
@@ -434,7 +443,7 @@ input[type=date]:focus{border-color:var(--accent)}
     <div class="adv-section">
       <h4>Document type</h4>
       <label><input type="checkbox" class="adv-doctype" value="news_story,press_release" checked onchange="applyFilters()"> News &amp; press releases</label>
-      <label><input type="checkbox" class="adv-doctype" value="consultation,policy_paper,government_response" checked onchange="applyFilters()"> Consultations &amp; policy</label>
+      <label><input type="checkbox" class="adv-doctype" value="consultation,call_for_evidence,policy_paper,government_response" checked onchange="applyFilters()"> Consultations &amp; policy</label>
       <label><input type="checkbox" class="adv-doctype" value="speech" checked onchange="applyFilters()"> Speeches</label>
       <label><input type="checkbox" class="adv-doctype" value="parliament event,committee hearing,oral questions" checked onchange="applyFilters()"> Parliament hearings &amp; events</label>
       <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries &amp; calls for evidence</label>
@@ -472,6 +481,8 @@ input[type=date]:focus{border-color:var(--accent)}
   <button class="topic-tab tab-tax"        data-cat="tax"        onclick="filterCat(this)">Tax<span class="tab-count" id="tc-tax">0</span></button>
   <button class="topic-tab tab-education"  data-cat="education"  onclick="filterCat(this)">Education<span class="tab-count" id="tc-education">0</span></button>
   <button class="topic-tab tab-technology" data-cat="technology" onclick="filterCat(this)">Technology<span class="tab-count" id="tc-technology">0</span></button>
+  <button class="topic-tab tab-payments"   data-cat="payments"   onclick="filterCat(this)">Payments<span class="tab-count" id="tc-payments">0</span></button>
+  <button class="topic-tab tab-custom"     data-cat="custom"     onclick="filterCat(this)" title="Matches your own keywords — add them via ⚙ Keywords">★ My keywords<span class="tab-count" id="tc-custom">0</span></button>
 </div>
 
 <div class="content">
@@ -480,10 +491,6 @@ input[type=date]:focus{border-color:var(--accent)}
     <p>Fetching from GOV.UK, Parliament Events, Bills, Committees, Votes, and Hansard APIs…</p>
     <ul class="progress-list" id="progress-list"></ul>
   </div>
-  <details id="error-panel" class="error-panel hidden">
-    <summary id="error-summary">Some sources failed to load</summary>
-    <ul id="error-list"></ul>
-  </details>
   <div id="groups-container" class="hidden"></div>
   <div id="cal-container" class="hidden cal-view">
     <div class="cal-nav">
@@ -497,6 +504,11 @@ input[type=date]:focus{border-color:var(--accent)}
     <div id="day-panel" class="hidden"></div>
   </div>
 </div>
+
+<details id="error-panel" class="error-panel hidden">
+  <summary id="error-summary">Some sources failed to load</summary>
+  <ul id="error-list"></ul>
+</details>
 
 <div class="footer">
   FC Monitoring · Live data from GOV.UK · bills-api · commonsvotes-api · lordsvotes-api ·
@@ -542,6 +554,14 @@ const KEYWORD_CATEGORIES = {
     'chip','microchip','processor','5g','6g','fibre','wifi','spectrum','telecoms','infrastructure',
     'cyber','cybersecurity','hacking','ransomware','privacy','encryption','digital economy',
     'digital transformation','govtech','regtech','fintech','healthtech','edtech'],
+  payments: ['payments','payment systems','payment services','psr','payment systems regulator',
+    'open banking','faster payments','bacs','chaps','card payments','interchange',
+    'digital wallet','digital pound','cbdc','central bank digital currency','stablecoin',
+    'e-money','electronic money','merchant','acquirer','payment fraud','apppfraud',
+    'authorised push payment','app fraud','psd2','payment initiation','account-to-account',
+    'buy now pay later','bnpl','remittance','cross-border payments','swift','iso 20022',
+    'contactless','point of sale','settlement','clearing','fca payments'],
+  custom: [], // user's own keywords — edit via the ⚙ Keywords panel
 };
 
 const GOVUK_SOURCES = [
@@ -607,10 +627,13 @@ const ALL_SOURCES = [
 ];
 const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 
-const DOC_TYPES = ['news_story','press_release','consultation','policy_paper',
+// NB: GOV.UK's real consultation document types are open_consultation /
+// closed_consultation / consultation_outcome — plain 'consultation' matches nothing.
+const DOC_TYPES = ['news_story','press_release','open_consultation','closed_consultation',
+                   'consultation_outcome','call_for_evidence','policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v15';
+const CACHE_KEY = 'fc-monitoring-v16';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -752,7 +775,7 @@ function pushItems(items) {
 // ── Fetchers ──────────────────────────────────────────────────────────────────
 
 async function fetchGovUK(src) {
-  const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count:'30'});
+  const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count:'50'});
   DOC_TYPES.forEach(t => p.append('filter_content_store_document_type[]', t));
   const data = await fetchJSON('https://www.gov.uk/api/search.json?' + p);
   return (data.results || []).map(r => ({
@@ -1312,6 +1335,24 @@ function matchCats(title, summary) {
   return cats;
 }
 
+// De-duplicate: sort newest-first, then keep the first occurrence of each
+// normalised title+date (items with a URL win over those without)
+function dedupeItems(items) {
+  const sorted = [...items].sort((a, b) => {
+    const d = (b.published_at || '').localeCompare(a.published_at || '');
+    return d !== 0 ? d : (b.url ? 1 : 0) - (a.url ? 1 : 0);
+  });
+  const seen = new Set();
+  const out = [];
+  for (const item of sorted) {
+    const key = cleanText(item.title).toLowerCase() + '|' + (item.published_at || '').slice(0, 10);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(item);
+  }
+  return out;
+}
+
 // ── Render ────────────────────────────────────────────────────────────────────
 
 function renderAll() {
@@ -1328,7 +1369,7 @@ function renderAll() {
   }
 
   // Tab counts
-  const catCounts = {energy:0, ai:0, health:0, tax:0, education:0, technology:0};
+  const catCounts = {energy:0, ai:0, health:0, tax:0, education:0, technology:0, payments:0, custom:0};
   for (const item of allItems)
     for (const c of (item.matched_cats||[]))
       if (c in catCounts) catCounts[c]++;
@@ -1346,15 +1387,17 @@ function renderAll() {
   const errKeys = Object.keys(sourceErrors);
   if (errKeys.length) {
     document.getElementById('error-summary').textContent =
-      errKeys.length + ' source' + (errKeys.length > 1 ? 's' : '') + ' failed to load';
+      errKeys.length + ' source' + (errKeys.length > 1 ? 's' : '') + ' unavailable — click for details';
     document.getElementById('error-list').innerHTML =
       errKeys.map(k => `<li><strong>${esc(k)}</strong>: ${esc(sourceErrors[k])}</li>`).join('');
     show('error-panel');
   }
 
-  // Build groups
+  const deduped = dedupeItems(allItems);
+
+  // Build groups (items within each group stay newest-first)
   const grouped = {};
-  for (const item of allItems)
+  for (const item of deduped)
     (grouped[item.source_id] = grouped[item.source_id] || []).push(item);
 
   for (const sid of SOURCE_ORDER) {
@@ -1403,13 +1446,13 @@ function makeItemEl(item) {
     ? `<div class="item-summary">${esc(cleanText(item.summary))}</div>` : '';
   const date = (item.published_at || '').slice(0, 10);
   const catBadges = (item.matched_cats || []).map(c =>
-    `<span class="cat-badge cat-${c}" data-cat="${c}">${c === 'ai' ? 'AI' : cap(c)}</span>`
+    `<span class="cat-badge cat-${c}" data-cat="${c}">${c === 'ai' ? 'AI' : c === 'custom' ? '★ My keyword' : cap(c)}</span>`
   ).join('');
-  const docBadge = item.doc_type ? `<span class="doc-type">${esc(item.doc_type)}</span>` : '';
+  const docBadge = item.doc_type ? `<span class="doc-type">${esc(item.doc_type.replace(/_/g,' '))}</span>` : '';
 
   if (item.matched_cats && item.matched_cats.length) div.classList.add('kw-match');
 
-  const isConsultation = /consultation|inquiry|call for evidence|government_response/i.test(item.doc_type || '');
+  const isConsultation = isConsultationDoc(item.doc_type);
   if (isConsultation) div.classList.add('is-consultation');
   const consultFlag = isConsultation
     ? `<span class="consultation-flag">📋 Open for responses</span>` : '';
@@ -1497,8 +1540,7 @@ function applyFilters() {
     const dtOk = !advOpen || docTypes.length === 0 ||
       docTypes.some(t => docType.includes(t));
 
-    const isConsultation = /consultation|inquiry|call for evidence|government_response/i.test(docType);
-    const consultOk = !activeConsultationFilter || isConsultation;
+    const consultOk = !activeConsultationFilter || isConsultationDoc(docType);
 
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
@@ -1532,6 +1574,10 @@ function filterSrc(btn) {
   btn.classList.add('active');
   activeSrcGroup = btn.dataset.src || '';
   applyFilters();
+}
+
+function isConsultationDoc(docType) {
+  return /consultation|inquiry|call[ _]for[ _]evidence|government_response/i.test(docType || '');
 }
 
 function toggleConsultationFilter() {
@@ -1623,8 +1669,9 @@ function getVisibleItems() {
   // Return items that pass current filters (source group, topic, search)
   const q      = (document.getElementById('search').value || '').toLowerCase();
   const kwOnly = document.getElementById('kw-only').checked;
-  return allItems.filter(item => {
+  return dedupeItems(allItems).filter(item => {
     if (activeSrcGroup && srcGroup(item.source_id || '') !== activeSrcGroup) return false;
+    if (activeConsultationFilter && !isConsultationDoc(item.doc_type)) return false;
     if (activeCat && !(item.matched_cats || []).includes(activeCat)) return false;
     if (kwOnly && !(item.matched_cats && item.matched_cats.length)) return false;
     if (q && !(item.title || '').toLowerCase().includes(q)) return false;
@@ -1752,17 +1799,12 @@ function openDayPanel(ds, items) {
 function calDropHtml(item) {
   const id = (item.item_id || '').replace(/[^a-z0-9_-]/gi, '');
   const gcal = googleCalUrl(item);
-  const oc   = outlookCalUrl(item);
   return `<div class="cal-wrap">
     <button class="btn-cal" onclick="toggleCalDrop(event,'drop-${id}')">📅 Add to calendar ▾</button>
     <div class="cal-drop" id="drop-${id}">
       <a href="${gcal}" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285f4"><path d="M19.5 3h-2V1h-2v2h-7V1h-2v2h-2C2.67 3 2 3.67 2 4.5v15C2 20.33 2.67 21 3.5 21h17c.83 0 1.5-.67 1.5-1.5v-15C22 3.67 21.33 3 20.5 3zM20 19H4V8h16v11z"/></svg>
         Google Calendar
-      </a>
-      <a href="${oc}" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="#0078d4"><rect x="2" y="2" width="20" height="20" rx="2"/></svg>
-        Outlook / Office 365
       </a>
       <div class="drop-sep"></div>
       <button onclick="downloadSingleICS(${JSON.stringify(item).replace(/</g,'\\u003c')})">
@@ -1829,29 +1871,6 @@ function googleCalUrl(item) {
     location: '',
   });
   return `https://calendar.google.com/calendar/render?${p}`;
-}
-
-function outlookCalUrl(item) {
-  const dateStr = (item.published_at || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
-  const st = parseTime(item.start_time);
-  const et = parseTime(item.end_time);
-  let startdt, enddt;
-  if (st) {
-    startdt = `${dateStr}T${st.iso}:00`;
-    enddt   = et ? `${dateStr}T${et.iso}:00` : `${dateStr}T${String(st.h+1).padStart(2,'0')}:${String(st.m).padStart(2,'0')}:00`;
-  } else {
-    startdt = dateStr;
-    enddt   = dateStr;
-  }
-  const p = new URLSearchParams({
-    path: '/calendar/action/compose',
-    rru: 'addevent',
-    subject: cleanText(item.title) || '',
-    startdt,
-    enddt,
-    body: calDescription(item),
-  });
-  return `https://outlook.office.com/calendar/deeplink/compose?${p}`;
 }
 
 function makeICSEvent(item) {
@@ -1953,7 +1972,7 @@ function buildKwEditor() {
     box.className = 'kw-cat-box adv-section';
     box.id = 'kw-box-' + cat;
     const color = {energy:'#c2410c', ai:'#1d4ed8', health:'#9d174d', tax:'#15803d'}[cat] || '#374151';
-    box.innerHTML = `<h4 style="color:${color}">${cat === 'ai' ? 'AI' : cap(cat)}</h4>
+    box.innerHTML = `<h4 style="color:${color}">${cat === 'ai' ? 'AI' : cat === 'custom' ? '★ My keywords' : cap(cat)}</h4>
       <div class="kw-tags" id="kw-tags-${cat}"></div>
       <div class="kw-add-row">
         <input type="text" id="kw-input-${cat}" placeholder="Add keyword…" onkeydown="if(event.key==='Enter')addKw('${cat}')">

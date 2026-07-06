@@ -627,13 +627,14 @@ const ALL_SOURCES = [
 ];
 const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
 
-// NB: GOV.UK's real consultation document types are open_consultation /
-// closed_consultation / consultation_outcome — plain 'consultation' matches nothing.
-const DOC_TYPES = ['news_story','press_release','open_consultation','closed_consultation',
-                   'consultation_outcome','call_for_evidence','policy_paper',
+// NB: GOV.UK's real document types are the open_/closed_/_outcome variants —
+// plain 'consultation' or 'call_for_evidence' matches nothing in the search API.
+const CONSULT_DOC_TYPES = ['open_consultation','closed_consultation','consultation_outcome',
+                           'open_call_for_evidence','closed_call_for_evidence','call_for_evidence_outcome'];
+const DOC_TYPES = ['news_story','press_release',...CONSULT_DOC_TYPES,'policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v16';
+const CACHE_KEY = 'fc-monitoring-v17';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -775,10 +776,25 @@ function pushItems(items) {
 // ── Fetchers ──────────────────────────────────────────────────────────────────
 
 async function fetchGovUK(src) {
-  const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count:'50'});
-  DOC_TYPES.forEach(t => p.append('filter_content_store_document_type[]', t));
-  const data = await fetchJSON('https://www.gov.uk/api/search.json?' + p);
-  return (data.results || []).map(r => ({
+  const query = (docTypes, count) => {
+    const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count: String(count)});
+    docTypes.forEach(t => p.append('filter_content_store_document_type[]', t));
+    return fetchJSON('https://www.gov.uk/api/search.json?' + p);
+  };
+  // Dedicated consultations/calls-for-evidence query alongside the general one,
+  // so a busy news day can never push them out of the results window
+  const [general, consults] = await Promise.all([
+    query(DOC_TYPES, 50),
+    query(CONSULT_DOC_TYPES, 25).catch(() => ({results: []})),
+  ]);
+  const seen = new Set();
+  const results = [];
+  for (const r of [...(consults.results || []), ...(general.results || [])]) {
+    if (r.link && seen.has(r.link)) continue;
+    if (r.link) seen.add(r.link);
+    results.push(r);
+  }
+  return results.map(r => ({
     item_id: r.link,
     title: (r.title || '').trim(),
     url: r.link ? (r.link.startsWith('/') ? 'https://www.gov.uk' + r.link : r.link) : '',
@@ -1454,8 +1470,13 @@ function makeItemEl(item) {
 
   const isConsultation = isConsultationDoc(item.doc_type);
   if (isConsultation) div.classList.add('is-consultation');
+  const dt = item.doc_type || '';
+  const flagLabel = /outcome|government_response/.test(dt) ? 'Outcome published'
+                  : /^closed_/.test(dt)                    ? 'Closed — awaiting outcome'
+                  : /^open_/.test(dt)                      ? 'Open for responses'
+                  : 'Consultation / CfE';
   const consultFlag = isConsultation
-    ? `<span class="consultation-flag">📋 Open for responses</span>` : '';
+    ? `<span class="consultation-flag">📋 ${flagLabel}</span>` : '';
 
   div.innerHTML = `
     <div class="item-title">${titleHtml}</div>

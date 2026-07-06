@@ -575,6 +575,9 @@ const KEYWORD_CATEGORIES = {
 };
 
 const GOVUK_SOURCES = [
+  // org:null + consultOnly → all-of-government sweep, so no CfE/consultation
+  // is ever missed because its publisher isn't a tracked department
+  {id:'govuk_consult', label:'Consultations & CfEs (all government)', org:null, consultOnly:true},
   {id:'govuk_dsit',    label:'DSIT',            org:'department-for-science-innovation-and-technology'},
   {id:'govuk_treasury',label:'HM Treasury',     org:'hm-treasury'},
   {id:'govuk_cabinet', label:'Cabinet Office',  org:'cabinet-office'},
@@ -644,7 +647,7 @@ const CONSULT_DOC_TYPES = ['open_consultation','closed_consultation','consultati
 const DOC_TYPES = ['news_story','press_release',...CONSULT_DOC_TYPES,'policy_paper',
                    'speech','written_statement','government_response','guidance'];
 
-const CACHE_KEY = 'fc-monitoring-v17';
+const CACHE_KEY = 'fc-monitoring-v18';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -788,10 +791,16 @@ function pushItems(items) {
 
 async function fetchGovUK(src) {
   const query = (docTypes, count) => {
-    const p = new URLSearchParams({filter_organisations: src.org, order:'-public_timestamp', count: String(count)});
+    const p = new URLSearchParams({order:'-public_timestamp', count: String(count)});
+    if (src.org) p.set('filter_organisations', src.org);
     docTypes.forEach(t => p.append('filter_content_store_document_type[]', t));
     return fetchJSON('https://www.gov.uk/api/search.json?' + p);
   };
+  // All-of-government consultation sweep has no org filter and only CfE/consultation types
+  if (src.consultOnly) {
+    const data = await query(CONSULT_DOC_TYPES, 60);
+    return mapGovUKResults(data.results || [], src);
+  }
   // Dedicated consultations/calls-for-evidence query alongside the general one,
   // so a busy news day can never push them out of the results window
   const [general, consults] = await Promise.all([
@@ -805,6 +814,10 @@ async function fetchGovUK(src) {
     if (r.link) seen.add(r.link);
     results.push(r);
   }
+  return mapGovUKResults(results, src);
+}
+
+function mapGovUKResults(results, src) {
   return results.map(r => ({
     item_id: r.link,
     title: (r.title || '').trim(),

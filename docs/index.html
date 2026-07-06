@@ -59,6 +59,8 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .search-box{padding:6px 11px;border:1px solid var(--border);border-radius:7px;
             font-size:13px;outline:none;width:220px;background:var(--bg);color:var(--text)}
 .search-box:focus{border-color:var(--accent);background:#fff}
+.sort-label select{padding:4px 8px;border-radius:7px;font-size:12px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text);cursor:pointer}
 .btn-sm{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;
         cursor:pointer;border:1px solid var(--border);background:var(--tag);color:var(--muted)}
 .btn-sm:hover{background:var(--border);color:var(--text)}
@@ -374,6 +376,14 @@ input[type=date]:focus{border-color:var(--accent)}
   <button class="btn-sm" onclick="expandAll()">Expand all</button>
   <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
   <button class="btn-sm" onclick="toggleKwEditor()" title="Edit your keyword lists">⚙ Keywords</button>
+  <label class="sort-label">Sort:
+    <select id="sort-select" onchange="setSort(this.value)">
+      <option value="date_desc">Date · newest first</option>
+      <option value="date_asc">Date · oldest first</option>
+      <option value="alpha_asc">Title · A–Z</option>
+      <option value="alpha_desc">Title · Z–A</option>
+    </select>
+  </label>
   <span id="filter-status"></span>
   <div class="view-toggle">
     <button class="view-btn active" id="view-list" onclick="setView('list')" title="List view">
@@ -644,6 +654,7 @@ let activeCat = null;
 let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
 let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
 let activeConsultationFilter = false;
+let activeSort = 'date_desc'; // 'date_desc' | 'date_asc' | 'alpha_asc' | 'alpha_desc'
 let committeeLists = {};
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
@@ -1267,7 +1278,7 @@ async function fetchWhatson(src) {
           title:        `⛔ ${title}`,
           url:          'https://whatson.parliament.uk',
           published_at: (ev.StartDate||'').slice(0,10),
-          summary:      `${house} non-sitting · ${(ev.StartDate||'').slice(0,10)} to ${(ev.EndDate||'').slice(0,10)}`,
+          summary:      `${house} non-sitting · ${fmtDate((ev.StartDate||'').slice(0,10))} to ${fmtDate((ev.EndDate||'').slice(0,10))}`,
           doc_type:     'parliament event',
           source_id:    src.id, source_label: src.label,
           _is_event:    false,
@@ -1333,6 +1344,29 @@ function matchCats(title, summary) {
   // standalone 'AI' word (uppercase in original)
   if (!cats.includes('ai') && /\bai\b/i.test(title+' '+summary)) cats.push('ai');
   return cats;
+}
+
+// "2026-07-08" → "8 July 2026"
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+function fmtDate(dateStr) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr || '');
+  if (!m) return dateStr || '';
+  return `${Number(m[3])} ${MONTH_NAMES[Number(m[2]) - 1]} ${m[1]}`;
+}
+
+function setSort(v) { activeSort = v; renderAll(); }
+
+function sortItems(items) {
+  const byDate  = (a, b) => (a.published_at || '').localeCompare(b.published_at || '');
+  const byTitle = (a, b) => cleanText(a.title).toLowerCase().localeCompare(cleanText(b.title).toLowerCase());
+  const cmp = {
+    date_desc:  (a, b) => byDate(b, a),
+    date_asc:   byDate,
+    alpha_asc:  byTitle,
+    alpha_desc: (a, b) => byTitle(b, a),
+  }[activeSort] || ((a, b) => byDate(b, a));
+  return [...items].sort(cmp);
 }
 
 // De-duplicate: sort newest-first, then keep the first occurrence of each
@@ -1402,7 +1436,7 @@ function renderAll() {
 
   for (const sid of SOURCE_ORDER) {
     if (!grouped[sid]) continue;
-    const items = grouped[sid];
+    const items = sortItems(grouped[sid]);
     const src = ALL_SOURCES.find(s => s.id === sid);
     const label = src ? src.label : sid;
     const kwCount = items.filter(i => i.matched_cats && i.matched_cats.length).length;
@@ -1461,7 +1495,7 @@ function makeItemEl(item) {
     <div class="item-title">${titleHtml}</div>
     ${summaryHtml}
     <div class="item-meta">
-      ${date ? `<span>${esc(date)}</span>` : ''}
+      ${date ? `<span>${esc(fmtDate(date))}</span>` : ''}
       ${catBadges}${docBadge}${consultFlag}
       ${item._is_event ? calDropHtml(item) : ''}
     </div>`;

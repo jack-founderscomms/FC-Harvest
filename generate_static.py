@@ -25,12 +25,19 @@ def generate():
     database.init_db()
     config = load_config()
     label_map = _build_label_map(config)
-    all_source_ids = list(label_map.keys())
+    category_map = _build_category_map(config)
+
+    political_ids = [sid for sid, cat in category_map.items() if cat == "political"]
+    media_ids = [sid for sid, cat in category_map.items() if cat == "media"]
 
     with database.get_db() as conn:
-        all_items = database.get_items(conn, limit=2000)
+        # Fetched per tab so high-churn media feeds can't crowd out political items
+        political_items = database.get_items(conn, source_ids=political_ids, limit=2000) if political_ids else []
+        media_items = database.get_items(conn, source_ids=media_ids, limit=1500) if media_ids else []
         recent_runs = database.get_recent_runs(conn, limit=5)
         source_health = database.get_source_health(conn)
+
+    all_items = political_items + media_items
 
     # Group by source
     grouped: dict[str, list] = defaultdict(list)
@@ -55,24 +62,28 @@ def generate():
         if h.get("status") == "error"
     ]
 
-    # Build ordered groups
-    groups = []
-    for sid in all_source_ids:
-        items = grouped.get(sid, [])
-        kw_matched = [i for i in items if i.get("matched_kws")]
-        groups.append({
-            "source_id": sid,
-            "label": label_map.get(sid, sid),
-            "items": items,
-            "kw_matched": len(kw_matched),
-            "health": source_health.get(sid, {}),
-        })
+    def build_groups(source_ids):
+        result = []
+        for sid in source_ids:
+            items = grouped.get(sid, [])
+            kw_matched = [i for i in items if i.get("matched_kws")]
+            result.append({
+                "source_id": sid,
+                "label": label_map.get(sid, sid),
+                "items": items,
+                "kw_matched": len(kw_matched),
+                "health": source_health.get(sid, {}),
+            })
+        return result
 
     generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     last_run = recent_runs[0] if recent_runs else None
 
     html = _render(
-        groups=groups,
+        political_groups=build_groups(political_ids),
+        media_groups=build_groups(media_ids),
+        political_count=len(political_items),
+        media_count=len(media_items),
         top_keywords=top_keywords,
         errored=errored,
         total_items=len(all_items),
@@ -83,11 +94,11 @@ def generate():
 
     OUTPUT.parent.mkdir(exist_ok=True)
     OUTPUT.write_text(html, encoding="utf-8")
-    print(f"Generated {OUTPUT}  ({len(all_items)} items, {len(groups)} sources)")
+    print(f"Generated {OUTPUT}  ({len(all_items)} items, {len(category_map)} sources)")
 
 
-def _render(groups, top_keywords, errored, total_items, generated_at, last_run, keywords):
-    groups_html = ""
+def _groups_html(groups, empty_msg):
+    html = ""
     for g in groups:
         if not g["items"]:
             continue
@@ -95,7 +106,7 @@ def _render(groups, top_keywords, errored, total_items, generated_at, last_run, 
         dot_class = h.get("status", "unknown") if h else "unknown"
         kw_badge = f'<span class="badge-kw">{g["kw_matched"]} matched</span>' if g["kw_matched"] else ""
         rows = "".join(_item_row(i) for i in g["items"])
-        groups_html += f"""
+        html += f"""
         <div class="group" id="grp-{g['source_id']}">
           <div class="group-header" onclick="toggle('{g['source_id']}')">
             <span class="dot {dot_class}" title="{h.get('message','') if h else ''}"></span>
@@ -106,6 +117,15 @@ def _render(groups, top_keywords, errored, total_items, generated_at, last_run, 
           </div>
           <div id="body-{g['source_id']}">{rows}</div>
         </div>"""
+    if not html.strip():
+        html = f'<div class="empty"><p>{empty_msg}</p></div>'
+    return html
+
+
+def _render(political_groups, media_groups, political_count, media_count,
+            top_keywords, errored, total_items, generated_at, last_run, keywords):
+    political_html = _groups_html(political_groups, "No items yet — run a harvest first.")
+    media_html = _groups_html(media_groups, "No media items yet — run a harvest first.")
 
     error_html = ""
     if errored:
@@ -142,7 +162,7 @@ def _render(groups, top_keywords, errored, total_items, generated_at, last_run, 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FC-Harvest — Parliamentary Monitor</title>
+<title>FC-Harvest — Political &amp; Media Monitor</title>
 <style>
 :root{{
   --bg:#f4f5f7;--surface:#fff;--border:#e1e4e8;--text:#1a1a2e;--muted:#6b7280;
@@ -181,6 +201,16 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 
 /* ── Layout ── */
 .content{{padding:20px 24px;max-width:1100px;margin:0 auto}}
+
+/* ── Tabs ── */
+.tabs{{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--border)}}
+.tab{{padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);background:none;
+      border:none;border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px}}
+.tab:hover{{color:var(--text)}}
+.tab.active{{color:var(--accent);border-bottom-color:var(--accent)}}
+.tab .tab-count{{font-size:11px;background:var(--tag);color:var(--muted);
+                 padding:1px 7px;border-radius:10px;margin-left:5px;font-weight:500}}
+.tab.active .tab-count{{background:var(--accent-light);color:var(--accent)}}
 
 /* ── Error panel ── */
 .error-panel{{background:var(--err-bg);border:1px solid var(--err-border);
@@ -243,10 +273,10 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 <div class="header">
   <div>
     <h1>FC-Harvest</h1>
-    <div class="header-meta">UK Parliament &amp; Government Monitor</div>
+    <div class="header-meta">UK Political &amp; Media Monitor</div>
   </div>
   <div class="header-right">
-    <span class="header-meta">{_esc(last_run_html)}</span>
+    <span class="header-meta">{last_run_html}</span>
     <span class="badge badge-ok">{total_items} items</span>
     {'<span class="badge badge-err">'+str(len(errored))+' source'+('s' if len(errored)!=1 else '')+' failing</span>' if errored else ''}
   </div>
@@ -265,21 +295,44 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
   {error_html}
   {kw_cloud}
 
-  <div id="groups-container">
-    {groups_html if groups_html.strip() else '<div class="empty"><p>No items yet — run a harvest first.</p></div>'}
+  <div class="tabs">
+    <button class="tab active" id="tab-political" onclick="showTab('political')">
+      Political monitoring <span class="tab-count">{political_count}</span>
+    </button>
+    <button class="tab" id="tab-media" onclick="showTab('media')">
+      Media monitoring <span class="tab-count">{media_count}</span>
+    </button>
+  </div>
+
+  <div class="pane" id="pane-political">
+    {political_html}
+  </div>
+
+  <div class="pane hidden" id="pane-media">
+    {media_html}
   </div>
 
 </div>
 
 <div class="footer">
   FC-Harvest · Generated {_esc(generated_at)} ·
-  Sources: GOV.UK Search API, committees-api.parliament.uk, hansard-api.parliament.uk,
+  Political sources: GOV.UK Search API, committees-api.parliament.uk, hansard-api.parliament.uk,
   questions-statements-api.parliament.uk, whatson-api.parliament.uk ·
+  Media sources: press RSS feeds (see config.yaml) ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>
 
 <script>
 const KEYWORDS = {kw_json};
+
+function showTab(name) {{
+  document.querySelectorAll('.pane').forEach(p => p.classList.add('hidden'));
+  document.getElementById('pane-' + name).classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  try {{ history.replaceState(null, '', '#' + name); }} catch (e) {{}}
+}}
+if (location.hash === '#media') showTab('media');
 
 function toggle(id) {{
   const body = document.getElementById('body-' + id);
@@ -368,6 +421,15 @@ def _build_label_map(config: dict) -> dict[str, str]:
     return {
         src["id"]: src.get("label", src["id"])
         for group in config.get("sources", {}).values()
+        for src in group
+    }
+
+
+def _build_category_map(config: dict) -> dict[str, str]:
+    """Map source_id → dashboard tab ('media' for the media group, else 'political')."""
+    return {
+        src["id"]: ("media" if group_name == "media" else "political")
+        for group_name, group in config.get("sources", {}).items()
         for src in group
     }
 

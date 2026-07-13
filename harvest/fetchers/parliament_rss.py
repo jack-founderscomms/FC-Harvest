@@ -1,6 +1,6 @@
 """
-Parliament RSS feed fetcher.
-Used for: committee news, What's On in Parliament.
+Generic RSS/Atom feed fetcher (config types: parliament_rss, rss).
+Used for: committee news, What's On in Parliament, media monitoring feeds.
 feedparser handles Atom and RSS 2.0 transparently.
 
 RELIABILITY: RSS feeds are official but occasionally go stale or return 404

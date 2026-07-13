@@ -215,3 +215,63 @@ sources:
       label: "What's On in Parliament"
       type: whatson_scrape
       url: "https://whatson.parliament.uk"
+
+  # ── Media monitoring ──────────────────────────────────────────────────────
+  # Press/media RSS feeds — shown on the dashboard's "Media monitoring" tab,
+  # separate from the political monitoring above. The group key `media` is
+  # what routes these sources to that tab.
+  media:
+    - id: media_bbc_tech
+      label: "BBC News — Technology"
+      type: rss
+      url: "https://feeds.bbci.co.uk/news/technology/rss.xml"
+
+    - id: media_bbc_business
+      label: "BBC News — Business"
+      type: rss
+      url: "https://feeds.bbci.co.uk/news/business/rss.xml"
+
+    - id: media_guardian_tech
+      label: "The Guardian — Technology"
+      type: rss
+      url: "https://www.theguardian.com/uk/technology/rss"
+
+    - id: media_sky_tech
+      label: "Sky News — Technology"
+      type: rss
+      url: "https://feeds.skynews.com/feeds/rss/technology.xml"
+
+    - id: media_ft_tech
+      label: "Financial Times — Technology"
+      type: rss
+      url: "https://www.ft.com/technology?format=rss"
+
+    - id: media_register
+      label: "The Register"
+      type: rss
+      url: "https://www.theregister.com/headlines.atom"
+
+    - id: media_techcrunch
+      label: "TechCrunch"
+      type: rss
+      url: "https://techcrunch.com/feed/"
+
+    - id: media_sifted
+      label: "Sifted"
+      type: rss
+      url: "https://sifted.eu/feed"
+
+    - id: media_uktn
+      label: "UKTN (UK Tech News)"
+      type: rss
+      url: "https://www.uktech.news/feed"
+
+    - id: media_politico_tech
+      label: "Politico Europe — Technology"
+      type: rss
+      url: "https://www.politico.eu/section/technology/feed/"
+
+    - id: media_cityam
+      label: "City A.M."
+      type: rss
+      url: "https://www.cityam.com/feed/"

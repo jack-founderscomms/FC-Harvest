@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "newsjack": {
+      "source": {
+        "source": "github",
+        "repo": "elvisun/newsjack"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "newsjack@newsjack": true
+  }
+}

@@ -34,6 +34,7 @@ FETCHER_MAP = {
     "hansard_api": hansard,
     "parliament_inquiries_scrape": parliament_inquiries,
     "whatson_scrape": whatson_scrape,
+    "rss": parliament_rss,  # generic RSS/Atom — used by the media sources
 }
 
 

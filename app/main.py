@@ -67,6 +67,7 @@ def dashboard(
     config = load_config()
     all_source_ids = _get_all_source_ids(config)
     label_map = _build_label_map(config)
+    category_map = _build_category_map(config)
 
     with database.get_db() as conn:
         items = database.get_items(
@@ -92,6 +93,7 @@ def dashboard(
                 "label": label_map.get(sid, sid),
                 "items": grouped[sid],
                 "health": source_health.get(sid),
+                "category": category_map.get(sid, "political"),
             })
 
     # Count keyword-matched items across all sources
@@ -113,9 +115,14 @@ def dashboard(
                 "checked_at": (h.get("checked_at") or "")[:16].replace("T", " "),
             })
 
+    political_count = sum(len(g["items"]) for g in ordered_groups if g["category"] == "political")
+    media_count = sum(len(g["items"]) for g in ordered_groups if g["category"] == "media")
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "groups": ordered_groups,
+        "political_count": political_count,
+        "media_count": media_count,
         "all_source_ids": all_source_ids,
         "label_map": label_map,
         "selected_sources": source,
@@ -201,5 +208,14 @@ def _build_label_map(config: dict) -> dict[str, str]:
     return {
         src["id"]: src.get("label", src["id"])
         for group in config.get("sources", {}).values()
+        for src in group
+    }
+
+
+def _build_category_map(config: dict) -> dict[str, str]:
+    """Map source_id → dashboard tab ('media' for the media group, else 'political')."""
+    return {
+        src["id"]: ("media" if group_name == "media" else "political")
+        for group_name, group in config.get("sources", {}).items()
         for src in group
     }

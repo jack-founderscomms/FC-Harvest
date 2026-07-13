@@ -111,6 +111,17 @@
                cursor: pointer; border: none; }
     .kw-pill .kw-count { opacity: 0.6; margin-left: 3px; }
 
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 2px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+    .tab { padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--muted); background: none;
+           border: none; border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-count { font-size: 11px; background: var(--tag-bg); color: var(--muted);
+                 padding: 1px 7px; border-radius: 10px; margin-left: 5px; font-weight: 500; }
+    .tab.active .tab-count { background: var(--accent-light); color: var(--accent); }
+    .hidden { display: none !important; }
+
     /* ── Source group cards ── */
     .group { background: var(--surface); border: 1px solid var(--border);
              border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
@@ -174,7 +185,7 @@
 
     <div class="sb-brand">
       <h1>FC-Harvest</h1>
-      <p>UK Parliament &amp; Government Monitor</p>
+      <p>UK Political &amp; Media Monitor</p>
     </div>
 
     <div class="sb-section">
@@ -242,7 +253,7 @@
 
     <!-- Top bar -->
     <div class="top-bar">
-      <h2>Parliamentary Monitor</h2>
+      <h2>Political &amp; Media Monitor</h2>
       <span class="stat">
         <strong>{{ total_items }}</strong> items
         {% if keywords_only %}<span class="badge badge-kw" style="margin-left:6px">● Keyword filter on</span>{% endif %}
@@ -281,10 +292,8 @@
       {% endif %}
 
       <!-- ── Source groups ── -->
-      {% if groups %}
-        {% for group in groups %}
-        {% if group.items %}
-        {% set kw_items = group.items | selectattr('matched_kws') | list %}
+      {% macro render_group(group) %}
+        {% set kw_items = group['items'] | selectattr('matched_kws') | list %}
         <div class="group" id="grp-{{ group.source_id }}">
           <div class="group-header" onclick="toggleGroup('{{ group.source_id }}')">
             <div class="group-header-left">
@@ -294,7 +303,7 @@
                     title="{{ h.get('message','') }}"></span>
               {% endif %}
               <span class="group-title">{{ group.label }}</span>
-              <span class="group-count">{{ group.items|length }}</span>
+              <span class="group-count">{{ group['items']|length }}</span>
               {% if kw_items %}
               <span class="group-kw-count">{{ kw_items|length }} matched</span>
               {% endif %}
@@ -302,7 +311,7 @@
             <span class="chevron" id="chev-{{ group.source_id }}">▼</span>
           </div>
           <div id="body-{{ group.source_id }}">
-            {% for item in group.items %}
+            {% for item in group['items'] %}
             <div class="item">
               <div class="item-title">
                 {% if item.url %}
@@ -327,8 +336,33 @@
             {% endfor %}
           </div>
         </div>
-        {% endif %}
-        {% endfor %}
+      {% endmacro %}
+
+      {% if groups %}
+        <div class="tabs">
+          <button type="button" class="tab active" id="tab-political" onclick="showTab('political')">
+            Political monitoring <span class="tab-count">{{ political_count }}</span>
+          </button>
+          <button type="button" class="tab" id="tab-media" onclick="showTab('media')">
+            Media monitoring <span class="tab-count">{{ media_count }}</span>
+          </button>
+        </div>
+
+        <div class="pane" id="pane-political">
+          {% for group in groups if group.category != 'media' and group['items'] %}
+            {{ render_group(group) }}
+          {% else %}
+            <div class="empty"><p>No political items yet.</p></div>
+          {% endfor %}
+        </div>
+
+        <div class="pane hidden" id="pane-media">
+          {% for group in groups if group.category == 'media' and group['items'] %}
+            {{ render_group(group) }}
+          {% else %}
+            <div class="empty"><p>No media items yet — run a harvest to pull in the media feeds.</p></div>
+          {% endfor %}
+        </div>
 
       {% else %}
         <div class="empty">
@@ -347,6 +381,15 @@
 <div id="toast"></div>
 
 <script>
+function showTab(name) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.add('hidden'));
+  document.getElementById('pane-' + name).classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  try { history.replaceState(null, '', location.pathname + location.search + '#' + name); } catch (e) {}
+}
+if (location.hash === '#media') showTab('media');
+
 function toggleGroup(id) {
   const body = document.getElementById('body-' + id);
   const chev = document.getElementById('chev-' + id);

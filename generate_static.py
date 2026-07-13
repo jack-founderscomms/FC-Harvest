@@ -16,6 +16,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
 from harvest import db as database
+from harvest import newsjack
 from harvest.runner import load_config
 
 OUTPUT = ROOT / "docs" / "index.html"
@@ -71,6 +72,10 @@ def generate():
     generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     last_run = recent_runs[0] if recent_runs else None
 
+    # Newsjack: match fresh items to configured clients (newsjack.yaml)
+    nj_cfg = newsjack.load_newsjack()
+    nj_matches = newsjack.match_items_to_clients(all_items, nj_cfg)
+
     html = _render(
         groups=groups,
         top_keywords=top_keywords,
@@ -79,6 +84,9 @@ def generate():
         generated_at=generated_at,
         last_run=last_run,
         keywords=config.get("keywords", []),
+        nj_clients=nj_cfg["clients"],
+        nj_matches=nj_matches,
+        nj_settings=nj_cfg["settings"],
     )
 
     OUTPUT.parent.mkdir(exist_ok=True)
@@ -86,7 +94,53 @@ def generate():
     print(f"Generated {OUTPUT}  ({len(all_items)} items, {len(groups)} sources)")
 
 
-def _render(groups, top_keywords, errored, total_items, generated_at, last_run, keywords):
+def _render(groups, top_keywords, errored, total_items, generated_at, last_run, keywords,
+            nj_clients=None, nj_matches=None, nj_settings=None):
+    nj_clients = nj_clients or []
+    nj_matches = nj_matches or {}
+    nj_settings = nj_settings or {}
+
+    # ── Newsjack opportunities (read-only; edit clients on the live dashboard) ──
+    newsjack_html = ""
+    enabled_clients = [c for c in nj_clients if c.get("enabled")]
+    if enabled_clients:
+        cards = ""
+        for c in enabled_clients:
+            hits = nj_matches.get(c["id"], [])
+            spokes = " · ".join(
+                " — ".join(filter(None, [sp.get("name"), sp.get("title"), sp.get("expertise")]))
+                for sp in c.get("spokespeople", [])
+            )
+            kw_tags = "".join(f'<span class="tag kw">{_esc(k)}</span>' for k in c.get("keywords", []))
+            rows = "".join(
+                _item_row({**i, "matched_kws": i.get("client_kws") or i.get("matched_kws")})
+                for i in hits
+            ) or '<div class="item" style="color:var(--muted)">No fresh matches</div>'
+            sector = f'<span class="nj-sector">{_esc(c["sector"])}</span>' if c.get("sector") else ""
+            spokes_html = f'<div class="nj-spokes">{_esc(spokes)}</div>' if spokes else ""
+            notes_html = f'<div class="nj-spokes">{_esc(c["notes"])}</div>' if c.get("notes") else ""
+            cards += f"""
+            <div class="group" id="grp-nj-{_esc(c['id'])}">
+              <div class="group-header" onclick="toggle('nj-{_esc(c['id'])}')">
+                <span class="dot ok"></span>
+                <span class="group-title">🎯 {_esc(c['name'])}</span>
+                {sector}
+                <span class="badge-kw">{len(hits)} match{'es' if len(hits) != 1 else ''}</span>
+                <span class="chev" id="chev-nj-{_esc(c['id'])}">▼</span>
+              </div>
+              <div id="body-nj-{_esc(c['id'])}">
+                <div class="nj-meta">{kw_tags}{spokes_html}{notes_html}</div>
+                {rows}
+              </div>
+            </div>"""
+        newsjack_html = f"""
+        <div class="nj-section">
+          <h2 class="nj-heading">Newsjack opportunities
+            <span class="note">last {nj_settings.get('max_age_days', 7)} days ·
+            edit clients on the live dashboard or in newsjack.yaml</span></h2>
+          {cards}
+        </div>"""
+
     groups_html = ""
     for g in groups:
         if not g["items"]:
@@ -227,6 +281,16 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 .tag{{font-size:10px;padding:1px 6px;border-radius:4px;background:var(--tag);color:var(--muted)}}
 .tag.kw{{background:var(--kw-bg);color:var(--kw-text);font-weight:500}}
 
+/* ── Newsjack ── */
+.nj-section{{margin-bottom:22px}}
+.nj-heading{{font-size:13px;font-weight:700;margin-bottom:10px}}
+.nj-heading .note{{font-size:11px;font-weight:400;color:var(--muted);margin-left:6px}}
+.nj-sector{{font-size:10px;padding:1px 7px;border-radius:10px;background:var(--accent-light);
+            color:var(--accent);font-weight:500}}
+.nj-meta{{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;
+          gap:6px;flex-wrap:wrap;align-items:center}}
+.nj-spokes{{font-size:11px;color:var(--muted);width:100%}}
+
 /* ── Empty ── */
 .empty{{padding:48px;text-align:center;color:var(--muted)}}
 
@@ -263,6 +327,7 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 <div class="content">
 
   {error_html}
+  {newsjack_html}
   {kw_cloud}
 
   <div id="groups-container">

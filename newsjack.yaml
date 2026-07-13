@@ -1,0 +1,42 @@
+# FC-Harvest — Newsjack skill configuration
+#
+# This file is the single source of truth for the newsjack skill: which
+# clients we newsjack for, who their spokespeople are, and which of the
+# harvested Parliament/GOV.UK topics should trigger an opportunity.
+#
+# Edit it here by hand, or through the "Newsjack clients" panel on the
+# live dashboard (python run.py serve → http://localhost:8000).
+# NOTE: saving from the dashboard rewrites this file, so hand-written
+# comments may be lost.
+#
+# The newsjack skill can also fetch this config plus live matches from
+# the dashboard API:  GET /api/newsjack
+
+settings:
+  # Only items published within this window count as newsjackable.
+  max_age_days: 7
+  # Cap matched items shown per client on the dashboards.
+  max_items_per_client: 15
+  tone: >
+    UK tech/policy PR voice: sharp, credible, no hype. Every angle must give
+    a journalist a reason to care today, and tie the client's expertise to
+    the news moment rather than pitching the client's product.
+  output_format: >
+    For each opportunity produce: a one-line hook; why it matters for the
+    client (2-3 sentences); a suggested spokesperson quote (2-3 sentences,
+    attributed); and target outlets or journalists to pitch.
+
+clients:
+  - id: example-client
+    name: Example Client (replace me)
+    sector: Fintech
+    enabled: false
+    keywords:
+      - open banking
+      - fintech
+      - payments
+    spokespeople:
+      - name: Jane Smith
+        title: CEO
+        expertise: payments regulation, open banking
+    notes: Sample entry showing the schema — edit or delete via the dashboard.

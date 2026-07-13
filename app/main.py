@@ -8,18 +8,22 @@ Routes:
   POST /api/harvest  — trigger harvest in background
   GET /api/runs      — recent run history
   GET /api/sources   — source list + keywords
+  GET /api/newsjack  — newsjack config + per-client matched items
+  POST /api/newsjack/clients          — create/update a newsjack client
+  DELETE /api/newsjack/clients/{id}   — remove a newsjack client
 """
 
 import logging
 from collections import defaultdict
 from pathlib import Path
 
-from fastapi import FastAPI, Query, BackgroundTasks, Request
+from fastapi import FastAPI, Query, BackgroundTasks, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from harvest import db as database
+from harvest import newsjack
 from harvest.runner import load_config, run_harvest
 from harvest.scheduler import start_scheduler
 
@@ -113,6 +117,13 @@ def dashboard(
                 "checked_at": (h.get("checked_at") or "")[:16].replace("T", " "),
             })
 
+    # Newsjack: match recent items to configured clients (independent of the
+    # current source/keyword filters so the panel always reflects everything).
+    nj_cfg = newsjack.load_newsjack()
+    with database.get_db() as conn:
+        nj_items = database.get_items(conn, limit=1000)
+    nj_matches = newsjack.match_items_to_clients(nj_items, nj_cfg)
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "groups": ordered_groups,
@@ -128,6 +139,9 @@ def dashboard(
         "errored_sources": errored_sources,
         "top_keywords": top_keywords,
         "keywords": config.get("keywords", []),
+        "nj_settings": nj_cfg["settings"],
+        "nj_clients": nj_cfg["clients"],
+        "nj_matches": nj_matches,
     })
 
 
@@ -189,6 +203,44 @@ def api_sources():
         "sources": _build_label_map(config),
         "keywords": config.get("keywords", []),
     }
+
+
+# ── Newsjack config API ────────────────────────────────────────────────────
+
+@app.get("/api/newsjack")
+def api_newsjack():
+    """Full newsjack config plus per-client matched items.
+
+    This is the endpoint the newsjack skill consumes: settings (tone, output
+    format), the client roster, and fresh harvested items matched to each
+    client's keywords.
+    """
+    database.init_db()
+    cfg = newsjack.load_newsjack()
+    with database.get_db() as conn:
+        items = database.get_items(conn, limit=1000)
+    matches = newsjack.match_items_to_clients(items, cfg)
+    return {
+        "settings": cfg["settings"],
+        "clients": cfg["clients"],
+        "matches": matches,
+    }
+
+
+@app.post("/api/newsjack/clients")
+def api_newsjack_upsert_client(payload: dict):
+    try:
+        client = newsjack.upsert_client(payload)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    return {"status": "saved", "client": client}
+
+
+@app.delete("/api/newsjack/clients/{client_id}")
+def api_newsjack_delete_client(client_id: str):
+    if not newsjack.delete_client(client_id):
+        raise HTTPException(status_code=404, detail=f"No client with id '{client_id}'")
+    return {"status": "deleted", "id": client_id}
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────

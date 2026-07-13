@@ -142,6 +142,49 @@
            background: var(--tag-bg); color: var(--muted); }
     .tag.kw { background: var(--kw-bg); color: var(--kw-text); font-weight: 500; }
 
+    /* ── Newsjack clients panel ── */
+    .nj-toolbar { display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+                  border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .nj-hint { font-size: 11px; color: var(--muted); }
+    .nj-add { display: inline-block; width: auto; padding: 6px 14px; }
+    .nj-client { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .nj-client:last-child { border-bottom: none; }
+    .nj-client-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nj-client-name { font-size: 13px; font-weight: 600; }
+    .nj-client.disabled .nj-client-name { color: var(--muted); text-decoration: line-through; }
+    .nj-sector { font-size: 10px; padding: 1px 7px; border-radius: 10px;
+                 background: var(--accent-light); color: var(--accent); font-weight: 500; }
+    .nj-match-badge { font-size: 11px; background: var(--kw-bg); color: var(--kw-text);
+                      padding: 1px 7px; border-radius: 10px; font-weight: 500; cursor: pointer; border: none; }
+    .nj-actions { margin-left: auto; display: flex; gap: 6px; }
+    .nj-btn { font-size: 11px; padding: 3px 10px; border-radius: 5px; cursor: pointer;
+              border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+    .nj-btn:hover { background: var(--bg); }
+    .nj-btn-del { color: var(--err); border-color: var(--err-border); }
+    .nj-detail { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .nj-detail strong { color: var(--text); font-weight: 500; }
+    .nj-matches { margin-top: 8px; border: 1px solid var(--border); border-radius: 6px;
+                  background: var(--bg); }
+    .nj-matches .item { padding: 8px 12px; }
+    .nj-form { padding: 14px 16px; background: var(--accent-light);
+               border-bottom: 1px solid var(--border); }
+    .nj-form h4 { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+    .nj-field { margin-bottom: 10px; }
+    .nj-field label { display: block; font-size: 11px; font-weight: 600;
+                      color: var(--muted); margin-bottom: 3px; }
+    .nj-field input[type=text], .nj-field textarea {
+        width: 100%; padding: 6px 10px; border: 1px solid var(--border);
+        border-radius: 6px; font-size: 12px; font-family: inherit; outline: none;
+        background: var(--surface); }
+    .nj-field input[type=text]:focus, .nj-field textarea:focus { border-color: var(--accent); }
+    .nj-field .nj-help { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .nj-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .nj-form-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .nj-save { background: var(--accent); color: #fff; border: none; padding: 6px 16px;
+               border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; }
+    .nj-save:hover { filter: brightness(0.9); }
+    .nj-enabled-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+
     /* ── Empty state ── */
     .empty { padding: 48px 24px; text-align: center; color: var(--muted); }
     .empty p { margin-bottom: 16px; font-size: 15px; }
@@ -267,6 +310,126 @@
       </div>
       {% endif %}
 
+      <!-- ── Newsjack clients ── -->
+      <div class="group" id="grp-nj"
+           onkeydown="if(event.key==='Enter'&&event.target.tagName!=='TEXTAREA'){event.preventDefault();}">
+        <div class="group-header" onclick="toggleGroup('nj')">
+          <div class="group-header-left">
+            <span class="group-title">🎯 Newsjack clients</span>
+            <span class="group-count">{{ nj_clients|length }}</span>
+            {% set nj_total = nj_matches.values() | map('length') | sum %}
+            {% if nj_total %}<span class="group-kw-count">{{ nj_total }} opportunities</span>{% endif %}
+          </div>
+          <span class="chevron" id="chev-nj">▼</span>
+        </div>
+        <div id="body-nj">
+
+          <div class="nj-toolbar">
+            <button type="button" class="btn btn-harvest nj-add" onclick="njNewClient()">＋ Add client</button>
+            <span class="nj-hint">
+              Matching items from the last {{ nj_settings.max_age_days }} days ·
+              stored in <code>newsjack.yaml</code> ·
+              skill endpoint: <code>GET /api/newsjack</code>
+            </span>
+          </div>
+
+          <!-- add/edit form (hidden until opened) -->
+          <div id="nj-form" class="nj-form" style="display:none">
+            <h4 id="nj-form-title">Add client</h4>
+            <input type="hidden" id="nj-id">
+            <div class="nj-form-row">
+              <div class="nj-field">
+                <label for="nj-name">Client name *</label>
+                <input type="text" id="nj-name" placeholder="Acme Payments">
+              </div>
+              <div class="nj-field">
+                <label for="nj-sector">Sector</label>
+                <input type="text" id="nj-sector" placeholder="Fintech">
+              </div>
+            </div>
+            <div class="nj-field">
+              <label for="nj-keywords">Watch keywords (comma-separated)</label>
+              <input type="text" id="nj-keywords" placeholder="open banking, payments, fintech">
+              <div class="nj-help">Matched word-for-word (case-insensitive) against item titles and summaries. Harvest keywords in use: {{ keywords | join(', ') }}</div>
+            </div>
+            <div class="nj-field">
+              <label for="nj-spokespeople">Spokespeople (one per line: Name | Title | Expertise)</label>
+              <textarea id="nj-spokespeople" rows="3" placeholder="Jane Smith | CEO | payments regulation, open banking"></textarea>
+            </div>
+            <div class="nj-field">
+              <label for="nj-notes">Angle notes for the skill</label>
+              <textarea id="nj-notes" rows="2" placeholder="Prefers commentary on regulation over funding news…"></textarea>
+            </div>
+            <div class="nj-form-actions">
+              <button type="button" class="nj-save" onclick="njSave()">Save client</button>
+              <button type="button" class="nj-btn" onclick="njCancel()">Cancel</button>
+              <span class="nj-enabled-row" style="margin-left:auto">
+                <input type="checkbox" id="nj-enabled" checked>
+                <label for="nj-enabled" style="cursor:pointer">Enabled</label>
+              </span>
+            </div>
+          </div>
+
+          {% for c in nj_clients %}
+          {% set c_matches = nj_matches.get(c.id, []) %}
+          <div class="nj-client {{ '' if c.enabled else 'disabled' }}" id="nj-client-{{ c.id }}">
+            <div class="nj-client-head">
+              <span class="src-dot {{ 'ok' if c.enabled else 'unknown' }}"
+                    title="{{ 'enabled' if c.enabled else 'disabled' }}"></span>
+              <span class="nj-client-name">{{ c.name }}</span>
+              {% if c.sector %}<span class="nj-sector">{{ c.sector }}</span>{% endif %}
+              {% if c.enabled %}
+              <button type="button" class="nj-match-badge" onclick="toggleGroup('njm-{{ c.id }}')">
+                {{ c_matches|length }} match{{ 'es' if c_matches|length != 1 }}
+              </button>
+              {% endif %}
+              <span class="nj-actions">
+                <button type="button" class="nj-btn" onclick="njEdit('{{ c.id }}')">Edit</button>
+                <button type="button" class="nj-btn nj-btn-del" onclick="njDelete('{{ c.id }}', this)">Delete</button>
+              </span>
+            </div>
+            {% if c.keywords %}
+            <div class="item-tags" style="margin-top:6px">
+              {% for kw in c.keywords %}<span class="tag kw">{{ kw }}</span>{% endfor %}
+            </div>
+            {% endif %}
+            {% if c.spokespeople %}
+            <div class="nj-detail">
+              {% for sp in c.spokespeople %}
+              <strong>{{ sp.name }}</strong>{% if sp.title %}, {{ sp.title }}{% endif %}{% if sp.expertise %} — {{ sp.expertise }}{% endif %}{{ ' · ' if not loop.last }}
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% if c.notes %}<div class="nj-detail">{{ c.notes }}</div>{% endif %}
+            {% if c_matches %}
+            <div class="nj-matches" style="display:none" id="body-njm-{{ c.id }}">
+              {% for item in c_matches %}
+              <div class="item">
+                <div class="item-title">
+                  {% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+                  {% else %}{{ item.title }}{% endif %}
+                </div>
+                <div class="item-meta">
+                  <span>{{ item.published_at[:10] if item.published_at else 'No date' }}</span>
+                  <span>{{ label_map.get(item.source_id, item.source_id) }}</span>
+                </div>
+                <div class="item-tags">
+                  {% for kw in item.client_kws %}<span class="tag kw">{{ kw }}</span>{% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="nj-client" style="color:var(--muted);font-size:12px">
+            No clients configured yet — add your first client to start spotting newsjack opportunities.
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
       <!-- ── Keyword cloud ── -->
       {% if top_keywords %}
       <div class="kw-cloud">
@@ -350,9 +513,91 @@
 function toggleGroup(id) {
   const body = document.getElementById('body-' + id);
   const chev = document.getElementById('chev-' + id);
+  if (!body) return;
   const hidden = body.style.display === 'none';
   body.style.display = hidden ? '' : 'none';
-  chev.textContent = hidden ? '▼' : '▶';
+  if (chev) chev.textContent = hidden ? '▼' : '▶';
+}
+
+/* ── Newsjack client editor ── */
+const NJ_CLIENTS = {{ nj_clients | tojson }};
+
+function njOpenForm(title) {
+  document.getElementById('nj-form-title').textContent = title;
+  const form = document.getElementById('nj-form');
+  form.style.display = '';
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function njNewClient() {
+  document.getElementById('nj-id').value = '';
+  document.getElementById('nj-name').value = '';
+  document.getElementById('nj-sector').value = '';
+  document.getElementById('nj-keywords').value = '';
+  document.getElementById('nj-spokespeople').value = '';
+  document.getElementById('nj-notes').value = '';
+  document.getElementById('nj-enabled').checked = true;
+  njOpenForm('Add client');
+  document.getElementById('nj-name').focus();
+}
+
+function njEdit(id) {
+  const c = NJ_CLIENTS.find(c => c.id === id);
+  if (!c) return;
+  document.getElementById('nj-id').value = c.id;
+  document.getElementById('nj-name').value = c.name || '';
+  document.getElementById('nj-sector').value = c.sector || '';
+  document.getElementById('nj-keywords').value = (c.keywords || []).join(', ');
+  document.getElementById('nj-spokespeople').value = (c.spokespeople || [])
+    .map(sp => [sp.name, sp.title, sp.expertise].filter(Boolean).join(' | '))
+    .join('\n');
+  document.getElementById('nj-notes').value = c.notes || '';
+  document.getElementById('nj-enabled').checked = !!c.enabled;
+  njOpenForm('Edit client — ' + (c.name || c.id));
+}
+
+function njCancel() {
+  document.getElementById('nj-form').style.display = 'none';
+}
+
+function njSave() {
+  const name = document.getElementById('nj-name').value.trim();
+  if (!name) { showToast('Client name is required'); return; }
+
+  const payload = {
+    id: document.getElementById('nj-id').value.trim(),
+    name: name,
+    sector: document.getElementById('nj-sector').value.trim(),
+    enabled: document.getElementById('nj-enabled').checked,
+    keywords: document.getElementById('nj-keywords').value
+      .split(',').map(s => s.trim()).filter(Boolean),
+    spokespeople: document.getElementById('nj-spokespeople').value
+      .split('\n').map(s => s.trim()).filter(Boolean)
+      .map(line => {
+        const parts = line.split('|').map(p => p.trim());
+        return { name: parts[0] || '', title: parts[1] || '', expertise: parts[2] || '' };
+      }),
+    notes: document.getElementById('nj-notes').value.trim(),
+  };
+
+  fetch('/api/newsjack/clients', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+    .then(r => { if (!r.ok) return r.json().then(e => Promise.reject(e)); return r.json(); })
+    .then(() => { showToast('Client saved'); setTimeout(() => window.location.reload(), 600); })
+    .catch(e => showToast('Save failed: ' + (e.detail || 'server error')));
+}
+
+function njDelete(id, btn) {
+  const c = NJ_CLIENTS.find(c => c.id === id);
+  if (!confirm('Delete client "' + (c ? c.name : id) + '"? This removes it from newsjack.yaml.')) return;
+  btn.disabled = true;
+  fetch('/api/newsjack/clients/' + encodeURIComponent(id), { method: 'DELETE' })
+    .then(r => { if (!r.ok) return r.json().then(e => Promise.reject(e)); return r.json(); })
+    .then(() => { showToast('Client deleted'); setTimeout(() => window.location.reload(), 600); })
+    .catch(e => { btn.disabled = false; showToast('Delete failed: ' + (e.detail || 'server error')); });
 }
 
 function triggerHarvest() {

@@ -6,9 +6,6 @@ on:
     - cron: "5 7 * * 1-5"   # weekdays only
   workflow_dispatch:          # manual trigger from GitHub Actions UI
 
-permissions:
-  contents: write   # needed to commit docs/index.html back to the repo
-
 jobs:
   harvest:
     runs-on: ubuntu-latest
@@ -40,17 +37,8 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
 
-      - name: Generate static site
-        run: python generate_static.py
-
-      - name: Commit and push static site
-        run: |
-          git config user.name  "fc-harvest[bot]"
-          git config user.email "fc-harvest[bot]@users.noreply.github.com"
-          git add docs/index.html
-          if git diff --cached --quiet; then
-            echo "No changes to docs/index.html — skipping commit"
-          else
-            git commit -m "chore: update dashboard $(date -u +'%Y-%m-%d %H:%M UTC')"
-            git push origin ${{ github.ref_name }}
-          fi
+      # docs/index.html is a hand-maintained, self-updating dashboard that
+      # fetches live from GOV.UK/Parliament APIs in the browser — it does not
+      # read from harvest.db. generate_static.py is a separate, unmaintained
+      # code path; running it here overwrote the real dashboard, so it and
+      # the commit-back step have been removed.

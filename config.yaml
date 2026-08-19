@@ -44,11 +44,30 @@ sources:
   # Valid filter: filter_organisations, filter_content_store_document_type, order, count
   # INVALID (causes 422): filter_content_purpose_supergroup, filter_document_type
   govuk:
-    - id: govuk_dsit
-      label: "DSIT"
+    - id: govuk_dbist
+      label: "DBIST"
       type: govuk_api
       params:
-        filter_organisations: "department-for-science-innovation-and-technology"
+        # DSIT was dissolved; its remit split between this department (which
+        # absorbed DBT) and DCMS (below).
+        filter_organisations: "department-for-business-innovation-science-and-trade"
+        filter_content_store_document_type:
+          - news_story
+          - press_release
+          - guidance
+          - consultation
+          - policy_paper
+          - speech
+          - written_statement
+          - government_response
+        order: "-public_timestamp"
+        count: 50
+
+    - id: govuk_dcms
+      label: "DCMS"
+      type: govuk_api
+      params:
+        filter_organisations: "department-for-culture-media-and-sport"
         filter_content_store_document_type:
           - news_story
           - press_release
@@ -104,23 +123,6 @@ sources:
           - news_story
           - press_release
           - speech
-        order: "-public_timestamp"
-        count: 50
-
-    - id: govuk_dbt
-      label: "DBT"
-      type: govuk_api
-      params:
-        filter_organisations: "department-for-business-and-trade"
-        filter_content_store_document_type:
-          - news_story
-          - press_release
-          - guidance
-          - consultation
-          - policy_paper
-          - speech
-          - written_statement
-          - government_response
         order: "-public_timestamp"
         count: 50
 

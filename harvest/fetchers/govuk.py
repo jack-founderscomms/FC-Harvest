@@ -4,7 +4,7 @@ Docs: https://docs.publishing.service.gov.uk/repos/search-api/using-the-search-a
 Base: https://www.gov.uk/api/search.json   (no auth, official, stable)
 
 Valid filter params:
-  filter_organisations             — org slug, e.g. "department-for-science-innovation-and-technology"
+  filter_organisations             — org slug, e.g. "department-for-business-innovation-science-and-trade"
   filter_content_store_document_type — e.g. news_story, press_release, guidance, consultation,
                                        policy_paper, speech, written_statement, government_response
   order                            — "-public_timestamp" (newest first)

@@ -188,6 +188,17 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .src-btn[data-src="votes"].active{background:#d97706;border-color:#d97706}
 .src-btn[data-src="hansard"].active{background:var(--navy-mid);border-color:var(--navy-mid)}
 
+/* ── Department filter bar ── */
+.dept-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+          border-bottom:1px solid var(--border);background:var(--surface)}
+.dept-bar-label{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;margin-right:2px;
+               text-transform:uppercase;letter-spacing:.05em}
+.dept-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+         border:1px solid var(--border);background:var(--bg);color:var(--muted);
+         transition:all .12s;white-space:nowrap}
+.dept-btn:hover{border-color:var(--navy-light);color:var(--navy)}
+.dept-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
 /* ── Keyword editor panel ── */
 .kw-panel{background:var(--surface);border-bottom:3px solid var(--accent);
           padding:20px 24px;box-shadow:0 4px 16px rgba(21,32,64,.1)}
@@ -421,6 +432,20 @@ input[type=date]:focus{border-color:var(--accent)}
   <button class="src-btn" data-src="committee" onclick="filterSrc(this)">Committees</button>
   <button class="src-btn" data-src="votes"     onclick="filterSrc(this)">Votes</button>
   <button class="src-btn" data-src="hansard"   onclick="filterSrc(this)">Hansard</button>
+</div>
+
+<!-- Department filter bar -->
+<div class="dept-bar" id="dept-bar">
+  <span class="dept-bar-label">Department:</span>
+  <button class="dept-btn active" data-dept="" onclick="filterDept(this)">All</button>
+  <button class="dept-btn" data-dept="govuk_dbist"    onclick="filterDept(this)">DBIST</button>
+  <button class="dept-btn" data-dept="govuk_dcms"     onclick="filterDept(this)">DCMS</button>
+  <button class="dept-btn" data-dept="govuk_treasury" onclick="filterDept(this)">HM Treasury</button>
+  <button class="dept-btn" data-dept="govuk_cabinet"  onclick="filterDept(this)">Cabinet Office</button>
+  <button class="dept-btn" data-dept="govuk_no10"     onclick="filterDept(this)">No.10</button>
+  <button class="dept-btn" data-dept="govuk_dhsc"     onclick="filterDept(this)">DHSC</button>
+  <button class="dept-btn" data-dept="govuk_desnz"    onclick="filterDept(this)">DESNZ</button>
+  <button class="dept-btn" data-dept="govuk_hmrc"     onclick="filterDept(this)">HMRC</button>
 </div>
 
 <!-- Date filter bar -->
@@ -658,6 +683,7 @@ let sourceErrors = {};
 let activeCat = null;
 let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
 let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
+let activeDept = '';         // '', or a GOVUK_SOURCES id e.g. 'govuk_dbist'
 let activeConsultationFilter = false;
 let activeSort = 'date_desc'; // 'date_desc' | 'date_asc' | 'alpha_asc' | 'alpha_desc'
 let committeeLists = {};
@@ -1610,11 +1636,12 @@ function applyFilters() {
       docTypes.some(t => docType.includes(t));
 
     const consultOk = !activeConsultationFilter || isConsultationDoc(docType);
+    const deptOk = !activeDept || srcType === activeDept;
 
     const ok = (!q || title.includes(q))
             && (!kwOnly || item.dataset.kw === '1')
             && (!activeCat || cats.includes(activeCat))
-            && grpOk && dateOk && srcOk && dtOk && consultOk;
+            && grpOk && dateOk && srcOk && dtOk && consultOk && deptOk;
     item.classList.toggle('hidden', !ok);
     if (ok) shown++;
   });
@@ -1624,7 +1651,7 @@ function applyFilters() {
   });
 
   const fs = document.getElementById('filter-status');
-  const anyFilter = q || kwOnly || activeCat || (activeDateFilter && activeDateFilter !== '') || activeSrcGroup || advFrom || advTo;
+  const anyFilter = q || kwOnly || activeCat || (activeDateFilter && activeDateFilter !== '') || activeSrcGroup || activeDept || advFrom || advTo;
   if (fs) fs.textContent = anyFilter ? shown + ' results' : '';
 }
 
@@ -1642,6 +1669,13 @@ function filterSrc(btn) {
   document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeSrcGroup = btn.dataset.src || '';
+  applyFilters();
+}
+
+function filterDept(btn) {
+  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDept = btn.dataset.dept || '';
   applyFilters();
 }
 
@@ -1693,6 +1727,10 @@ function clearAdv() {
   document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.src-btn[data-src=""]')?.classList.add('active');
   activeSrcGroup = '';
+  // Reset department buttons
+  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.dept-btn[data-dept=""]')?.classList.add('active');
+  activeDept = '';
   // Reset date buttons
   document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.date-btn[data-date=""]')?.classList.add('active');
@@ -1740,6 +1778,7 @@ function getVisibleItems() {
   const kwOnly = document.getElementById('kw-only').checked;
   return dedupeItems(allItems).filter(item => {
     if (activeSrcGroup && srcGroup(item.source_id || '') !== activeSrcGroup) return false;
+    if (activeDept && (item.source_id || '') !== activeDept) return false;
     if (activeConsultationFilter && !isConsultationDoc(item.doc_type)) return false;
     if (activeCat && !(item.matched_cats || []).includes(activeCat)) return false;
     if (kwOnly && !(item.matched_cats && item.matched_cats.length)) return false;

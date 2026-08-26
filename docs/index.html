@@ -603,6 +603,9 @@ const GOVUK_SOURCES = [
   // org:null + consultOnly → all-of-government sweep, so no CfE/consultation
   // is ever missed because its publisher isn't a tracked department
   {id:'govuk_consult', label:'Consultations & CfEs (all government)', org:null, consultOnly:true},
+  // org:null + pressOnly → every government press release/news story, not just
+  // from the departments tracked below
+  {id:'govuk_press_all', label:'Press Releases (all government)', org:null, pressOnly:true},
   {id:'govuk_treasury',label:'HM Treasury',     org:'hm-treasury'},
   {id:'govuk_cabinet', label:'Cabinet Office',  org:'cabinet-office'},
   {id:'govuk_no10',    label:'No.10',            org:'prime-ministers-office-10-downing-street'},
@@ -672,8 +675,9 @@ const CONSULT_DOC_TYPES = ['open_consultation','closed_consultation','consultati
                            'open_call_for_evidence','closed_call_for_evidence','call_for_evidence_outcome'];
 const DOC_TYPES = ['news_story','press_release',...CONSULT_DOC_TYPES,'policy_paper',
                    'speech','written_statement','government_response','guidance'];
+const PRESS_DOC_TYPES = ['news_story','press_release'];
 
-const CACHE_KEY = 'fc-monitoring-v18';
+const CACHE_KEY = 'fc-monitoring-v19';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -826,6 +830,11 @@ async function fetchGovUK(src) {
   // All-of-government consultation sweep has no org filter and only CfE/consultation types
   if (src.consultOnly) {
     const data = await query(CONSULT_DOC_TYPES, 60);
+    return mapGovUKResults(data.results || [], src);
+  }
+  // All-of-government press sweep has no org filter and only news/press types
+  if (src.pressOnly) {
+    const data = await query(PRESS_DOC_TYPES, 100);
     return mapGovUKResults(data.results || [], src);
   }
   // Dedicated consultations/calls-for-evidence query alongside the general one,

@@ -453,6 +453,7 @@ input[type=date]:focus{border-color:var(--accent)}
   <span class="date-bar-label">Date:</span>
   <button class="date-btn active" data-date="" onclick="filterDate(this)">All</button>
   <button class="date-btn" data-date="today"     onclick="filterDate(this)">Today</button>
+  <button class="date-btn" data-date="yesterday" onclick="filterDate(this)">Yesterday</button>
   <button class="date-btn" data-date="last7"     onclick="filterDate(this)">Last 7 days</button>
   <button class="date-btn" data-date="last30"    onclick="filterDate(this)">Last 30 days</button>
   <button class="date-btn" data-date="next_week" onclick="filterDate(this)">Next week</button>
@@ -685,7 +686,7 @@ const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 let allItems = [];
 let sourceErrors = {};
 let activeCat = null;
-let activeDateFilter = '';   // '', 'today', 'last7', 'last30', 'next7'
+let activeDateFilter = '';   // '', 'today', 'yesterday', 'last7', 'last30', 'next_week', 'next30'
 let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
 let activeDept = '';         // '', or a GOVUK_SOURCES id e.g. 'govuk_dbist'
 let activeConsultationFilter = false;
@@ -1593,6 +1594,9 @@ function applyFilters() {
   let winStart = null, winEnd = null;
   if (activeDateFilter === 'today') {
     winStart = today; winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+  } else if (activeDateFilter === 'yesterday') {
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-1);
+    winEnd = today;
   } else if (activeDateFilter === 'last7') {
     winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
     winStart = new Date(today); winStart.setDate(winStart.getDate()-7);

@@ -192,12 +192,13 @@ def _fetch_publications(committee_id: int, type_names: list[str]) -> list[dict]:
 
 def _publication_url(p: dict) -> str:
     pub_id = p["id"]
+    # Reports usually have an HTML version on publications.parliament.uk — nicer than the PDF
+    if p.get("additionalContentUrl"):
+        return p["additionalContentUrl"]
     for doc in p.get("documents") or []:
         doc_id = doc.get("documentId") or doc.get("id")
         if doc_id:
             return f"{SITE_BASE}/publications/{pub_id}/documents/{doc_id}/default/"
-    if p.get("additionalContentUrl"):
-        return p["additionalContentUrl"]
     return f"{SITE_BASE}/publications/{pub_id}/"
 
 
@@ -207,7 +208,8 @@ def _fetch_new_business(committee_id: int | None = None, take: int = 10) -> list
     params = {"SortOrder": "DateOpenedNewest", "Take": take}
     if committee_id:
         params["CommitteeId"] = committee_id
-    resp = polite_get(f"{API_BASE}/CommitteeBusiness", params=params, accept_json=True)
+    # This endpoint is slow (often >20s), so allow longer and retry once
+    resp = polite_get(f"{API_BASE}/CommitteeBusiness", params=params, accept_json=True, timeout=60, retries=1)
 
     items = []
     for b in resp.json().get("items", []):

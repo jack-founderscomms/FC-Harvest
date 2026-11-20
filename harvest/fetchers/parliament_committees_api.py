@@ -53,6 +53,10 @@ PUBLICATION_TYPE_IDS = {
 DEFAULT_PUBLICATION_TYPES = ["Report", "Special Report", "Government Response", "Correspondence"]
 DEFAULT_INCLUDE = ["news", "publications", "inquiries"]
 
+# The Committees API is often slow (>20s per call)
+API_TIMEOUT = 60
+API_RETRIES = 1
+
 # Cache of the current-committee list, fetched once per process
 _committees_cache: list[dict] | None = None
 
@@ -124,7 +128,7 @@ def _all_current_committees() -> list[dict]:
         resp = polite_get(
             f"{API_BASE}/Committees",
             params={"CommitteeStatus": "Current", "Take": 500},
-            accept_json=True,
+            accept_json=True, timeout=API_TIMEOUT, retries=API_RETRIES,
         )
         _committees_cache = resp.json().get("items", [])
     return _committees_cache
@@ -166,7 +170,8 @@ def _fetch_publications(committee_id: int, type_names: list[str]) -> list[dict]:
     }
     if type_ids:
         params["PublicationTypeIds"] = type_ids  # requests repeats the key per value
-    resp = polite_get(f"{API_BASE}/Publications", params=params, accept_json=True)
+    resp = polite_get(f"{API_BASE}/Publications", params=params, accept_json=True,
+                      timeout=API_TIMEOUT, retries=API_RETRIES)
 
     items = []
     for p in resp.json().get("items", []):
@@ -208,8 +213,8 @@ def _fetch_new_business(committee_id: int | None = None, take: int = 10) -> list
     params = {"SortOrder": "DateOpenedNewest", "Take": take}
     if committee_id:
         params["CommitteeId"] = committee_id
-    # This endpoint is slow (often >20s), so allow longer and retry once
-    resp = polite_get(f"{API_BASE}/CommitteeBusiness", params=params, accept_json=True, timeout=60, retries=1)
+    resp = polite_get(f"{API_BASE}/CommitteeBusiness", params=params, accept_json=True,
+                      timeout=API_TIMEOUT, retries=API_RETRIES)
 
     items = []
     for b in resp.json().get("items", []):

@@ -52,7 +52,7 @@ def generate():
             "checked_at": (h.get("checked_at") or "")[:16].replace("T", " "),
         }
         for sid, h in source_health.items()
-        if h.get("status") == "error"
+        if h.get("status") == "error" and sid in label_map  # ignore sources removed from config
     ]
 
     # Build ordered groups

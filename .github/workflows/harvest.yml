@@ -23,8 +23,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: harvest.db
-          key: harvest-db-${{ github.ref_name }}
-          restore-keys: harvest-db-
+          # Unique key per run so the updated DB is saved after every run
+          # (a fixed key is never overwritten, so items would not accumulate).
+          key: harvest-db-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            harvest-db-${{ github.ref_name }}-
+            harvest-db-${{ github.ref_name }}
+            harvest-db-
 
       - name: Set up Python
         uses: actions/setup-python@v5

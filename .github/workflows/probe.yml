@@ -2,7 +2,7 @@ name: Probe committee endpoints (temporary)
 on:
   push:
     branches: [claude/epic-galileo-5dwf5k]
-    paths: [scripts/probe_committees.py, .github/workflows/probe.yml]
+    paths: [scripts/probe_committees.py, .github/workflows/probe.yml, harvest/**, config.yaml]
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -10,5 +10,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install requests
+      - run: pip install -r requirements.txt
       - run: python scripts/probe_committees.py

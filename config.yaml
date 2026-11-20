@@ -125,60 +125,69 @@ sources:
         count: 50
 
   # ── Parliamentary Committees ──────────────────────────────────────────────
-  # Official API: https://committees-api.parliament.uk/index.html
-  # IDs are discovered dynamically — search_name is matched against the API's committee list.
-  # Committee IDs changed after the 2024 general election; dynamic lookup handles this.
+  # One dashboard group per committee, combining:
+  #   • news       — committee press releases (via Google News; committees.parliament.uk
+  #                  blocks automated clients, and the API has no news endpoint)
+  #   • publications — reports, government responses, correspondence (official API)
+  #   • inquiries  — newly opened inquiries / committee business (official API)
+  # committee_id is the number in the committee's URL, e.g.
+  #   committees.parliament.uk/committee/365/business-innovation-science-and-trade-committee/
+  # To add a committee: copy a block, change id/label/committee_id. Optional keys:
+  #   include: [news, publications, inquiries]   news_days: 30
+  #   publication_types: [Report, Special Report, Government Response, Correspondence]
   committees:
-    - id: committee_sit_commons
-      label: "Science, Innovation & Technology Committee (Commons)"
+    - id: committee_bist_commons
+      label: "Business, Innovation, Science & Trade Committee (Commons)"
       type: parliament_committees_api
-      search_name: "Science, Innovation and Technology"
-      house: "Commons"
+      committee_id: 365
+
+    - id: committee_bist_econsec_commons
+      label: "BIST Sub-Committee on Economic Security, Arms & Export Controls (Commons)"
+      type: parliament_committees_api
+      committee_id: 783
+
+    - id: committee_sit_commons
+      label: "Science & Technology Committee (Commons)"
+      type: parliament_committees_api
+      committee_id: 135
 
     - id: committee_st_lords
       label: "Science & Technology Committee (Lords)"
       type: parliament_committees_api
-      search_name: "Science and Technology"
-      house: "Lords"
+      committee_id: 193
 
-    - id: committee_bt_commons
-      label: "Business & Trade Committee (Commons)"
+    - id: committee_dcms_commons
+      label: "Digital, Culture, Media & Sport Committee (Commons)"
       type: parliament_committees_api
-      search_name: "Business and Trade"
-      house: "Commons"
+      committee_id: 378
 
     - id: committee_cd_lords
       label: "Communications & Digital Committee (Lords)"
       type: parliament_committees_api
-      search_name: "Communications and Digital"
-      house: "Lords"
+      committee_id: 170
 
     - id: committee_ea_lords
       label: "Economic Affairs Committee (Lords)"
       type: parliament_committees_api
-      search_name: "Economic Affairs"
-      house: "Lords"
+      committee_id: 175
 
     - id: committee_ir_lords
       label: "Industry & Regulators Committee (Lords)"
       type: parliament_committees_api
-      search_name: "Industry and Regulators"
-      house: "Lords"
+      committee_id: 517
 
     - id: committee_treasury_commons
       label: "Treasury Committee (Commons)"
       type: parliament_committees_api
-      search_name: "Treasury"
-      house: "Commons"
+      committee_id: 158
 
   # ── Committee Inquiries ───────────────────────────────────────────────────
-  # committees.parliament.uk/inquiries — no API; HTML scrape.
-  # FRAGILITY: medium — SSR page, layout may change.
+  # Newly opened inquiries across ALL committees, from the official Committees API.
   inquiries:
     - id: parliament_inquiries
       label: "Committee Inquiries (All)"
-      type: parliament_inquiries_scrape
-      url: "https://committees.parliament.uk/inquiries/"
+      type: parliament_inquiries_api
+      count: 50
 
   # ── Written Statements ────────────────────────────────────────────────────
   # Official API: https://questions-statements-api.parliament.uk/index.html

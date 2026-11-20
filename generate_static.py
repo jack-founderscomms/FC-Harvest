@@ -273,7 +273,7 @@ input[type=checkbox]{{accent-color:var(--accent);cursor:pointer}}
 
 <div class="footer">
   FC-Harvest · Generated {_esc(generated_at)} ·
-  Sources: GOV.UK Search API, committees-api.parliament.uk, hansard-api.parliament.uk,
+  Sources: GOV.UK Search API, committees-api.parliament.uk, Google News (committee news), hansard-api.parliament.uk,
   questions-statements-api.parliament.uk, whatson-api.parliament.uk ·
   <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
 </div>

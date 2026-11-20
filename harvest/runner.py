@@ -32,7 +32,8 @@ FETCHER_MAP = {
     "parliament_committees_api": parliament_committees_api,
     "parliament_written_statements_api": parliament_written_statements,
     "hansard_api": hansard,
-    "parliament_inquiries_scrape": parliament_inquiries,
+    "parliament_inquiries_api": parliament_inquiries,
+    "parliament_inquiries_scrape": parliament_inquiries,  # legacy name
     "whatson_scrape": whatson_scrape,
 }
 
@@ -133,6 +134,6 @@ def _friendly_error(exc: Exception) -> str:
         return "Connection failed — server unreachable"
     if "Timeout" in msg or "timed out" in msg.lower():
         return "Request timed out"
-    if "Could not find committee" in msg:
+    if "Committee not found" in msg or "committee feeds failed" in msg:
         return msg  # already friendly from committee fetcher
     return msg[:120]

@@ -619,7 +619,7 @@ const GOVUK_SOURCES = [
 ];
 
 const COMMITTEE_SOURCES = [
-  {id:'cmt_hsc',   label:'Health & Social Care Committee (Commons)', searchName:'Health and Social Care',            house:'Commons'},
+  {id:'cmt_hsc',   label:'Health & Social Care Committee (Commons)', searchName:'Health and Social Care',            house:'Commons', committeeId:81},
   {id:'cmt_sit',   label:'SIT Committee (Commons)',                  searchName:'Science, Innovation and Technology', house:'Commons'},
   {id:'cmt_st',    label:'Science & Technology (Lords)',             searchName:'Science and Technology',            house:'Lords'},
   {id:'cmt_bt',    label:'Business & Trade (Commons)',               searchName:'Business and Trade',                house:'Commons'},
@@ -880,9 +880,11 @@ async function fetchCommittee(src) {
     }
     if (bestScore >= 2) cmt = best;
   }
-  if (!cmt) throw new Error('Not found: ' + src.searchName);
-
-  const id = cmt.id || cmt.Id || cmt.committeeId || cmt.CommitteeId || cmt.commiteeId;
+  // Fall back to a known committee ID (from its committees.parliament.uk URL)
+  // if the dynamic name lookup above comes up empty — keeps the source working
+  // even if the API's committee list omits or renames this committee.
+  const id = cmt ? (cmt.id || cmt.Id || cmt.committeeId || cmt.CommitteeId || cmt.commiteeId) : src.committeeId;
+  if (!id) throw new Error('Not found: ' + src.searchName);
   const items = [];
 
   // News articles

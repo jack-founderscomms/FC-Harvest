@@ -1,0 +1,55 @@
+name: Committee data
+
+# Builds docs/committees.json (committee news, reports, letters, inquiries,
+# hearings) for the dashboard on main. See scripts/fetch_committees.py for why
+# this can't be fetched in the browser.
+#
+# Scheduled workflows only run from the repository's DEFAULT branch, so this
+# file also lives there; it always checks out and commits to main regardless.
+# It only ever commits docs/committees.json — never docs/index.html.
+
+on:
+  schedule:
+    # Every 2 hours, 06:17–18:17 UTC, weekdays (07:17–19:17 UK in summer)
+    - cron: "17 6-18/2 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: committee-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: Fetch committee data
+        run: python scripts/fetch_committees.py
+
+      - name: Commit docs/committees.json to main
+        run: |
+          git config user.name  "fc-harvest[bot]"
+          git config user.email "fc-harvest[bot]@users.noreply.github.com"
+          git add docs/committees.json
+          if git diff --cached --quiet; then
+            echo "No changes"; exit 0
+          fi
+          git commit -m "chore: update committee data $(date -u +'%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

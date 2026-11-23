@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T09:49:31+00:00",
+ "generated_at": "2026-11-23T10:09:53+00:00",
  "committee_ids": [
   81,
   135,
@@ -9,11 +9,36 @@
   193,
   365,
   378,
+  430,
   517,
-  783
+  783,
+  821,
+  830
  ],
  "failed": [],
  "items": [
+  {
+   "item_id": "cmt_ev_28708",
+   "title": "Formal meeting (oral evidence session): Children’s social care",
+   "url": "https://committees.parliament.uk/event/28708/",
+   "published_at": "2026-12-16T11:00:00",
+   "summary": "To be Confirmed",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 430,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28707",
+   "title": "Formal meeting (oral evidence session): Children’s social care",
+   "url": "https://committees.parliament.uk/event/28707/",
+   "published_at": "2026-12-09T11:00:00",
+   "summary": "To be Confirmed",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 430,
+   "_part": "events"
+  },
   {
    "item_id": "cmt_ev_28796",
    "title": "Formal meeting (oral evidence session)",
@@ -23,6 +48,17 @@
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 175,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28154",
+   "title": "Formal meeting (oral evidence session): Children’s social care",
+   "url": "https://committees.parliament.uk/event/28154/",
+   "published_at": "2026-12-02T11:00:00",
+   "summary": "To be Confirmed",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 430,
    "_part": "events"
   },
   {
@@ -45,6 +81,17 @@
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 158,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28153",
+   "title": "Formal meeting (oral evidence session): Children’s social care",
+   "url": "https://committees.parliament.uk/event/28153/",
+   "published_at": "2026-11-25T11:00:00",
+   "summary": "Room 2, Palace of Westminster",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 430,
    "_part": "events"
   },
   {
@@ -123,6 +170,16 @@
    "_is_event": true,
    "committee_id": 378,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_inq_10145",
+   "title": "New non-inquiry session: Non-Disclosure Agreements",
+   "url": "https://committees.parliament.uk/work/10145/",
+   "published_at": "2026-11-23T00:00:00",
+   "summary": "Non-inquiry session",
+   "doc_type": "inquiry",
+   "committee_id": 378,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_news_81_toQkc0ck5naTEzRXQxdUFxR25tSFI2VGI2ZEZKUQ",
@@ -205,6 +262,17 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_ev_28152",
+   "title": "Formal meeting (oral evidence session): Children’s social care",
+   "url": "https://committees.parliament.uk/event/28152/",
+   "published_at": "2026-11-18T11:00:00",
+   "summary": "Room 1, Palace of Westminster",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 430,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28759",
    "title": "Oral Evidence",
    "url": "https://committees.parliament.uk/event/28759/",
@@ -237,6 +305,16 @@
    "_part": "news"
   },
   {
+   "item_id": "cmt_news_830_bmk0dnBBMzFHSXp2U1J4d2NzM3Vab1NUZ3N2aE1o",
+   "title": "No time to lose to reverse the decline in childhood vaccination rates",
+   "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNM25xTWhUNHNFUFpWM3pEd2ZIM0tPdTVzRUU1NlllYlQ0Vi1Zbk9KTi1rVkFRajV1MmF1cjh6VFBlNVJwV0tlMkZvVmgwOFM0dTZzQlJ5UDVmMjY2c0lDSzBsZEVvSzc1clhadU1WLVNpWWNTWUp0eExmNld6OExkX1cxbkh4bGRPV3pzaThRbkUwczlSSnNweWZrM0ZqMGVJTG9NQXhSZlJ2blhrRE5xNzFXUHpTYUl4a3hhcUxGTWVZNjkwMGluT0xWeEw4YzZEOGxZZGRWbmk0dnBBMzFHSXp2U1J4d2NzM3Vab1NUZ3N2aE1o?oc=5",
+   "published_at": "2026-11-18T00:01:17+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 830,
+   "_part": "news"
+  },
+  {
    "item_id": "cmt_pub_55827",
    "title": "11th Report - Guardrails for growth: AI safety and security",
    "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmbeis/689/report.html",
@@ -244,6 +322,16 @@
    "summary": "Report · Inquiry: AI adoption, safety and governance",
    "doc_type": "committee report",
    "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55838",
+   "title": "Report - No time to lose: reversing the decline in childhood vaccination rates",
+   "url": "https://publications.parliament.uk/pa/ld5902/ldselect/ldchildvacc/80/8002.htm",
+   "published_at": "2026-11-18T00:01:00",
+   "summary": "Report · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee report",
+   "committee_id": 830,
    "_part": "publications"
   },
   {
@@ -388,6 +476,16 @@
    "summary": "Government Response",
    "doc_type": "government_response",
    "committee_id": 81,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55780",
+   "title": "Government Response - Falling Primary School Rolls",
+   "url": "https://committees.parliament.uk/publications/55780/documents/311117/default/",
+   "published_at": "2026-11-11T12:41:00",
+   "summary": "Government Response · Inquiry: Falling Primary School Rolls",
+   "doc_type": "government_response",
+   "committee_id": 430,
    "_part": "publications"
   },
   {
@@ -1941,6 +2039,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_inq_10001",
+   "title": "New inquiry: Children’s social care",
+   "url": "https://committees.parliament.uk/work/10001/",
+   "published_at": "2026-09-16T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
+  },
+  {
    "item_id": "cmt_pub_55034",
    "title": "Correspondence from Minister for Space, Cyber and Regulatory Reform, re. Consultation on modernising corporate reporting, 7 September 2026",
    "url": "https://committees.parliament.uk/publications/55034/documents/305137/default/",
@@ -1971,6 +2079,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_pub_55025",
+   "title": "Letter from Mabon ap Gwynfor AS/MS, Cabinet Minister for Health and Care, Wales and Nerys Evans AS/MS, Deputy Minister for Public and Preventative Health to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, 22 July 2026",
+   "url": "https://committees.parliament.uk/publications/55025/documents/305078/default/",
+   "published_at": "2026-09-15T12:10:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_55038",
    "title": "Letter from Rt Hon. Jonathan Reynolds MP, Secretary of State for Business, Innovation, Science and Trade",
    "url": "https://committees.parliament.uk/publications/55038/documents/305143/default/",
@@ -1978,6 +2096,26 @@
    "summary": "Correspondence",
    "doc_type": "committee correspondence",
    "committee_id": 193,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55021",
+   "title": "Letter from Ian Perrin, Assistant Director, Integrated Care Board Network, the NHS Alliance, to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, 17 July 2026",
+   "url": "https://committees.parliament.uk/publications/55021/documents/305048/default/",
+   "published_at": "2026-09-15T10:55:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55020",
+   "title": "Letter from Baroness Walmsley, Chair of the Childhood Vaccinations Committee to Sharon Hodgson MP, Parliamentary Under-Secretary of State for Public Health, Department of Health and Social Care, and Caroline Temmink, Director of Vaccination, NHS England, 16 July 2026",
+   "url": "https://committees.parliament.uk/publications/55020/documents/305047/default/",
+   "published_at": "2026-09-15T10:50:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
    "_part": "publications"
   },
   {
@@ -2041,6 +2179,26 @@
    "_part": "inquiries"
   },
   {
+   "item_id": "cmt_pub_54695",
+   "title": "Government Response - the Role of Ambulance Services in Supporting Accident and Emergency Departments' Capacity",
+   "url": "https://committees.parliament.uk/publications/54695/documents/303843/default/",
+   "published_at": "2026-09-02T13:00:00",
+   "summary": "Government Response · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "government_response",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54699",
+   "title": "Letter from Georgia Gould MP to the Public Services Committee (24 July 2026)",
+   "url": "https://committees.parliament.uk/publications/54699/documents/303848/default/",
+   "published_at": "2026-09-02T13:00:00",
+   "summary": "Correspondence · Inquiry: Falling Primary School Rolls",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_54649",
    "title": "Letter from Lord Mair to Rt Hon. Jonathan Reynolds MP, Secretary of State for Business, Innovation, Science and Trade",
    "url": "https://committees.parliament.uk/publications/54649/documents/303696/default/",
@@ -2048,6 +2206,16 @@
    "summary": "Correspondence",
    "doc_type": "committee correspondence",
    "committee_id": 193,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54664",
+   "title": "Policy Letter on Falling Primary School Rolls",
+   "url": "https://committees.parliament.uk/publications/54664/documents/303780/default/",
+   "published_at": "2026-09-02T08:50:00",
+   "summary": "Correspondence · Inquiry: Falling Primary School Rolls",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
    "_part": "publications"
   },
   {
@@ -2081,6 +2249,86 @@
    "_part": "inquiries"
   },
   {
+   "item_id": "cmt_pub_54521",
+   "title": "Letter from Josh MacAlister OBE MP and Sharon Hodgson MP to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, 8 July 2026",
+   "url": "https://committees.parliament.uk/publications/54521/documents/302441/default/",
+   "published_at": "2026-07-23T11:45:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54518",
+   "title": "ANNEX A - Scottish Government and Public Health Scotland Response to House of Lords Childhood Vaccinations Committee",
+   "url": "https://committees.parliament.uk/publications/54518/documents/302436/default/",
+   "published_at": "2026-07-23T11:43:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54514",
+   "title": "Letter from Maree Todd MSP, to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, on childhood vaccination rates in Scotland, 6 July 2026",
+   "url": "https://committees.parliament.uk/publications/54514/documents/302435/default/",
+   "published_at": "2026-07-23T11:40:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54508",
+   "title": "Letter from Mike Nesbitt MLA, to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, on childhood vaccination rates in Northern Ireland, 29 June 2026",
+   "url": "https://committees.parliament.uk/publications/54508/documents/302429/default/",
+   "published_at": "2026-07-23T11:35:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54503",
+   "title": "Letter from Baroness Walmsley, Chair of the Childhood Vaccinations Committee to Georgia Gould OBE MP and Sharon Hodgson MP on Childhood Vaccination Rates, 16 June 2026",
+   "url": "https://committees.parliament.uk/publications/54503/documents/302426/default/",
+   "published_at": "2026-07-23T11:28:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54501",
+   "title": "Letter from Baroness Walmsley, Chair of the Childhood Vaccinations Committee, to Mike Nesbitt MLA, on childhood vaccination rates in Northern Ireland, 5 June 2026",
+   "url": "https://committees.parliament.uk/publications/54501/documents/302425/default/",
+   "published_at": "2026-07-23T11:27:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54499",
+   "title": "Letter from Baroness Walmsley, Chair of the Childhood Vaccinations Committee, to Mabon ap Gwynfor MS, on childhood vaccination rates in Wales, 5 June 2026",
+   "url": "https://committees.parliament.uk/publications/54499/documents/302422/default/",
+   "published_at": "2026-07-23T11:23:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54491",
+   "title": "Letter from Baroness Walmsley, Chair of the Childhood Vaccinations Committee, to Angela Constance MSP, on childhood vaccination rates in Scotland, 5 June 2026",
+   "url": "https://committees.parliament.uk/publications/54491/documents/302418/default/",
+   "published_at": "2026-07-23T11:15:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_54329",
    "title": "Letter from Andrew Bailey, Governor of the Bank of England, to the Chair of the Economic Affairs Committee (24 June 2026)",
    "url": "https://committees.parliament.uk/publications/54329/documents/301867/default/",
@@ -2088,6 +2336,16 @@
    "summary": "Correspondence · Inquiry: Governor of the Bank of England",
    "doc_type": "committee correspondence",
    "committee_id": 175,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54234",
+   "title": "Report",
+   "url": "https://publications.parliament.uk/pa/ld5902/ldselect/ldretirepart/32/3202.htm",
+   "published_at": "2026-07-15T09:00:00",
+   "summary": "Report · Inquiry: Retirement and participation",
+   "doc_type": "committee report",
+   "committee_id": 821,
    "_part": "publications"
   },
   {
@@ -2201,6 +2459,36 @@
    "_part": "inquiries"
   },
   {
+   "item_id": "cmt_pub_54024",
+   "title": "Correspondence, Helen Donovan, Professor Helen Bedford and Dr David Elliman to the Childhood Vaccinations Committee on immunisation training, 29 June 2026",
+   "url": "https://committees.parliament.uk/publications/54024/documents/301069/default/",
+   "published_at": "2026-07-06T14:00:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54025",
+   "title": "Correspondence, Mike Nesbitt MLA, Minister of Health, Northern Ireland Executive to Baroness Walmsley, Chair of the Childhood Vaccinations Committee on Childhood vaccination rates in Northern Ireland, 29 June 2026",
+   "url": "https://committees.parliament.uk/publications/54025/documents/301070/default/",
+   "published_at": "2026-07-06T14:00:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_54026",
+   "title": "Correspondence, Professor Tracey Daszkiewicz , President of the Faculty of Public Health to Baroness Walmsley, Chair of the Childhood Vaccinations Committee, 3 June 2026",
+   "url": "https://committees.parliament.uk/publications/54026/documents/301071/default/",
+   "published_at": "2026-07-06T14:00:00",
+   "summary": "Correspondence · Inquiry: Childhood Vaccinations",
+   "doc_type": "committee correspondence",
+   "committee_id": 830,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_inq_9888",
    "title": "New non-inquiry session: Session with UK Research and Innovation",
    "url": "https://committees.parliament.uk/work/9888/",
@@ -2301,6 +2589,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_pub_53610",
+   "title": "Policy Letter on the Role of Ambulance Services in Supporting Accident and Emergency Department Capacity",
+   "url": "https://committees.parliament.uk/publications/53610/documents/299350/default/",
+   "published_at": "2026-06-16T15:00:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_inq_9849",
    "title": "New non-inquiry session: The Casey Commission",
    "url": "https://committees.parliament.uk/work/9849/",
@@ -2361,6 +2659,26 @@
    "_part": "inquiries"
   },
   {
+   "item_id": "cmt_pub_53171",
+   "title": "Letter with additional evidence from the Royal College of Paramedics to the Public Services Committee (30 April 2026)",
+   "url": "https://committees.parliament.uk/publications/53171/documents/297442/default/",
+   "published_at": "2026-05-20T13:35:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_53170",
+   "title": "Letter from Healthwatch England to the Public Services Committee (28 April 2026)",
+   "url": "https://committees.parliament.uk/publications/53170/documents/297440/default/",
+   "published_at": "2026-05-20T13:30:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_inq_9799",
    "title": "New inquiry: Health Bill",
    "url": "https://committees.parliament.uk/work/9799/",
@@ -2391,6 +2709,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_inq_9788",
+   "title": "New inquiry: Falling Primary School Rolls",
+   "url": "https://committees.parliament.uk/work/9788/",
+   "published_at": "2026-05-14T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
+  },
+  {
    "item_id": "cmt_inq_9784",
    "title": "New regular evidence sessions: Chancellor of the Exchequer",
    "url": "https://committees.parliament.uk/work/9784/",
@@ -2418,6 +2746,36 @@
    "summary": "Report · Inquiry: Regulators and growth",
    "doc_type": "committee report",
    "committee_id": 517,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_52933",
+   "title": "Letter from South Western Ambulance Service NHS Foundation Trust to the Public Services Committee (17 April 2026)",
+   "url": "https://committees.parliament.uk/publications/52933/documents/295210/default/",
+   "published_at": "2026-04-29T14:30:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_52934",
+   "title": "Letter from the Association of Ambulance Chief Executives to the Public Services Committee (22 April 2026)",
+   "url": "https://committees.parliament.uk/publications/52934/documents/295211/default/",
+   "published_at": "2026-04-29T14:30:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_52935",
+   "title": "The NHS Alliance to the Public Services Committee (24 April 2026)",
+   "url": "https://committees.parliament.uk/publications/52935/documents/295213/default/",
+   "published_at": "2026-04-29T14:30:00",
+   "summary": "Correspondence · Inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
    "_part": "publications"
   },
   {
@@ -2488,6 +2846,26 @@
    "summary": "Correspondence · Inquiry: Arms exports to Israel",
    "doc_type": "committee correspondence",
    "committee_id": 783,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_52588",
+   "title": "Letter from Kalbir Sohi to the Public Service Committee on Artificial Intelligence (25 March 2026)",
+   "url": "https://committees.parliament.uk/publications/52588/documents/292751/default/",
+   "published_at": "2026-04-15T13:30:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_52580",
+   "title": "Letter from Department of Health and Social Care to the Public Services Committee - Government Response - Medicines Security Report (1 April 2026)",
+   "url": "https://committees.parliament.uk/publications/52580/documents/292727/default/",
+   "published_at": "2026-04-15T12:30:00",
+   "summary": "Government Response · Inquiry: Medicines security",
+   "doc_type": "government_response",
+   "committee_id": 430,
    "_part": "publications"
   },
   {
@@ -2641,6 +3019,16 @@
    "_part": "inquiries"
   },
   {
+   "item_id": "cmt_inq_9715",
+   "title": "New inquiry: The role of ambulance services in supporting accident and emergency departments' capacity",
+   "url": "https://committees.parliament.uk/work/9715/",
+   "published_at": "2026-03-24T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
+  },
+  {
    "item_id": "cmt_inq_8784",
    "title": "New inquiry: State of Play",
    "url": "https://committees.parliament.uk/work/8784/",
@@ -2649,6 +3037,16 @@
    "doc_type": "inquiry",
    "committee_id": 378,
    "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_pub_52253",
+   "title": "Letter Conveying DWP Response to Public Services Committee Letter Sent For Clarifying Answers (06 March 2026)",
+   "url": "https://committees.parliament.uk/publications/52253/documents/290293/default/",
+   "published_at": "2026-03-19T15:15:00",
+   "summary": "Government Response · Inquiry: Child Maintenance",
+   "doc_type": "government_response",
+   "committee_id": 430,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_52228",
@@ -2731,6 +3129,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_pub_51989",
+   "title": "Letter from Bridget Phillipson MP to Lord Bradley - Government White Paper on Schools and SEND Consultation (23 February 2026)",
+   "url": "https://committees.parliament.uk/publications/51989/documents/288495/default/",
+   "published_at": "2026-03-04T13:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_inq_9659",
    "title": "New inquiry: Innovation in the NHS: personalised medicine and AI",
    "url": "https://committees.parliament.uk/work/9659/",
@@ -2739,6 +3147,16 @@
    "doc_type": "inquiry",
    "committee_id": 193,
    "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_pub_51824",
+   "title": "Letter from Sarah Jones MP To Baroness Morris - Government Response to Committee Letter on Police Transcription Services (10 February 2026)",
+   "url": "https://committees.parliament.uk/publications/51824/documents/287558/default/",
+   "published_at": "2026-02-25T14:30:00",
+   "summary": "Government Response · Inquiry: Police transcription",
+   "doc_type": "government_response",
+   "committee_id": 430,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_51806",
@@ -2891,6 +3309,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_pub_51370",
+   "title": "4th Report - Medicines security—a national priority",
+   "url": "https://publications.parliament.uk/pa/ld5901/ldselect/pubserv/252/25202.htm",
+   "published_at": "2026-02-04T00:01:00",
+   "summary": "Report · Inquiry: Medicines security",
+   "doc_type": "committee report",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_51403",
    "title": "Letter to Chair from Samantha Dixon MBE MP, the Parliamentary Under Secretary of State for Building Safety, Fire and Democracy, 27 January 2026",
    "url": "https://committees.parliament.uk/publications/51403/documents/285336/default/",
@@ -2948,6 +3376,66 @@
    "summary": "Correspondence · Inquiry: Forensic science: follow-up",
    "doc_type": "committee correspondence",
    "committee_id": 193,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_51282",
+   "title": "Letter from Chair of Public Services Committee to Baroness Sherlock - Reply to Government's Response to Committee Report (27 January 2026)",
+   "url": "https://committees.parliament.uk/publications/51282/documents/284789/default/",
+   "published_at": "2026-01-27T10:25:00",
+   "summary": "Correspondence · Inquiry: Child Maintenance",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_51277",
+   "title": "Letter from Dr Zubir Ahmed MP to Chair of Public Services Committee - Additional Information Following Ministerial Evidence Session (27 January 2026)",
+   "url": "https://committees.parliament.uk/publications/51277/documents/284784/default/",
+   "published_at": "2026-01-27T09:30:00",
+   "summary": "Correspondence · Inquiry: Medicines security",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_9583",
+   "title": "New inquiry: Childhood Vaccinations",
+   "url": "https://committees.parliament.uk/work/9583/",
+   "published_at": "2026-01-27T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 830,
+   "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_pub_51244",
+   "title": "MOJ Update on Procurement Services to the Public Services Committee",
+   "url": "https://committees.parliament.uk/publications/51244/documents/284478/default/",
+   "published_at": "2026-01-23T12:50:00",
+   "summary": "Correspondence · Inquiry: Interpreting and translation services in the courts",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_9572",
+   "title": "New inquiry: Retirement and participation",
+   "url": "https://committees.parliament.uk/work/9572/",
+   "published_at": "2026-01-22T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 821,
+   "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_pub_51011",
+   "title": "Government Response - Child Maintenance Service",
+   "url": "https://committees.parliament.uk/publications/51011/documents/282658/default/",
+   "published_at": "2026-01-09T12:15:00",
+   "summary": "Government Response · Inquiry: Child Maintenance",
+   "doc_type": "government_response",
+   "committee_id": 430,
    "_part": "publications"
   },
   {
@@ -3011,6 +3499,26 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_pub_50619",
+   "title": "Letter from Royal Pharmaceutical Society to Public Services Committee regarding Medicines Security (5 December 2025)",
+   "url": "https://committees.parliament.uk/publications/50619/documents/277466/default/",
+   "published_at": "2025-12-08T14:00:00",
+   "summary": "Correspondence · Inquiry: Medicines security",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_50620",
+   "title": "Letter from Company Chemists' Association, Community Pharmacy England, Healthcare Distribution Association, and MedicinesUK to Public Services Committee regarding Medicines Security (5 December 2025)",
+   "url": "https://committees.parliament.uk/publications/50620/documents/277469/default/",
+   "published_at": "2025-12-08T14:00:00",
+   "summary": "Correspondence · Inquiry: Medicines security",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_50623",
    "title": "Letter from Charlie Pugsley, Interim CEO, Building Safety Regulator, to Baroness Taylor, Chair of the Industry and Regulators Committee",
    "url": "https://committees.parliament.uk/publications/50623/documents/277494/default/",
@@ -3029,6 +3537,36 @@
    "doc_type": "inquiry",
    "committee_id": 378,
    "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_pub_50493",
+   "title": "Letter to Sarah Jones MP from the Public Services Committee regarding Police transcription",
+   "url": "https://committees.parliament.uk/publications/50493/documents/277478/default/",
+   "published_at": "2025-12-02T00:01:00",
+   "summary": "Correspondence · Inquiry: Police transcription",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_50318",
+   "title": "Letter from Department of Health and Social Care to Public Services Committee, regarding Medicine Security, 19 November 2025",
+   "url": "https://committees.parliament.uk/publications/50318/documents/271936/default/",
+   "published_at": "2025-11-20T00:00:00",
+   "summary": "Correspondence · Inquiry: Medicines security",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_50224",
+   "title": "Letter from Community Pharmacy England to Baroness Morris of Yardley, Chair, Public Services Committee on 11 November 2025",
+   "url": "https://committees.parliament.uk/publications/50224/documents/271035/default/",
+   "published_at": "2025-11-19T13:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 430,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_50288",
@@ -3171,16 +3709,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_inq_9337",
-   "title": "New pre-appointment hearing: Pre-appointment hearing for the Chair of the Charity Commission",
-   "url": "https://committees.parliament.uk/work/9337/",
-   "published_at": "2025-09-08T00:00:00",
-   "summary": "Pre-appointment hearing",
-   "doc_type": "inquiry",
-   "committee_id": 378,
-   "_part": "inquiries"
-  },
-  {
    "item_id": "cmt_inq_9335",
    "title": "New non-inquiry session: Arms exports to Israel",
    "url": "https://committees.parliament.uk/work/9335/",
@@ -3221,6 +3749,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_inq_9311",
+   "title": "New inquiry: Medicines security",
+   "url": "https://committees.parliament.uk/work/9311/",
+   "published_at": "2025-08-05T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
+  },
+  {
    "item_id": "cmt_pub_49066",
    "title": "Letter from the Chair to Professor Becky Francis, Chair of the Curriculum and Assessment Review, Department for Education, dated 1 August 2025",
    "url": "https://committees.parliament.uk/publications/49066/documents/258208/default/",
@@ -3239,6 +3777,16 @@
    "doc_type": "committee correspondence",
    "committee_id": 170,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_9310",
+   "title": "New inquiry: Police transcription",
+   "url": "https://committees.parliament.uk/work/9310/",
+   "published_at": "2025-07-29T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_pub_49043",
@@ -3329,6 +3877,16 @@
    "doc_type": "committee report",
    "committee_id": 517,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_9160",
+   "title": "New non-inquiry session: Children's Commissioner",
+   "url": "https://committees.parliament.uk/work/9160/",
+   "published_at": "2025-06-03T00:00:00",
+   "summary": "Non-inquiry session",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_pub_48073",
@@ -3468,6 +4026,16 @@
    "summary": "Non-inquiry session",
    "doc_type": "inquiry",
    "committee_id": 783,
+   "_part": "inquiries"
+  },
+  {
+   "item_id": "cmt_inq_9004",
+   "title": "New inquiry: Child Maintenance",
+   "url": "https://committees.parliament.uk/work/9004/",
+   "published_at": "2025-03-11T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
    "_part": "inquiries"
   },
   {
@@ -3621,6 +4189,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_inq_8505",
+   "title": "New inquiry: Homecare medicines services - follow-up",
+   "url": "https://committees.parliament.uk/work/8505/",
+   "published_at": "2024-09-09T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
+  },
+  {
    "item_id": "cmt_inq_8502",
    "title": "New inquiry: Scaling up - AI and creative tech",
    "url": "https://committees.parliament.uk/work/8502/",
@@ -3669,6 +4247,16 @@
    "doc_type": "committee correspondence",
    "committee_id": 175,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_8493",
+   "title": "New inquiry: Interpreting and translation services in the courts",
+   "url": "https://committees.parliament.uk/work/8493/",
+   "published_at": "2024-05-22T00:00:00",
+   "summary": "Inquiry",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_pub_44885",
@@ -3869,6 +4457,16 @@
    "doc_type": "committee report",
    "committee_id": 175,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_7975",
+   "title": "New non-inquiry session: Children's Social Care Implementation strategy: follow-up",
+   "url": "https://committees.parliament.uk/work/7975/",
+   "published_at": "2023-10-30T00:00:00",
+   "summary": "Non-inquiry session",
+   "doc_type": "inquiry",
+   "committee_id": 430,
+   "_part": "inquiries"
   }
  ]
 }

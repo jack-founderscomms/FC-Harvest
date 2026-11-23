@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FC Monitoring — Parliamentary Monitor</title>
+<style>
+/* ── Founders Comms palette: coral #F4674A → navy #152040 ── */
+:root{
+  --bg:#f0f2f5;--surface:#fff;--border:#dde1e8;--text:#152040;--muted:#5a6780;
+  --accent:#F4674A;--accent-dark:#d94f34;--accent-light:#fff1ee;--tag:#edf0f4;
+  --navy:#152040;--navy-mid:#1e2f52;--navy-light:#2a3f6a;
+  --kw-bg:#fff1ee;--kw-text:#c03a22;
+  --ok:#16a34a;--warn:#d97706;--err:#dc2626;--err-bg:#fef2f2;--err-border:#fecaca;
+  --cat-energy-bg:#fff7ed;--cat-energy-text:#c2410c;--cat-energy-border:#fed7aa;
+  --cat-ai-bg:#eef3ff;--cat-ai-text:#2a3f6a;--cat-ai-border:#c7d4f5;
+  --cat-health-bg:#fdf2f8;--cat-health-text:#9d174d;--cat-health-border:#fbcfe8;
+  --cat-tax-bg:#f0fdf4;--cat-tax-text:#15803d;--cat-tax-border:#bbf7d0;
+  --cat-education-bg:#fefce8;--cat-education-text:#854d0e;--cat-education-border:#fde68a;
+  --cat-technology-bg:#f0f9ff;--cat-technology-text:#0369a1;--cat-technology-border:#bae6fd;
+  --cat-payments-bg:#faf5ff;--cat-payments-text:#7e22ce;--cat-payments-border:#e9d5ff;
+  --cat-custom-bg:#f5f5f4;--cat-custom-text:#44403c;--cat-custom-border:#d6d3d1;
+  --consultation-bg:#fff8f0;--consultation-border:#fb923c;--consultation-text:#9a3412;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+     background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+a{color:var(--accent-dark);text-decoration:none}
+a:hover{text-decoration:underline;color:var(--accent)}
+
+/* ── Header ── */
+.header{background:var(--navy);border-bottom:none;
+        padding:13px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+        position:sticky;top:0;z-index:10;
+        box-shadow:0 2px 12px rgba(21,32,64,.25)}
+.header h1{font-size:16px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;
+           color:#fff}
+.header-sub{font-size:12px;color:rgba(255,255,255,.55)}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.badge-ok{background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)}
+.badge-err{background:#fef2f2;color:var(--err)}
+#last-updated{font-size:11px;color:rgba(255,255,255,.5)}
+
+.btn-refresh{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;
+             background:var(--accent);color:#fff;border:none;border-radius:6px;
+             font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;
+             white-space:nowrap}
+.btn-refresh:hover{background:var(--accent-dark)}
+.btn-refresh:disabled{opacity:.5;cursor:not-allowed}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning .spin-icon{animation:spin .8s linear infinite;display:inline-block}
+
+/* ── Toolbar ── */
+.toolbar{padding:10px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+         border-bottom:1px solid var(--border);background:var(--surface)}
+.toolbar label{font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--muted)}
+input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
+.search-box{padding:6px 11px;border:1px solid var(--border);border-radius:7px;
+            font-size:13px;outline:none;width:220px;background:var(--bg);color:var(--text)}
+.search-box:focus{border-color:var(--accent);background:#fff}
+.sort-label select{padding:4px 8px;border-radius:7px;font-size:12px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text);cursor:pointer}
+.btn-sm{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:500;
+        cursor:pointer;border:1px solid var(--border);background:var(--tag);color:var(--muted)}
+.btn-sm:hover{background:var(--border);color:var(--text)}
+.btn-consultation{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:700;
+  cursor:pointer;border:2px solid var(--consultation-border);
+  background:#fff;color:var(--consultation-text);white-space:nowrap;transition:all .15s}
+.btn-consultation:hover{background:var(--consultation-bg)}
+.btn-consultation.active{background:var(--consultation-border);color:#fff;border-color:var(--consultation-border)}
+#filter-status{font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── Topic tabs ── */
+.topic-tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);
+            background:var(--surface);padding:0 24px}
+.topic-tab{padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;border:none;
+           background:none;border-bottom:3px solid transparent;color:var(--muted);
+           white-space:nowrap;display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em}
+.topic-tab:hover{color:var(--text)}
+.topic-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.topic-tab .tab-count{font-size:10px;padding:1px 6px;border-radius:8px;background:var(--tag)}
+.topic-tab.active .tab-count{background:var(--accent-light);color:var(--accent)}
+.topic-tab.tab-energy.active{color:var(--cat-energy-text);border-bottom-color:var(--cat-energy-text)}
+.topic-tab.tab-energy.active .tab-count{background:var(--cat-energy-bg);color:var(--cat-energy-text)}
+.topic-tab.tab-ai.active{color:var(--cat-ai-text);border-bottom-color:var(--cat-ai-text)}
+.topic-tab.tab-ai.active .tab-count{background:var(--cat-ai-bg);color:var(--cat-ai-text)}
+.topic-tab.tab-health.active{color:var(--cat-health-text);border-bottom-color:var(--cat-health-text)}
+.topic-tab.tab-health.active .tab-count{background:var(--cat-health-bg);color:var(--cat-health-text)}
+.topic-tab.tab-tax.active{color:var(--cat-tax-text);border-bottom-color:var(--cat-tax-text)}
+.topic-tab.tab-tax.active .tab-count{background:var(--cat-tax-bg);color:var(--cat-tax-text)}
+.topic-tab.tab-education.active{color:var(--cat-education-text);border-bottom-color:var(--cat-education-text)}
+.topic-tab.tab-education.active .tab-count{background:var(--cat-education-bg);color:var(--cat-education-text)}
+.topic-tab.tab-technology.active{color:var(--cat-technology-text);border-bottom-color:var(--cat-technology-text)}
+.topic-tab.tab-technology.active .tab-count{background:var(--cat-technology-bg);color:var(--cat-technology-text)}
+.topic-tab.tab-payments.active{color:var(--cat-payments-text);border-bottom-color:var(--cat-payments-text)}
+.topic-tab.tab-payments.active .tab-count{background:var(--cat-payments-bg);color:var(--cat-payments-text)}
+.topic-tab.tab-custom.active{color:var(--cat-custom-text);border-bottom-color:var(--cat-custom-text)}
+.topic-tab.tab-custom.active .tab-count{background:var(--cat-custom-bg);color:var(--cat-custom-text)}
+
+.content{padding:20px 24px;max-width:1100px;margin:0 auto}
+
+/* ── Loading ── */
+.loading-panel{text-align:center;padding:60px 24px}
+.loading-panel p{color:var(--muted);font-size:13px;margin-top:8px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);
+         border-top-color:var(--accent);border-radius:50%;
+         animation:spin .8s linear infinite;margin:0 auto}
+.progress-list{list-style:none;display:inline-block;text-align:left;
+               margin-top:16px;font-size:12px;color:var(--muted);min-width:280px}
+.progress-list li{padding:2px 0}
+.progress-list li::before{margin-right:6px}
+.progress-list li.loading::before{content:"⏳"}
+.progress-list li.done{color:var(--ok)}
+.progress-list li.done::before{content:"✓"}
+.progress-list li.err{color:var(--err)}
+.progress-list li.err::before{content:"✗"}
+
+/* ── Error panel (muted, sits at the bottom of the page) ── */
+.error-panel{background:transparent;border:1px dashed var(--border);
+             border-radius:8px;padding:8px 14px;margin:24px auto 8px;max-width:1100px;
+             font-size:11px;opacity:.75}
+.error-panel summary{cursor:pointer;font-weight:600;color:var(--muted);font-size:11px}
+.error-panel ul{margin-top:8px;padding-left:16px;color:var(--muted)}
+
+/* ── Source groups ── */
+.group{background:var(--surface);border:1px solid var(--border);
+       border-radius:9px;margin-bottom:10px;overflow:hidden;
+       box-shadow:0 1px 4px rgba(21,32,64,.05)}
+.group-header{display:flex;align-items:center;gap:8px;padding:10px 16px;
+              background:var(--bg);border-bottom:1px solid var(--border);
+              cursor:pointer;user-select:none}
+.group-title{font-size:13px;font-weight:700;flex:1;color:var(--navy)}
+.count{font-size:11px;background:var(--tag);color:var(--muted);padding:1px 7px;border-radius:10px}
+.badge-kw{font-size:11px;background:var(--kw-bg);color:var(--kw-text);
+          padding:1px 7px;border-radius:10px;font-weight:600}
+.chev{font-size:10px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.ok{background:var(--ok)}.dot.error{background:var(--err)}
+.dot.warning{background:var(--warn)}.dot.unknown{background:var(--border)}
+
+/* ── Items ── */
+.item{padding:12px 16px;border-bottom:1px solid var(--border);transition:background .1s}
+.item:last-child{border:none}
+.item:hover{background:#fafbff}
+.item-title{font-size:13px;font-weight:600;line-height:1.4;color:var(--navy)}
+.item-title a{color:var(--navy)}
+.item-title a:hover{color:var(--accent)}
+.item-summary{font-size:12px;color:var(--muted);margin-top:3px;
+              overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.item-meta{display:flex;gap:8px;margin-top:5px;font-size:11px;color:var(--muted);
+           align-items:center;flex-wrap:wrap}
+.cat-badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;
+           border:1px solid;white-space:nowrap}
+.cat-energy{background:var(--cat-energy-bg);color:var(--cat-energy-text);border-color:var(--cat-energy-border)}
+.cat-ai{background:var(--cat-ai-bg);color:var(--cat-ai-text);border-color:var(--cat-ai-border)}
+.cat-health{background:var(--cat-health-bg);color:var(--cat-health-text);border-color:var(--cat-health-border)}
+.cat-tax{background:var(--cat-tax-bg);color:var(--cat-tax-text);border-color:var(--cat-tax-border)}
+.cat-education{background:var(--cat-education-bg);color:var(--cat-education-text);border-color:var(--cat-education-border)}
+.cat-technology{background:var(--cat-technology-bg);color:var(--cat-technology-text);border-color:var(--cat-technology-border)}
+.cat-payments{background:var(--cat-payments-bg);color:var(--cat-payments-text);border-color:var(--cat-payments-border)}
+.cat-custom{background:var(--cat-custom-bg);color:var(--cat-custom-text);border-color:var(--cat-custom-border)}
+
+/* ── Consultation / call for evidence highlight ── */
+.item.is-consultation{
+  background:var(--consultation-bg);
+  border-left:4px solid var(--consultation-border) !important;
+}
+.item.is-consultation .item-title a{color:var(--consultation-text)}
+.consultation-flag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:10px;background:var(--consultation-border);color:#fff;
+  white-space:nowrap;letter-spacing:.02em}
+
+/* ── Source filter bar ── */
+.src-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+         border-bottom:1px solid var(--border);background:var(--surface)}
+.src-bar-label{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;margin-right:2px;
+               text-transform:uppercase;letter-spacing:.05em}
+.src-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+         border:1px solid var(--border);background:var(--bg);color:var(--muted);
+         transition:all .12s;white-space:nowrap}
+.src-btn:hover{border-color:var(--navy-light);color:var(--navy)}
+.src-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.src-btn[data-src="govuk"].active{background:var(--accent);border-color:var(--accent)}
+.src-btn[data-src="events"].active{background:#0e7490;border-color:#0e7490}
+.src-btn[data-src="committee"].active{background:#6d28d9;border-color:#6d28d9}
+.src-btn[data-src="bills"].active{background:#0891b2;border-color:#0891b2}
+.src-btn[data-src="votes"].active{background:#d97706;border-color:#d97706}
+.src-btn[data-src="hansard"].active{background:var(--navy-mid);border-color:var(--navy-mid)}
+
+/* ── Department filter bar ── */
+.dept-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+          border-bottom:1px solid var(--border);background:var(--surface)}
+.dept-bar-label{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;margin-right:2px;
+               text-transform:uppercase;letter-spacing:.05em}
+.dept-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+         border:1px solid var(--border);background:var(--bg);color:var(--muted);
+         transition:all .12s;white-space:nowrap}
+.dept-btn:hover{border-color:var(--navy-light);color:var(--navy)}
+.dept-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── Keyword editor panel ── */
+.kw-panel{background:var(--surface);border-bottom:3px solid var(--accent);
+          padding:20px 24px;box-shadow:0 4px 16px rgba(21,32,64,.1)}
+.kw-panel-inner{max-width:900px}
+.kw-header{display:flex;align-items:center;justify-content:space-between;
+           font-size:14px;font-weight:700;margin-bottom:8px;color:var(--navy)}
+.kw-cat-box{font-size:12px}
+.kw-cat-box h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+               color:var(--muted);margin-bottom:8px}
+.kw-tags{display:flex;flex-wrap:wrap;gap:5px;min-height:28px;margin-bottom:8px}
+.kw-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;
+        background:var(--accent-light);color:var(--accent-dark);border:1px solid #f5bfb5;
+        font-size:11px;font-weight:500}
+.kw-tag button{background:none;border:none;cursor:pointer;color:var(--accent);
+               font-size:12px;padding:0;line-height:1;opacity:.7}
+.kw-tag button:hover{opacity:1}
+.kw-add-row{display:flex;gap:6px;margin-top:4px}
+.kw-add-row input{flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;
+                  font-size:12px;outline:none}
+.kw-add-row input:focus{border-color:var(--accent)}
+.kw-add-btn{padding:4px 10px;border-radius:5px;background:var(--accent);color:#fff;
+            border:none;cursor:pointer;font-size:12px;white-space:nowrap}
+.kw-add-btn:hover{background:var(--accent-dark)}
+
+/* ── Date filter bar ── */
+.date-bar{padding:8px 24px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+          border-bottom:1px solid var(--border);background:var(--bg)}
+.date-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;
+          cursor:pointer;border:1px solid var(--border);background:var(--surface);
+          color:var(--muted);transition:all .12s;white-space:nowrap}
+.date-btn:hover{border-color:var(--accent);color:var(--accent)}
+.date-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.date-bar-label{font-size:11px;color:var(--muted);margin-right:2px;font-weight:700;
+                text-transform:uppercase;letter-spacing:.05em}
+
+/* ── Advanced search panel ── */
+.adv-toggle{margin-left:auto;font-size:11px;color:var(--accent);cursor:pointer;
+            background:none;border:none;padding:4px 8px;border-radius:4px;
+            display:flex;align-items:center;gap:4px;font-weight:600}
+.adv-toggle:hover{background:var(--accent-light)}
+.adv-toggle svg{transition:transform .2s}
+.adv-toggle.open svg{transform:rotate(180deg)}
+
+.adv-panel{background:var(--surface);border-bottom:1px solid var(--border);
+           padding:16px 24px;display:none}
+.adv-panel.open{display:block}
+.adv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.adv-section{font-size:12px}
+.adv-section h4{font-size:11px;font-weight:700;text-transform:uppercase;
+                letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.adv-section label{display:flex;align-items:center;gap:6px;padding:3px 0;
+                   cursor:pointer;color:var(--text);font-size:12px}
+.adv-section label:hover{color:var(--accent)}
+.adv-row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.adv-row label{font-size:11px;color:var(--muted);white-space:nowrap}
+input[type=date]{padding:4px 8px;border:1px solid var(--border);border-radius:5px;
+                 font-size:12px;color:var(--text);background:var(--surface);outline:none}
+input[type=date]:focus{border-color:var(--accent)}
+.adv-actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;
+             border-top:1px solid var(--border)}
+.btn-adv-apply{padding:5px 14px;background:var(--accent);color:#fff;border:none;
+               border-radius:5px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-adv-apply:hover{background:var(--accent-dark)}
+.btn-adv-clear{padding:5px 14px;background:none;color:var(--muted);border:1px solid var(--border);
+               border-radius:5px;font-size:12px;cursor:pointer}
+.btn-adv-clear:hover{background:var(--tag)}
+
+.doc-type{font-size:10px;background:var(--tag);color:var(--muted);padding:1px 6px;border-radius:4px}
+
+/* ── Add-to-calendar button & dropdown ── */
+.cal-wrap{position:relative;display:inline-flex}
+.btn-cal{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--accent-light);
+         background:var(--accent-light);color:var(--accent-dark);cursor:pointer;white-space:nowrap;
+         transition:all .1s;display:inline-flex;align-items:center;gap:3px;font-weight:500}
+.btn-cal:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cal-drop{position:absolute;bottom:calc(100% + 4px);left:0;background:var(--surface);
+          border:1px solid var(--border);border-radius:8px;
+          box-shadow:0 6px 20px rgba(21,32,64,.15);
+          min-width:170px;z-index:100;display:none;overflow:hidden}
+.cal-drop.open{display:block}
+.cal-drop a,.cal-drop button{display:flex;align-items:center;gap:7px;width:100%;padding:8px 12px;
+  font-size:12px;border:none;background:none;color:var(--text);cursor:pointer;
+  text-decoration:none;text-align:left}
+.cal-drop a:hover,.cal-drop button:hover{background:var(--accent-light);color:var(--accent-dark)}
+.cal-drop .drop-sep{height:1px;background:var(--border);margin:2px 0}
+
+/* ── Item highlight (keyword match) ── */
+.item.kw-match{border-left:3px solid var(--accent)}
+.item.kw-match .item-title a{color:var(--accent-dark)}
+
+/* ── View toggle ── */
+.view-toggle{display:flex;gap:4px;margin-left:auto}
+.view-btn{padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;
+          border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);
+          color:rgba(255,255,255,.7);
+          display:inline-flex;align-items:center;gap:4px}
+.view-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.view-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── Calendar view ── */
+.cal-view{padding:16px 24px;max-width:1100px;margin:0 auto}
+.cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.cal-nav h2{font-size:16px;font-weight:700;flex:1;color:var(--navy)}
+.cal-nav button{padding:4px 12px;border-radius:6px;border:1px solid var(--border);
+                background:var(--surface);cursor:pointer;font-size:12px;font-weight:500}
+.cal-nav button:hover{background:var(--tag)}
+.btn-ics-export{padding:5px 14px;border-radius:6px;border:1px solid var(--accent);
+                background:var(--accent-light);color:var(--accent-dark);font-size:12px;
+                font-weight:600;cursor:pointer;white-space:nowrap}
+.btn-ics-export:hover{background:var(--accent);color:#fff}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);
+          border-radius:10px;overflow:hidden;background:var(--surface);
+          box-shadow:0 2px 8px rgba(21,32,64,.07)}
+.cal-day-header{padding:7px 0;text-align:center;font-size:11px;font-weight:700;
+                color:var(--navy);background:var(--navy);color:rgba(255,255,255,.7);
+                border-bottom:1px solid rgba(255,255,255,.1);
+                text-transform:uppercase;letter-spacing:.06em}
+.cal-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+          min-height:90px;padding:5px;vertical-align:top;position:relative;cursor:pointer;
+          transition:background .1s}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:var(--accent-light)}
+.cal-cell.other-month{background:#f7f8fa;opacity:.6}
+.cal-cell.today .cal-date{background:var(--accent);color:#fff;border-radius:50%;
+                           width:22px;height:22px;display:flex;align-items:center;
+                           justify-content:center;font-weight:700}
+.cal-date{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:3px;
+          width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.cal-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin:1px;flex-shrink:0}
+.cal-dots{display:flex;flex-wrap:wrap;gap:1px;margin-top:2px}
+.cal-chips{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.cal-chip{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;
+          overflow:hidden;text-overflow:ellipsis;max-width:100%;border:none;
+          cursor:pointer;text-align:left;line-height:1.3}
+.cal-chip.kw{font-weight:700;border-left:2px solid var(--accent)}
+.cal-more{font-size:10px;color:var(--muted);padding:1px 4px;cursor:pointer}
+.cal-more:hover{color:var(--accent)}
+
+/* ── Day detail panel ── */
+.day-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+           padding:18px;margin-top:14px;position:relative;
+           box-shadow:0 3px 12px rgba(21,32,64,.08)}
+.day-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--navy)}
+.day-panel .close-day{position:absolute;top:14px;right:14px;background:none;border:none;
+                       cursor:pointer;font-size:16px;color:var(--muted)}
+.day-panel .close-day:hover{color:var(--text)}
+.day-item{padding:11px 13px;border-radius:7px;border:1px solid var(--border);
+          margin-bottom:9px;transition:background .1s}
+.day-item.kw-match{border-left:3px solid var(--accent);background:var(--accent-light)}
+.day-item:last-child{margin-bottom:0}
+.day-item-title{font-size:13px;font-weight:600;color:var(--navy)}
+.day-item-title a{color:var(--navy);text-decoration:none}
+.day-item-title a:hover{color:var(--accent);text-decoration:underline}
+.day-item-meta{display:flex;gap:8px;margin-top:5px;font-size:11px;color:var(--muted);
+               align-items:center;flex-wrap:wrap}
+
+/* ── Footer ── */
+.footer{padding:16px 24px;font-size:11px;color:var(--muted);
+        border-top:1px solid var(--border);margin-top:32px}
+
+.hidden{display:none!important}
+@media(max-width:600px){.content{padding:12px}.toolbar{flex-direction:column;align-items:start}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>FC Monitoring</h1>
+    <div class="header-sub">UK Parliament &amp; Government Monitor</div>
+  </div>
+  <div class="header-right">
+    <span id="last-updated"></span>
+    <span id="item-count" class="badge badge-ok hidden">0 items</span>
+    <button class="btn-refresh" id="refresh-btn" onclick="doRefresh()">
+      <span class="spin-icon">&#8635;</span> Refresh
+    </button>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input class="search-box" type="search" id="search" placeholder="Search titles…" oninput="applyFilters()">
+  <label><input type="checkbox" id="kw-only" onchange="applyFilters()"> Keyword matches only</label>
+  <button class="btn-consultation" id="consultation-filter" onclick="toggleConsultationFilter()" title="Show only open consultations and calls for evidence">📋 Consultations &amp; Calls for Evidence</button>
+  <button class="btn-sm" onclick="expandAll()">Expand all</button>
+  <button class="btn-sm" onclick="collapseAll()">Collapse all</button>
+  <button class="btn-sm" onclick="toggleKwEditor()" title="Edit your keyword lists">⚙ Keywords</button>
+  <label class="sort-label">Sort:
+    <select id="sort-select" onchange="setSort(this.value)">
+      <option value="date_desc">Date · newest first</option>
+      <option value="date_asc">Date · oldest first</option>
+      <option value="alpha_asc">Title · A–Z</option>
+      <option value="alpha_desc">Title · Z–A</option>
+    </select>
+  </label>
+  <span id="filter-status"></span>
+  <div class="view-toggle">
+    <button class="view-btn active" id="view-list" onclick="setView('list')" title="List view">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M2 4h12v1.5H2V4zm0 3.5h12V9H2V7.5zm0 3.5h12v1.5H2V11z"/></svg> List
+    </button>
+    <button class="view-btn" id="view-cal" onclick="setView('cal')" title="Calendar view">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg> Calendar
+    </button>
+  </div>
+</div>
+
+<!-- Keyword editor panel -->
+<div class="kw-panel hidden" id="kw-panel">
+  <div class="kw-panel-inner">
+    <div class="kw-header">
+      <span>Edit keyword categories</span>
+      <button onclick="toggleKwEditor()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Items matching these keywords are highlighted and tagged. Changes are saved in your browser.</p>
+    <div id="kw-editor-grid" class="adv-grid"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn-adv-apply" onclick="saveKeywords()">Save &amp; apply</button>
+      <button class="btn-adv-clear" onclick="resetKeywords()">Reset to defaults</button>
+    </div>
+  </div>
+</div>
+
+<!-- Source group filter bar -->
+<div class="src-bar">
+  <span class="src-bar-label">Source:</span>
+  <button class="src-btn active" data-src="" onclick="filterSrc(this)">All</button>
+  <button class="src-btn" data-src="govuk"     onclick="filterSrc(this)">GOV.UK</button>
+  <button class="src-btn" data-src="events"    onclick="filterSrc(this)">📅 Parliament Events</button>
+  <button class="src-btn" data-src="bills"     onclick="filterSrc(this)">Bills</button>
+  <button class="src-btn" data-src="committee" onclick="filterSrc(this)">Committees</button>
+  <button class="src-btn" data-src="votes"     onclick="filterSrc(this)">Votes</button>
+  <button class="src-btn" data-src="hansard"   onclick="filterSrc(this)">Hansard</button>
+</div>
+
+<!-- Department filter bar -->
+<div class="dept-bar" id="dept-bar">
+  <span class="dept-bar-label">Department:</span>
+  <button class="dept-btn active" data-dept="" onclick="filterDept(this)">All</button>
+  <button class="dept-btn" data-dept="govuk_dbist"    onclick="filterDept(this)">DBIST</button>
+  <button class="dept-btn" data-dept="govuk_dcms"     onclick="filterDept(this)">DCMS</button>
+  <button class="dept-btn" data-dept="govuk_treasury" onclick="filterDept(this)">HM Treasury</button>
+  <button class="dept-btn" data-dept="govuk_cabinet"  onclick="filterDept(this)">Cabinet Office</button>
+  <button class="dept-btn" data-dept="govuk_no10"     onclick="filterDept(this)">No.10</button>
+  <button class="dept-btn" data-dept="govuk_dhsc"     onclick="filterDept(this)">DHSC</button>
+  <button class="dept-btn" data-dept="govuk_desnz"    onclick="filterDept(this)">DESNZ</button>
+  <button class="dept-btn" data-dept="govuk_hmrc"     onclick="filterDept(this)">HMRC</button>
+</div>
+
+<!-- Date filter bar -->
+<div class="date-bar">
+  <span class="date-bar-label">Date:</span>
+  <button class="date-btn active" data-date="" onclick="filterDate(this)">All</button>
+  <button class="date-btn" data-date="today"     onclick="filterDate(this)">Today</button>
+  <button class="date-btn" data-date="yesterday" onclick="filterDate(this)">Yesterday</button>
+  <button class="date-btn" data-date="last7"     onclick="filterDate(this)">Last 7 days</button>
+  <button class="date-btn" data-date="last30"    onclick="filterDate(this)">Last 30 days</button>
+  <button class="date-btn" data-date="next_week" onclick="filterDate(this)">Next week</button>
+  <button class="date-btn" data-date="next30"    onclick="filterDate(this)">Next 30 days</button>
+  <button class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1zm2 4h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm2 4h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"/></svg>
+    Filters
+  </button>
+</div>
+
+<!-- Advanced search panel -->
+<div class="adv-panel" id="adv-panel">
+  <div class="adv-grid">
+    <div class="adv-section">
+      <h4>Source type</h4>
+      <label><input type="checkbox" class="adv-srctype" value="govuk"     checked onchange="applyFilters()"> GOV.UK departments</label>
+      <label><input type="checkbox" class="adv-srctype" value="events"   checked onchange="applyFilters()"> Parliament events</label>
+      <label><input type="checkbox" class="adv-srctype" value="bills"    checked onchange="applyFilters()"> Bills</label>
+      <label><input type="checkbox" class="adv-srctype" value="committee"checked onchange="applyFilters()"> Committees</label>
+      <label><input type="checkbox" class="adv-srctype" value="votes"    checked onchange="applyFilters()"> Votes &amp; oral questions</label>
+      <label><input type="checkbox" class="adv-srctype" value="hansard"  checked onchange="applyFilters()"> Hansard &amp; written statements</label>
+    </div>
+    <div class="adv-section">
+      <h4>Document type</h4>
+      <label><input type="checkbox" class="adv-doctype" value="news_story,press_release" checked onchange="applyFilters()"> News &amp; press releases</label>
+      <label><input type="checkbox" class="adv-doctype" value="consultation,call_for_evidence,policy_paper,government_response" checked onchange="applyFilters()"> Consultations &amp; policy</label>
+      <label><input type="checkbox" class="adv-doctype" value="speech" checked onchange="applyFilters()"> Speeches</label>
+      <label><input type="checkbox" class="adv-doctype" value="parliament event,committee hearing,oral questions" checked onchange="applyFilters()"> Parliament hearings &amp; events</label>
+      <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries &amp; calls for evidence</label>
+      <label><input type="checkbox" class="adv-doctype" value="committee news" checked onchange="applyFilters()"> Committee news</label>
+      <label><input type="checkbox" class="adv-doctype" value="committee report,committee correspondence,committee publication" checked onchange="applyFilters()"> Committee reports &amp; letters</label>
+      <label><input type="checkbox" class="adv-doctype" value="written statement" checked onchange="applyFilters()"> Written statements</label>
+      <label><input type="checkbox" class="adv-doctype" value="hansard" checked onchange="applyFilters()"> Hansard debates</label>
+      <label><input type="checkbox" class="adv-doctype" value="bill" checked onchange="applyFilters()"> Bills</label>
+      <label><input type="checkbox" class="adv-doctype" value="division" checked onchange="applyFilters()"> Votes &amp; divisions</label>
+      <label><input type="checkbox" class="adv-doctype" value="oral question" checked onchange="applyFilters()"> Oral questions</label>
+      <label><input type="checkbox" class="adv-doctype" value="live" checked onchange="applyFilters()"> Live Now</label>
+    </div>
+    <div class="adv-section">
+      <h4>Custom date range</h4>
+      <div class="adv-row">
+        <label for="adv-from">From</label>
+        <input type="date" id="adv-from" onchange="applyFilters()">
+      </div>
+      <div class="adv-row">
+        <label for="adv-to">To</label>
+        <input type="date" id="adv-to" onchange="applyFilters()">
+      </div>
+    </div>
+  </div>
+  <div class="adv-actions">
+    <button class="btn-adv-apply" onclick="applyFilters()">Apply</button>
+    <button class="btn-adv-clear" onclick="clearAdv()">Clear all filters</button>
+  </div>
+</div>
+
+<div class="topic-tabs">
+  <button class="topic-tab active" data-cat="" onclick="filterCat(this)">All</button>
+  <button class="topic-tab tab-energy" data-cat="energy" onclick="filterCat(this)">Energy<span class="tab-count" id="tc-energy">0</span></button>
+  <button class="topic-tab tab-ai"     data-cat="ai"     onclick="filterCat(this)">AI<span class="tab-count" id="tc-ai">0</span></button>
+  <button class="topic-tab tab-health"     data-cat="health"     onclick="filterCat(this)">Health<span class="tab-count" id="tc-health">0</span></button>
+  <button class="topic-tab tab-tax"        data-cat="tax"        onclick="filterCat(this)">Tax<span class="tab-count" id="tc-tax">0</span></button>
+  <button class="topic-tab tab-education"  data-cat="education"  onclick="filterCat(this)">Education<span class="tab-count" id="tc-education">0</span></button>
+  <button class="topic-tab tab-technology" data-cat="technology" onclick="filterCat(this)">Technology<span class="tab-count" id="tc-technology">0</span></button>
+  <button class="topic-tab tab-payments"   data-cat="payments"   onclick="filterCat(this)">Payments<span class="tab-count" id="tc-payments">0</span></button>
+  <button class="topic-tab tab-custom"     data-cat="custom"     onclick="filterCat(this)" title="Matches your own keywords — add them via ⚙ Keywords">★ My keywords<span class="tab-count" id="tc-custom">0</span></button>
+</div>
+
+<div class="content">
+  <div id="loading-panel" class="loading-panel">
+    <div class="spinner"></div>
+    <p>Fetching from GOV.UK, Parliament Events, Bills, Committees, Votes, and Hansard APIs…</p>
+    <ul class="progress-list" id="progress-list"></ul>
+  </div>
+  <div id="groups-container" class="hidden"></div>
+  <div id="cal-container" class="hidden cal-view">
+    <div class="cal-nav">
+      <button onclick="calPrev()">&#8592;</button>
+      <h2 id="cal-title"></h2>
+      <button onclick="calNext()">&#8594;</button>
+      <button class="btn-sm" onclick="calToday()">Today</button>
+      <button class="btn-ics-export" onclick="exportICS()">📅 Export visible .ics</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div id="day-panel" class="hidden"></div>
+  </div>
+</div>
+
+<details id="error-panel" class="error-panel hidden">
+  <summary id="error-summary">Some sources failed to load</summary>
+  <ul id="error-list"></ul>
+</details>
+
+<div class="footer">
+  FC Monitoring · Live data from GOV.UK · bills-api · commonsvotes-api · lordsvotes-api ·
+  committees-api · oralquestionsandmotions-api · questions-statements-api · hansard-api · now-api ·
+  <a href="https://developer.parliament.uk/" target="_blank">developer.parliament.uk</a>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+
+const KEYWORD_CATEGORIES = {
+  energy: ['energy','net zero','climate change','renewable energy','solar','offshore wind',
+    'onshore wind','wind power','nuclear','hydrogen','carbon','emissions','decarbonisation',
+    'decarbonization','electricity','national grid','ofgem','energy security','oil and gas',
+    'heat pump','energy efficiency','electric vehicle','ev charging','neso','green energy',
+    'fossil fuel','carbon capture','energy storage','battery storage','power station','grid',
+    'carbon budget','clean energy','green hydrogen','energy transition'],
+  ai: [' ai ','artificial intelligence','machine learning','large language model','llm',
+    'generative ai','foundation model','automation','algorithm','frontier ai','ai safety',
+    'aisi','responsible ai','autonomous systems','deep learning','neural network','compute',
+    'ai regulation','ai governance','digital infrastructure','semiconductor','cyber',
+    'cybersecurity','broadband','telecoms','quantum','innovation','r&d',
+    'research and development','online safety','gdpr','data protection','science'],
+  health: ['health','nhs','healthcare','social care','medicine','pharmaceutical','drug',
+    'vaccine','mental health','patient','hospital','primary care','public health',
+    'nice','cqc','life sciences','biotech','biotechnology','clinical trial','cancer',
+    'obesity','waiting list','elective care','mhra','health service','medical device',
+    'genomics','health data','integrated care','dhsc','adult social care'],
+  tax: ['taxation','hmrc','income tax','corporation tax','vat','fiscal','spending review',
+    'national insurance','capital gains','inheritance tax','stamp duty','business rates',
+    'windfall tax','tax relief','r&d tax credit','global minimum tax','pillar two','obr',
+    'autumn statement','spring statement','public spending','public finances',
+    'government borrowing','deficit','excise duty','customs','tariff'],
+  education: ['education','school','schools','ofsted','pupil','pupils','teacher','teachers',
+    'curriculum','university','universities','college','further education','higher education',
+    'apprenticeship','skills','ofqual','dfe','department for education','student finance',
+    'student loan','school funding','gcse','a-level','special educational needs','sen',
+    'early years','childcare','nursery','free school','academy','academies','tutoring',
+    'literacy','numeracy','stem','school inspection','school standards'],
+  technology: ['technology','tech','software','hardware','computing','computer','digital',
+    'internet','online','platform','startup','scale-up','venture capital','investment',
+    'open source','cloud','data centre','programming','coding','app','algorithm',
+    'chip','microchip','processor','5g','6g','fibre','wifi','spectrum','telecoms','infrastructure',
+    'cyber','cybersecurity','hacking','ransomware','privacy','encryption','digital economy',
+    'digital transformation','govtech','regtech','fintech','healthtech','edtech'],
+  payments: ['payments','payment systems','payment services','psr','payment systems regulator',
+    'open banking','faster payments','bacs','chaps','card payments','interchange',
+    'digital wallet','digital pound','cbdc','central bank digital currency','stablecoin',
+    'e-money','electronic money','merchant','acquirer','payment fraud','apppfraud',
+    'authorised push payment','app fraud','psd2','payment initiation','account-to-account',
+    'buy now pay later','bnpl','remittance','cross-border payments','swift','iso 20022',
+    'contactless','point of sale','settlement','clearing','fca payments'],
+  custom: [], // user's own keywords — edit via the ⚙ Keywords panel
+};
+
+const GOVUK_SOURCES = [
+  // org:null + consultOnly → all-of-government sweep, so no CfE/consultation
+  // is ever missed because its publisher isn't a tracked department
+  {id:'govuk_consult', label:'Consultations & CfEs (all government)', org:null, consultOnly:true},
+  // org:null + pressOnly → every government press release/news story, not just
+  // from the departments tracked below
+  {id:'govuk_press_all', label:'Press Releases (all government)', org:null, pressOnly:true},
+  {id:'govuk_treasury',label:'HM Treasury',     org:'hm-treasury'},
+  {id:'govuk_cabinet', label:'Cabinet Office',  org:'cabinet-office'},
+  {id:'govuk_no10',    label:'No.10',            org:'prime-ministers-office-10-downing-street'},
+  // DSIT was dissolved; its remit split between DBIST (which absorbed DBT) and DCMS below.
+  {id:'govuk_dbist',   label:'DBIST',            org:'department-for-business-innovation-science-and-trade'},
+  {id:'govuk_dcms',    label:'DCMS',             org:'department-for-culture-media-and-sport'},
+  {id:'govuk_dhsc',    label:'DHSC',             org:'department-of-health-and-social-care'},
+  {id:'govuk_desnz',   label:'DESNZ',            org:'department-for-energy-security-and-net-zero'},
+  {id:'govuk_hmrc',    label:'HMRC',             org:'hm-revenue-customs'},
+];
+
+// committeeId = the number in the committee's URL, e.g.
+// committees.parliament.uk/committee/365/business-innovation-science-and-trade-committee/
+// scripts/fetch_committees.py reads these IDs to build docs/committees.json.
+const COMMITTEE_SOURCES = [
+  {id:'cmt_bt',     label:'Business, Innovation, Science & Trade Committee (Commons)', house:'Commons', committeeId:365},
+  {id:'cmt_bt_sec', label:'BIST Sub-Committee on Economic Security, Arms & Export Controls', house:'Commons', committeeId:783},
+  {id:'cmt_sit',    label:'Science & Technology Committee (Commons)', house:'Commons', committeeId:135},
+  {id:'cmt_st',     label:'Science & Technology Committee (Lords)',   house:'Lords',   committeeId:193},
+  {id:'cmt_dcms',   label:'Digital, Culture, Media & Sport Committee (Commons)', house:'Commons', committeeId:378},
+  {id:'cmt_cd',     label:'Communications & Digital Committee (Lords)', house:'Lords', committeeId:170},
+  {id:'cmt_ea',     label:'Economic Affairs Committee (Lords)',       house:'Lords',   committeeId:175},
+  {id:'cmt_ir',     label:'Industry & Regulators Committee (Lords)',  house:'Lords',   committeeId:517},
+  {id:'cmt_treas',  label:'Treasury Committee (Commons)',             house:'Commons', committeeId:158},
+  {id:'cmt_hsc',    label:'Health & Social Care Committee (Commons)', house:'Commons', committeeId:81},
+];
+
+const WRITTEN_SOURCES = [
+  {id:'written_commons', label:'Written Statements (Commons)', house:'Commons'},
+  {id:'written_lords',   label:'Written Statements (Lords)',   house:'Lords'},
+];
+
+const HANSARD_SOURCES = [
+  {id:'hansard_commons', label:'Hansard (Commons)', house:'Commons'},
+  {id:'hansard_lords',   label:'Hansard (Lords)',   house:'Lords'},
+];
+
+const BILLS_SOURCES = [
+  {id:'bills_commons', label:'Bills (Commons)', house:'Commons'},
+  {id:'bills_lords',   label:'Bills (Lords)',   house:'Lords'},
+];
+
+const VOTES_SOURCES = [
+  {id:'votes_commons', label:'Commons Divisions', house:'Commons'},
+  {id:'votes_lords',   label:'Lords Divisions',   house:'Lords'},
+];
+
+const ORAQ_SOURCES = [
+  {id:'oraq_commons', label:'Oral Questions (Commons)', house:'Commons'},
+];
+
+const NOW_SOURCES = [
+  {id:'now_commons', label:'Commons — Live Now', house:'Commons'},
+  {id:'now_lords',   label:'Lords — Live Now',   house:'Lords'},
+];
+
+const WHATSON_SOURCES = [
+  {id:'events_commons', label:'Parliament Events (Commons)', house:'Commons'},
+  {id:'events_lords',   label:'Parliament Events (Lords)',   house:'Lords'},
+];
+
+const ALL_SOURCES = [
+  ...GOVUK_SOURCES, ...WHATSON_SOURCES, ...BILLS_SOURCES, ...COMMITTEE_SOURCES,
+  ...VOTES_SOURCES, ...ORAQ_SOURCES, ...WRITTEN_SOURCES,
+  ...HANSARD_SOURCES, ...NOW_SOURCES,
+];
+const SOURCE_ORDER = ALL_SOURCES.map(s => s.id);
+
+// NB: GOV.UK's real document types are the open_/closed_/_outcome variants —
+// plain 'consultation' or 'call_for_evidence' matches nothing in the search API.
+const CONSULT_DOC_TYPES = ['open_consultation','closed_consultation','consultation_outcome',
+                           'open_call_for_evidence','closed_call_for_evidence','call_for_evidence_outcome'];
+const DOC_TYPES = ['news_story','press_release',...CONSULT_DOC_TYPES,'policy_paper',
+                   'speech','written_statement','government_response','guidance'];
+const PRESS_DOC_TYPES = ['news_story','press_release'];
+
+const CACHE_KEY = 'fc-monitoring-v20';
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let allItems = [];
+let sourceErrors = {};
+let activeCat = null;
+let activeDateFilter = '';   // '', 'today', 'yesterday', 'last7', 'last30', 'next_week', 'next30'
+let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'oraq', 'written', 'hansard', 'now'
+let activeDept = '';         // '', or a GOVUK_SOURCES id e.g. 'govuk_dbist'
+let activeConsultationFilter = false;
+let activeSort = 'date_desc'; // 'date_desc' | 'date_asc' | 'alpha_asc' | 'alpha_desc'
+let committeesDataPromise = null; // shared fetch of docs/committees.json
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadUserKeywords();
+  const cached = loadCache();
+  if (cached) {
+    allItems = cached.items || [];
+    sourceErrors = cached.errors || {};
+    renderAll();
+    const ago = Math.round((Date.now() - cached.ts) / 60000);
+    setStatus(ago < 2 ? 'Updated just now' : `Updated ${ago} min ago · click Refresh`);
+  } else {
+    fetchAll();
+  }
+});
+
+function doRefresh() { fetchAll(); }
+
+// ── Fetch pipeline ────────────────────────────────────────────────────────────
+
+async function fetchAll() {
+  setRefreshing(true);
+  show('loading-panel');
+  hide('groups-container');
+  hide('error-panel');
+  hide('item-count');
+  allItems = [];
+  sourceErrors = {};
+  committeesDataPromise = null;
+
+  const prog = document.getElementById('progress-list');
+  prog.innerHTML = '';
+
+  function mkProg(id, label) {
+    const li = document.createElement('li');
+    li.id = 'p-' + id; li.className = 'loading'; li.textContent = label;
+    prog.appendChild(li);
+  }
+  function doneProg(id)      { setProg(id, 'done'); }
+  function errProg(id, msg)  { setProg(id, 'err', msg); }
+  function setProg(id, cls, suffix) {
+    const el = document.getElementById('p-' + id);
+    if (!el) return;
+    el.className = cls;
+    if (suffix) el.textContent += ' — ' + suffix;
+  }
+
+  // All sources in parallel
+  const tasks = [];
+  for (const src of GOVUK_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchGovUK(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of COMMITTEE_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchCommittee(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of WRITTEN_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchWritten(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of HANSARD_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchHansard(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of BILLS_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchBills(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of VOTES_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchVotes(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of ORAQ_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchOralQuestions(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of NOW_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchNow(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+  for (const src of WHATSON_SOURCES) {
+    mkProg(src.id, src.label);
+    tasks.push(fetchWhatson(src).then(items => { pushItems(items); doneProg(src.id); })
+      .catch(e => { sourceErrors[src.id] = e.message; errProg(src.id, shortErr(e)); }));
+  }
+
+  await Promise.allSettled(tasks);
+  saveCache({ items: allItems, errors: sourceErrors, ts: Date.now() });
+  hide('loading-panel');
+  renderAll();
+  setRefreshing(false);
+  setStatus('Updated just now');
+}
+
+function pushItems(items) {
+  for (const item of items) {
+    item.matched_cats = matchCats(item.title, item.summary || '');
+    allItems.push(item);
+  }
+}
+
+// ── Fetchers ──────────────────────────────────────────────────────────────────
+
+async function fetchGovUK(src) {
+  const query = (docTypes, count) => {
+    const p = new URLSearchParams({order:'-public_timestamp', count: String(count)});
+    if (src.org) p.set('filter_organisations', src.org);
+    docTypes.forEach(t => p.append('filter_content_store_document_type[]', t));
+    return fetchJSON('https://www.gov.uk/api/search.json?' + p);
+  };
+  // All-of-government consultation sweep has no org filter and only CfE/consultation types
+  if (src.consultOnly) {
+    const data = await query(CONSULT_DOC_TYPES, 60);
+    return mapGovUKResults(data.results || [], src);
+  }
+  // All-of-government press sweep has no org filter and only news/press types
+  if (src.pressOnly) {
+    const data = await query(PRESS_DOC_TYPES, 100);
+    return mapGovUKResults(data.results || [], src);
+  }
+  // Dedicated consultations/calls-for-evidence query alongside the general one,
+  // so a busy news day can never push them out of the results window
+  const [general, consults] = await Promise.all([
+    query(DOC_TYPES, 50),
+    query(CONSULT_DOC_TYPES, 25).catch(() => ({results: []})),
+  ]);
+  const seen = new Set();
+  const results = [];
+  for (const r of [...(consults.results || []), ...(general.results || [])]) {
+    if (r.link && seen.has(r.link)) continue;
+    if (r.link) seen.add(r.link);
+    results.push(r);
+  }
+  return mapGovUKResults(results, src);
+}
+
+function mapGovUKResults(results, src) {
+  return results.map(r => ({
+    item_id: r.link,
+    title: (r.title || '').trim(),
+    url: r.link ? (r.link.startsWith('/') ? 'https://www.gov.uk' + r.link : r.link) : '',
+    published_at: r.public_timestamp || '',
+    summary: (r.description || '').trim(),
+    doc_type: r.content_store_document_type || '',
+    source_id: src.id, source_label: src.label,
+  })).filter(i => i.title);
+}
+
+// Committee news, reports, letters, inquiries and hearings come from
+// docs/committees.json, built by a scheduled GitHub Action
+// (scripts/fetch_committees.py). They can't be fetched here: the Committees API
+// and Google News both block browser requests (no CORS), and the API has no
+// news endpoint. raw.githubusercontent.com does allow browser requests.
+const COMMITTEES_JSON = 'https://raw.githubusercontent.com/jack-founderscomms/FC-Harvest/main/docs/committees.json';
+
+function loadCommitteesData() {
+  if (!committeesDataPromise) {
+    committeesDataPromise = fetch(COMMITTEES_JSON + '?t=' + Date.now(), {cache: 'no-store'})
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    committeesDataPromise.catch(() => { committeesDataPromise = null; });
+  }
+  return committeesDataPromise;
+}
+
+async function fetchCommittee(src) {
+  const data = await loadCommitteesData();
+  return (data.items || [])
+    .filter(i => i.committee_id === src.committeeId)
+    .map(i => ({...i, source_id: src.id, source_label: src.label}));
+}
+
+async function fetchWritten(src) {
+  // Try multiple URL/param variants — the API has changed its casing over time
+  let data = null;
+  for (const url of [
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40`,
+    `https://questions-statements-api.parliament.uk/api/WrittenStatements?house=${src.house}&dateFrom=${daysAgo(42)}&take=40`,
+    `https://questions-statements-api.parliament.uk/api/writtenstatements?House=${src.house}&DateFrom=${daysAgo(42)}&Take=40`,
+  ]) {
+    try {
+      const r = await fetch(url, {headers:{Accept:'application/json'}});
+      if (r.ok) { data = await r.json(); break; }
+    } catch(_) {}
+  }
+  if (!data) return [];
+  const results = toArrDeep(data) || toArr(data && data.results) || [];
+  return results.map(r => {
+    const id = r.id||r.uin||r.UIN||'';
+    const body = r.answeringBodyName||r.AnsweringBodyName||r.department||'';
+    let title = (r.title||r.Title||'Written Statement').trim();
+    if (body) title += ' — ' + body;
+    const raw = r.text||r.Text||r.answerText||'';
+    return {
+      item_id: `ws_${src.house}_${id}`,
+      title,
+      url: id ? `https://questions-statements.parliament.uk/written-statements/detail/${id}` : '',
+      published_at: r.dateMade||r.DateMade||r.date||'',
+      summary: raw.replace(/<[^>]+>/g,' ').trim().slice(0,500),
+      doc_type: 'written statement',
+      source_id: src.id, source_label: src.label,
+    };
+  }).filter(i => i.title && i.item_id !== `ws_${src.house}_`);
+}
+
+async function fetchHansard(src) {
+  const h = src.house;
+  const since = daysAgo(42);
+  const today = new Date().toISOString().slice(0,10);
+  const hLower = h.toLowerCase();
+
+  function makeItem(t, sd, sid, summary) {
+    return {
+      item_id: `hansard_${h}_${sd}_${sid||t.slice(0,30)}`,
+      title: t,
+      url: sid
+        ? `https://hansard.parliament.uk/${hLower}/${sd}/debates/${sid}`
+        : `https://hansard.parliament.uk/${hLower}/${sd}`,
+      published_at: sd,
+      summary: summary||'',
+      doc_type: 'hansard',
+      source_id: src.id, source_label: src.label,
+    };
+  }
+
+  // 1. Primary: hansard-api sittings endpoint
+  try {
+    const data = await fetchJSON(
+      `https://hansard-api.parliament.uk/overview/${hLower}/sittings.json?startDate=${since}&endDate=${today}`
+    );
+    const sittings = toArr(data) || (data && data.sittings) || [];
+    const items = [];
+    for (const sitting of sittings) {
+      const sd = (sitting.date||sitting.SittingDate||'').slice(0,10);
+      for (const sec of (sitting.sections||sitting.debateSections||[])) {
+        const t = (sec.title||sec.Title||'').trim();
+        if (!t || t.length < 4) continue;
+        items.push(makeItem(t, sd, sec.id||sec.externalId||'', sec.summary||''));
+      }
+    }
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 2. Secondary: parliament.uk API sittings search (covers broader date range)
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/sittings/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const sittings = toArr(data) || (data && (data.sittings||data.results)) || [];
+    const items = [];
+    for (const sitting of sittings) {
+      const sd = (sitting.date||sitting.sitting_date||'').slice(0,10);
+      // Each sitting may have debates/sections
+      const sections = sitting.sections||sitting.debates||sitting.contributions||[];
+      if (sections.length) {
+        for (const sec of sections) {
+          const t = (sec.title||sec.heading||sec.slug||'').replace(/-/g,' ').trim();
+          if (!t || t.length < 4) continue;
+          items.push(makeItem(t, sd, sec.id||sec.slug||'', sec.summary||sec.extract||''));
+        }
+      } else {
+        // Sitting-level entry
+        const t = (sitting.title||sitting.heading||'').trim();
+        if (t && t.length >= 4) items.push(makeItem(t, sd, sitting.id||sitting.slug||'', ''));
+      }
+    }
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 3. Fallback: hansard-api search endpoint
+  try {
+    const data = await fetchJSON(
+      `https://hansard-api.parliament.uk/search/debates.json?house=${h}&startDate=${since}&take=50&orderBy=SittingDateDesc`
+    );
+    const results = toArr(data) || (data && (data.results||data.searchResults)) || [];
+    const items = results.map(r => {
+      const t = (r.title||r.debateTitle||'').trim();
+      const sd = (r.sittingDate||r.date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.externalId||'', r.summary||'') : null;
+    }).filter(Boolean);
+    if (items.length) return items;
+  } catch(_) {}
+
+  // 4. Last resort: parliament.uk contributions search
+  try {
+    const data = await fetchJSON(
+      `https://api.parliament.uk/historic-hansard/contributions/search.json?start_date=${since}&end_date=${today}&house=${hLower}`
+    );
+    const results = toArr(data) || (data && (data.contributions||data.results)) || [];
+    return results.map(r => {
+      const t = (r.title||r.debate_title||r.heading||'').trim();
+      const sd = (r.date||r.sitting_date||'').slice(0,10);
+      return t ? makeItem(t, sd, r.id||r.slug||'', r.text||r.extract||'') : null;
+    }).filter(Boolean);
+  } catch(_) {}
+
+  return [];
+}
+
+// ── Bills ─────────────────────────────────────────────────────────────────────
+
+async function fetchBills(src) {
+  const since = daysAgo(42); // Bills update slowly — use 30d window
+  const params = new URLSearchParams({
+    lastUpdatedFrom: since,
+    currentHouse: src.house,
+    sortOrder: 'DateUpdatedDescending',
+    take: 25, skip: 0,
+  });
+  // bills-api may block CORS from some origins — try then return empty rather than error
+  let data;
+  try { data = await fetchJSON(`https://bills-api.parliament.uk/api/v1/Bills?${params}`); }
+  catch(e) {
+    if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch') || e.message.includes('CORS'))
+      return []; // CORS blocked — not a broken API
+    throw e;
+  }
+  const items = toArr(data) || (data && data.items) || [];
+  return items.map(b => {
+    const billId = b.billId || b.id || '';
+    const title  = (b.shortTitle || b.longTitle || '').trim();
+    const stage  = b.currentStage?.description || b.currentStage || '';
+    return {
+      item_id: `bills_${src.house}_${billId}`,
+      title: title || `Bill ${billId}`,
+      url: billId ? `https://bills.parliament.uk/bills/${billId}` : 'https://bills.parliament.uk',
+      published_at: (b.lastUpdate || b.introducedSessionId || '').slice(0, 10),
+      summary: stage ? `Stage: ${stage}` : '',
+      doc_type: 'bill',
+      source_id: src.id, source_label: src.label,
+    };
+  }).filter(i => i.title);
+}
+
+// ── Votes / Divisions ─────────────────────────────────────────────────────────
+
+async function fetchVotes(src) {
+  const since = daysAgo(42);
+  if (src.house === 'Commons') {
+    const params = new URLSearchParams({
+      'queryParameters.startDate': since,
+      'queryParameters.take': 25,
+      'queryParameters.skip': 0,
+    });
+    const data = await fetchJSON(`https://commonsvotes-api.parliament.uk/data/Divisions.json/search?${params}`);
+    const items = toArr(data) || [];
+    return items.map(d => ({
+      item_id: `votes_commons_${d.DivisionId || d.divisionId || ''}`,
+      title: (d.Title || d.title || '').trim(),
+      url: d.DivisionId
+        ? `https://votes.parliament.uk/Votes/Commons/Division/${d.DivisionId}`
+        : 'https://votes.parliament.uk',
+      published_at: (d.Date || d.date || '').slice(0, 10),
+      summary: `Ayes: ${d.AyeCount ?? d.ayeCount ?? '?'} · Noes: ${d.NoCount ?? d.noeCount ?? d.nayCount ?? '?'}`,
+      doc_type: 'division',
+      source_id: src.id, source_label: src.label,
+    })).filter(i => i.title);
+  } else {
+    // Lords votes
+    const params = new URLSearchParams({
+      'queryParameters.startDate': since,
+      'queryParameters.take': 25,
+      'queryParameters.skip': 0,
+    });
+    const data = await fetchJSON(`https://lordsvotes-api.parliament.uk/data/Divisions/search?${params}`);
+    const items = toArr(data) || (data && data.items) || [];
+    return items.map(d => ({
+      item_id: `votes_lords_${d.DivisionId || d.divisionId || ''}`,
+      title: (d.Title || d.title || d.DivisionTitle || '').trim(),
+      url: d.DivisionId
+        ? `https://votes.parliament.uk/Votes/Lords/Division/${d.DivisionId}`
+        : 'https://votes.parliament.uk',
+      published_at: (d.Date || d.date || '').slice(0, 10),
+      summary: `Contents: ${d.ContentCount ?? d.ayeCount ?? '?'} · Not-Contents: ${d.NotContentCount ?? d.noeCount ?? '?'}`,
+      doc_type: 'division',
+      source_id: src.id, source_label: src.label,
+    })).filter(i => i.title);
+  }
+}
+
+// ── Oral Questions ────────────────────────────────────────────────────────────
+
+async function fetchOralQuestions(src) {
+  // Try upcoming oral questions list for next 7 days, then recent
+  const items = [];
+  for (let offset = -7; offset <= 7; offset++) {
+    const d = new Date(Date.now() + offset * 86400000).toISOString().slice(0, 10);
+    try {
+      const data = await fetchJSON(
+        `https://oralquestionsandmotions-api.parliament.uk/api/oralquestions/list?date=${d}`
+      );
+      const qs = toArr(data) || (data && (data.Response || data.results)) || [];
+      for (const q of qs) {
+        const id = q.Id || q.id || '';
+        const text = (q.QuestionText || q.questionText || q.Text || '').trim();
+        const body = (q.AnsweringBodyName || q.answeringBodyName || '').trim();
+        const member = (q.AskingMemberName || q.askingMemberName || '').trim();
+        if (!text) continue;
+        items.push({
+          item_id: `oraq_${id || (d + '_' + text.slice(0, 20))}`,
+          title: body ? `[${body}] ${text}` : text,
+          url: `https://questions-statements.parliament.uk/oral-questions`,
+          published_at: (q.OralAnswerDate || q.oralAnswerDate || d).slice(0, 10),
+          summary: member ? `Asked by ${member}` : '',
+          doc_type: 'oral question',
+          source_id: src.id, source_label: src.label,
+        });
+      }
+    } catch(_) {}
+  }
+  // Deduplicate by item_id
+  const seen = new Set();
+  return items.filter(i => { if (seen.has(i.item_id)) return false; seen.add(i.item_id); return true; });
+}
+
+// ── Live Now (now-api.parliament.uk) ─────────────────────────────────────────
+
+async function fetchNow(src) {
+  const endpoint = src.house === 'Commons' ? 'CommonsBusiness' : 'LordsBusiness';
+  let data;
+  try { data = await fetchJSON(`https://now-api.parliament.uk/api/${endpoint}`); }
+  catch(e) {
+    if (e.message.includes('NetworkError') || e.message.includes('Failed to fetch')) return [];
+    throw e;
+  }
+
+  // Response is a list of business items currently happening / scheduled today
+  const items = [];
+  const businesses = toArr(data) || (data && (data.CurrentAdjournment || data.BusinessItems || data.items)) || [];
+
+  function addBiz(b) {
+    const title = (b.Title || b.title || b.Description || b.description || '').trim();
+    if (!title || title.length < 3) return;
+    items.push({
+      item_id: `now_${src.house}_${(b.Id || b.id || title).toString().slice(0, 40)}`,
+      title,
+      url: `https://www.parliament.uk/business/live/`,
+      published_at: new Date().toISOString().slice(0, 10),
+      summary: (b.Category || b.category || b.SubTitle || b.subtitle || '').trim(),
+      doc_type: 'live',
+      source_id: src.id, source_label: src.label,
+    });
+  }
+
+  if (Array.isArray(businesses)) {
+    for (const b of businesses) {
+      addBiz(b);
+      // Some responses nest items
+      for (const sub of (b.BusinessItems || b.items || [])) addBiz(sub);
+    }
+  } else if (data && typeof data === 'object') {
+    addBiz(data);
+  }
+  return items;
+}
+
+// ── What's On / Parliament Events ─────────────────────────────────────────────
+
+function parseWhatsonEvent(ev, house, src) {
+  const title = (ev.Title||ev.title||ev.Name||ev.name||ev.Subject||ev.subject||ev.summary||'').trim();
+  if (!title) return null;
+  const evId  = ev.Id||ev.id||ev.EventId||ev.eventId||ev.uid||'';
+  const rawStart = ev.StartDate||ev.startDate||ev.StartTime||ev.startTime||ev.Date||ev.date||ev.dtstart||'';
+  const start = rawStart.toString().replace(/T.*/,'').slice(0,10);
+  const cat   = (ev.Category||ev.category||ev.Type||ev.type||ev.EventType||ev.eventType||'').toString();
+  const loc   = (ev.Location?.Description||ev.location||ev.Location||ev.Place||ev.place||'').toString().trim();
+  const desc  = (ev.Description||ev.description||ev.Details||ev.details||'').toString().replace(/<[^>]+>/g,' ').trim();
+  return {
+    item_id:      `events_${house}_${evId||title.slice(0,30).replace(/\W+/g,'_')}_${start}`,
+    title,
+    url:          ev.Url||ev.url||ev.Link||ev.link||ev.htmlLink||'https://whatson.parliament.uk',
+    published_at: start,
+    summary:      [cat,loc,desc].filter(Boolean).join(' · ').slice(0,300),
+    doc_type:     'parliament event',
+    source_id:    src.id, source_label: src.label,
+    _is_event:    true,
+  };
+}
+
+async function fetchWhatson(src) {
+  const since = daysAgo(3);
+  const until = daysAgo(-42);
+  const house = src.house;
+  const items = [];
+  const seen  = new Set();
+  const errors = [];
+
+  function add(item) {
+    if (!item || seen.has(item.item_id)) return;
+    seen.add(item.item_id); items.push(item);
+  }
+
+  // 1. Official UK Parliament Calendar API
+  //    https://whatson-api.parliament.uk/calendar/events/list.json
+  //    31-day max per call — split into past 3 days + next 31 days
+  const calBase = 'https://whatson-api.parliament.uk/calendar/events/list.json';
+  // API max = 31 days per call; split into 3 windows to cover 6 weeks ahead
+  for (const [rangeStart, rangeEnd] of [
+    [since,         daysAgo(0)],    // past 3 days → today
+    [daysAgo(0),    daysAgo(-21)],  // today → +21 days (covers coming 3 weeks)
+    [daysAgo(-21),  daysAgo(-42)],  // +21 → +42 days
+  ]) {
+    const p = new URLSearchParams({
+      'queryParameters.startDate': rangeStart + 'T00:00:00',
+      'queryParameters.endDate':   rangeEnd   + 'T23:59:59',
+      'queryParameters.house':     house,
+    });
+    try {
+      const r = await fetch(`${calBase}?${p}`, {headers:{Accept:'application/json'}});
+      if (!r.ok) { errors.push(`Calendar API: HTTP ${r.status}`); continue; }
+      const data = await r.json();
+      const evs = Array.isArray(data) ? data : [];
+      for (const ev of evs) {
+        const title = cleanText(ev.Description||ev.SummarisedDetails||'');
+        if (!title) continue;
+        const evId   = ev.Id||'';
+        const evDate = (ev.StartDate||'').slice(0,10);
+        const cat    = cleanText(ev.Category||ev.Type||'');
+        const loc    = cleanText(ev.Location||'');
+        const time   = ev.StartTime ? `${ev.StartTime}${ev.EndTime ? '–'+ev.EndTime : ''}` : '';
+        const cmt    = cleanText(ev.Committee?.Description||'');
+        const members = (ev.Members||[]).map(m=>m.Name).filter(Boolean).join(', ');
+        const tags   = (ev.Tags||[]).map(t=>t.Description).filter(Boolean).join(', ');
+        // Determine doc_type from category
+        const catLow = cat.toLowerCase();
+        const docType = catLow.includes('committee') || catLow.includes('evidence') ? 'committee hearing'
+                      : catLow.includes('debate') || catLow.includes('westminster') ? 'parliament event'
+                      : catLow.includes('question') ? 'oral questions'
+                      : 'parliament event';
+        const summaryParts = [time, cat, cmt, loc, tags, members ? `Members: ${members}` : ''].filter(Boolean);
+        add({
+          item_id:      `events_cal_${house}_${evId||evDate+'_'+title.slice(0,20).replace(/\W+/g,'_')}`,
+          title,
+          url:          (ev.Metadata?.[0]?.Url) || 'https://whatson.parliament.uk',
+          published_at: evDate,
+          summary:      summaryParts.join(' · ').slice(0,400),
+          doc_type:     docType,
+          source_id:    src.id, source_label: src.label,
+          _is_event:    true,
+          start_time:   ev.StartTime || '',
+          end_time:     ev.EndTime   || '',
+        });
+      }
+    } catch(e) { errors.push(`Calendar API: ${e.message}`); }
+  }
+
+  // 2. Non-sitting days (recess periods)
+  try {
+    const p = new URLSearchParams({
+      'queryParameters.startDate': since + 'T00:00:00',
+      'queryParameters.endDate':   until + 'T23:59:59',
+      'queryParameters.house':     house,
+    });
+    const r = await fetch(`https://whatson-api.parliament.uk/calendar/events/nonsitting.json?${p}`, {headers:{Accept:'application/json'}});
+    if (r.ok) {
+      const data = await r.json();
+      for (const ev of (Array.isArray(data) ? data : [])) {
+        const title = (ev.Description||ev.SummarisedDetails||ev.Category||'').trim();
+        if (!title) continue;
+        add({
+          item_id:      `events_nsd_${house}_${ev.Id||title.slice(0,20).replace(/\W+/g,'_')}`,
+          title:        `⛔ ${title}`,
+          url:          'https://whatson.parliament.uk',
+          published_at: (ev.StartDate||'').slice(0,10),
+          summary:      `${house} non-sitting · ${fmtDate((ev.StartDate||'').slice(0,10))} to ${fmtDate((ev.EndDate||'').slice(0,10))}`,
+          doc_type:     'parliament event',
+          source_id:    src.id, source_label: src.label,
+          _is_event:    false,
+        });
+      }
+    }
+  } catch(_) {}
+
+  // 3. Commons/Lords Business Atom feeds — floor debates incl. Westminster Hall
+  const feedUrls = house === 'Commons' ? [
+    'https://commonsbusiness.parliament.uk/Feed/Atom/WeeklyChamberBusiness',
+    'https://commonsbusiness.parliament.uk/Feed/Atom/DailyChamberBusiness',
+  ] : [
+    'https://lordsbusiness.parliament.uk/Feed/Atom/WeeklyLordsBusiness',
+    'https://lordsbusiness.parliament.uk/Feed/Atom/DailyLordsBusiness',
+  ];
+  for (const feedUrl of feedUrls) {
+    try {
+      const r = await fetch(feedUrl);
+      if (!r.ok) { errors.push(`Feed ${feedUrl}: HTTP ${r.status}`); continue; }
+      const text = await r.text();
+      const xml  = new DOMParser().parseFromString(text, 'application/xml');
+      const entries = [...xml.querySelectorAll('entry, item')];
+      if (!entries.length) continue;
+      for (const entry of entries) {
+        const title   = (entry.querySelector('title')?.textContent||'').replace(/<!\[CDATA\[|\]\]>/g,'').trim();
+        if (!title) continue;
+        const link    = entry.querySelector('link')?.getAttribute('href')||entry.querySelector('link')?.textContent||'';
+        const pubDate = (entry.querySelector('published,updated,pubDate')?.textContent||'').replace(/T.*/,'').slice(0,10);
+        const body    = (entry.querySelector('summary,description,content')?.textContent||'').replace(/<[^>]+>/g,' ').replace(/<!\[CDATA\[|\]\]>/g,'').trim();
+        const uid     = entry.querySelector('id')?.textContent||title;
+        add({
+          item_id:      `events_feed_${house}_${uid.replace(/\W+/g,'_').slice(-40)}`,
+          title,
+          url:          link||`https://${house.toLowerCase()}business.parliament.uk`,
+          published_at: pubDate,
+          summary:      body.slice(0,300),
+          doc_type:     'parliament event',
+          source_id:    src.id, source_label: src.label,
+          _is_event:    true,
+        });
+      }
+      if (items.length) break;
+    } catch(e) { errors.push(`Feed ${feedUrl}: ${e.message}`); }
+  }
+
+  if (!items.length) {
+    throw new Error(`Parliament Calendar API returned 0 events. Errors: ${errors.slice(0,3).join(' | ')}`);
+  }
+  return items;
+}
+
+// ── Keyword matching ──────────────────────────────────────────────────────────
+
+function matchCats(title, summary) {
+  const text = (' ' + (title+' '+summary).toLowerCase() + ' ');
+  const cats = [];
+  for (const [cat, kws] of Object.entries(KEYWORD_CATEGORIES)) {
+    if (kws.some(kw => text.includes(kw.toLowerCase()))) cats.push(cat);
+  }
+  // standalone 'tax' word
+  if (!cats.includes('tax') && /\btax\b/.test(text)) cats.push('tax');
+  // standalone 'AI' word (uppercase in original)
+  if (!cats.includes('ai') && /\bai\b/i.test(title+' '+summary)) cats.push('ai');
+  return cats;
+}
+
+// "2026-07-08" → "8 July 2026"
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+function fmtDate(dateStr) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dateStr || '');
+  if (!m) return dateStr || '';
+  return `${Number(m[3])} ${MONTH_NAMES[Number(m[2]) - 1]} ${m[1]}`;
+}
+
+function setSort(v) { activeSort = v; renderAll(); }
+
+function sortItems(items) {
+  const byDate  = (a, b) => (a.published_at || '').localeCompare(b.published_at || '');
+  const byTitle = (a, b) => cleanText(a.title).toLowerCase().localeCompare(cleanText(b.title).toLowerCase());
+  const cmp = {
+    date_desc:  (a, b) => byDate(b, a),
+    date_asc:   byDate,
+    alpha_asc:  byTitle,
+    alpha_desc: (a, b) => byTitle(b, a),
+  }[activeSort] || ((a, b) => byDate(b, a));
+  return [...items].sort(cmp);
+}
+
+// De-duplicate: sort newest-first, then keep the first occurrence of each
+// normalised title+date (items with a URL win over those without)
+function dedupeItems(items) {
+  const sorted = [...items].sort((a, b) => {
+    const d = (b.published_at || '').localeCompare(a.published_at || '');
+    return d !== 0 ? d : (b.url ? 1 : 0) - (a.url ? 1 : 0);
+  });
+  const seen = new Set();
+  const out = [];
+  for (const item of sorted) {
+    const key = cleanText(item.title).toLowerCase() + '|' + (item.published_at || '').slice(0, 10);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(item);
+  }
+  return out;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function renderAll() {
+  const container = document.getElementById('groups-container');
+  container.innerHTML = '';
+  if (currentView === 'cal') {
+    hide('groups-container');
+    show('cal-container');
+    const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
+    renderCalendar();
+  } else {
+    show('groups-container');
+    hide('cal-container');
+  }
+
+  // Tab counts
+  const catCounts = {energy:0, ai:0, health:0, tax:0, education:0, technology:0, payments:0, custom:0};
+  for (const item of allItems)
+    for (const c of (item.matched_cats||[]))
+      if (c in catCounts) catCounts[c]++;
+  for (const [c, n] of Object.entries(catCounts)) {
+    const el = document.getElementById('tc-' + c);
+    if (el) el.textContent = n;
+  }
+
+  // Item count badge
+  const badge = document.getElementById('item-count');
+  badge.textContent = allItems.length + ' items';
+  show('item-count');
+
+  // Error panel
+  const errKeys = Object.keys(sourceErrors);
+  if (errKeys.length) {
+    document.getElementById('error-summary').textContent =
+      errKeys.length + ' source' + (errKeys.length > 1 ? 's' : '') + ' unavailable — click for details';
+    document.getElementById('error-list').innerHTML =
+      errKeys.map(k => `<li><strong>${esc(k)}</strong>: ${esc(sourceErrors[k])}</li>`).join('');
+    show('error-panel');
+  }
+
+  const deduped = dedupeItems(allItems);
+
+  // Build groups (items within each group stay newest-first)
+  const grouped = {};
+  for (const item of deduped)
+    (grouped[item.source_id] = grouped[item.source_id] || []).push(item);
+
+  for (const sid of SOURCE_ORDER) {
+    if (!grouped[sid]) continue;
+    const items = sortItems(grouped[sid]);
+    const src = ALL_SOURCES.find(s => s.id === sid);
+    const label = src ? src.label : sid;
+    const kwCount = items.filter(i => i.matched_cats && i.matched_cats.length).length;
+    const dotCls = sourceErrors[sid] ? 'error' : 'ok';
+    const kwBadge = kwCount ? `<span class="badge-kw">${kwCount} matched</span>` : '';
+
+    const grp = document.createElement('div');
+    grp.className = 'group'; grp.id = 'grp-' + sid;
+    grp.innerHTML = `
+      <div class="group-header" onclick="toggleGrp('${sid}')">
+        <span class="dot ${dotCls}"></span>
+        <span class="group-title">${esc(label)}</span>
+        <span class="count">${items.length}</span>
+        ${kwBadge}
+        <span class="chev" id="chev-${sid}">▼</span>
+      </div>
+      <div id="body-${sid}"></div>`;
+
+    const body = grp.querySelector('#body-' + sid);
+    for (const item of items) body.appendChild(makeItemEl(item));
+    container.appendChild(grp);
+  }
+
+  applyFilters();
+}
+
+function makeItemEl(item) {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.dataset.cats     = (item.matched_cats || []).join(',');
+  div.dataset.kw       = (item.matched_cats && item.matched_cats.length) ? '1' : '0';
+  div.dataset.date     = (item.published_at || '').slice(0, 10);
+  div.dataset.srctype  = item.source_id || '';
+  div.dataset.doctype  = item.doc_type  || '';
+  div.dataset.srcgroup = srcGroup(item.source_id || '');
+
+  const titleHtml = item.url
+    ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(cleanText(item.title))}</a>`
+    : esc(cleanText(item.title));
+  const summaryHtml = item.summary
+    ? `<div class="item-summary">${esc(cleanText(item.summary))}</div>` : '';
+  const date = (item.published_at || '').slice(0, 10);
+  const catBadges = (item.matched_cats || []).map(c =>
+    `<span class="cat-badge cat-${c}" data-cat="${c}">${c === 'ai' ? 'AI' : c === 'custom' ? '★ My keyword' : cap(c)}</span>`
+  ).join('');
+  const docBadge = item.doc_type ? `<span class="doc-type">${esc(item.doc_type.replace(/_/g,' '))}</span>` : '';
+
+  if (item.matched_cats && item.matched_cats.length) div.classList.add('kw-match');
+
+  const isConsultation = isConsultationDoc(item.doc_type);
+  if (isConsultation) div.classList.add('is-consultation');
+  const dt = item.doc_type || '';
+  const flagLabel = /outcome|government_response/.test(dt) ? 'Outcome published'
+                  : /^closed_/.test(dt)                    ? 'Closed — awaiting outcome'
+                  : /^open_/.test(dt)                      ? 'Open for responses'
+                  : 'Consultation / CfE';
+  const consultFlag = isConsultation
+    ? `<span class="consultation-flag">📋 ${flagLabel}</span>` : '';
+
+  div.innerHTML = `
+    <div class="item-title">${titleHtml}</div>
+    ${summaryHtml}
+    <div class="item-meta">
+      ${date ? `<span>${esc(fmtDate(date))}</span>` : ''}
+      ${catBadges}${docBadge}${consultFlag}
+      ${item._is_event ? calDropHtml(item) : ''}
+    </div>`;
+  return div;
+}
+
+// ── Filter / expand ───────────────────────────────────────────────────────────
+
+function applyFilters() {
+  if (currentView === 'cal') { renderCalendar(); return; }
+  const q        = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly   = document.getElementById('kw-only').checked;
+  const advFrom  = document.getElementById('adv-from')?.value || '';
+  const advTo    = document.getElementById('adv-to')?.value   || '';
+
+  // Collect enabled source types and doc types from advanced panel
+  const srcTypes = [...document.querySelectorAll('.adv-srctype')]
+    .filter(cb => cb.checked).map(cb => cb.value);
+  const docTypes = [...document.querySelectorAll('.adv-doctype')]
+    .filter(cb => cb.checked).flatMap(cb => cb.value.split(','));
+  const advOpen  = document.getElementById('adv-panel')?.classList.contains('open');
+
+  // Date window from quick buttons
+  const today = new Date(); today.setHours(0,0,0,0);
+  let winStart = null, winEnd = null;
+  if (activeDateFilter === 'today') {
+    winStart = today; winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+  } else if (activeDateFilter === 'yesterday') {
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-1);
+    winEnd = today;
+  } else if (activeDateFilter === 'last7') {
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-7);
+  } else if (activeDateFilter === 'last30') {
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+1);
+    winStart = new Date(today); winStart.setDate(winStart.getDate()-30);
+  } else if (activeDateFilter === 'next_week') {
+    // Monday–Sunday of next calendar week
+    const dow = today.getDay(); // 0=Sun,1=Mon…
+    const daysToNextMon = dow === 0 ? 1 : 8 - dow;
+    winStart = new Date(today); winStart.setDate(today.getDate() + daysToNextMon);
+    winEnd   = new Date(winStart); winEnd.setDate(winStart.getDate() + 7);
+  } else if (activeDateFilter === 'next30') {
+    winStart = today;
+    winEnd = new Date(today); winEnd.setDate(winEnd.getDate()+31);
+  }
+  // Custom date range overrides quick buttons when set
+  if (advFrom) winStart = new Date(advFrom);
+  if (advTo)   { winEnd = new Date(advTo); winEnd.setDate(winEnd.getDate()+1); }
+
+  let shown = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    const title   = (item.querySelector('.item-title')?.textContent || '').toLowerCase();
+    const cats    = (item.dataset.cats || '').split(',').filter(Boolean);
+    const dateStr = item.dataset.date || '';
+    const srcType = item.dataset.srctype || '';
+    const docType = item.dataset.doctype || '';
+
+    // Date check
+    let dateOk = true;
+    if (winStart || winEnd) {
+      const d = dateStr ? new Date(dateStr) : null;
+      if (!d || isNaN(d)) { dateOk = false; }
+      else {
+        if (winStart && d < winStart) dateOk = false;
+        if (winEnd   && d >= winEnd)  dateOk = false;
+      }
+    }
+
+    // Source group quick-filter (top bar)
+    const grp = item.dataset.srcgroup || '';
+    const grpOk = !activeSrcGroup || grp === activeSrcGroup;
+
+    // Advanced: source type filter
+    const srcOk = !advOpen || srcTypes.length === 0 ||
+      srcTypes.some(t => srcType.startsWith(t) || grp === t);
+
+    // Advanced: doc type filter
+    const dtOk = !advOpen || docTypes.length === 0 ||
+      docTypes.some(t => docType.includes(t));
+
+    const consultOk = !activeConsultationFilter || isConsultationDoc(docType);
+    const deptOk = !activeDept || srcType === activeDept;
+
+    const ok = (!q || title.includes(q))
+            && (!kwOnly || item.dataset.kw === '1')
+            && (!activeCat || cats.includes(activeCat))
+            && grpOk && dateOk && srcOk && dtOk && consultOk && deptOk;
+    item.classList.toggle('hidden', !ok);
+    if (ok) shown++;
+  });
+
+  document.querySelectorAll('.group').forEach(grp => {
+    grp.classList.toggle('hidden', grp.querySelectorAll('.item:not(.hidden)').length === 0);
+  });
+
+  const fs = document.getElementById('filter-status');
+  const anyFilter = q || kwOnly || activeCat || (activeDateFilter && activeDateFilter !== '') || activeSrcGroup || activeDept || advFrom || advTo;
+  if (fs) fs.textContent = anyFilter ? shown + ' results' : '';
+}
+
+function filterDate(btn) {
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDateFilter = btn.dataset.date || '';
+  // Clear custom date inputs when using quick buttons
+  const f = document.getElementById('adv-from'); if (f) f.value = '';
+  const t = document.getElementById('adv-to');   if (t) t.value = '';
+  applyFilters();
+}
+
+function filterSrc(btn) {
+  document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSrcGroup = btn.dataset.src || '';
+  applyFilters();
+}
+
+function filterDept(btn) {
+  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDept = btn.dataset.dept || '';
+  applyFilters();
+}
+
+function isConsultationDoc(docType) {
+  return /consultation|inquiry|call[ _]for[ _]evidence|government_response/i.test(docType || '');
+}
+
+function toggleConsultationFilter() {
+  activeConsultationFilter = !activeConsultationFilter;
+  const btn = document.getElementById('consultation-filter');
+  if (btn) btn.classList.toggle('active', activeConsultationFilter);
+  applyFilters();
+}
+
+function srcGroup(sourceId) {
+  if (!sourceId) return '';
+  if (sourceId.startsWith('govuk_'))    return 'govuk';
+  if (sourceId.startsWith('events_'))   return 'events';
+  if (sourceId.startsWith('bills_'))    return 'bills';
+  if (sourceId.startsWith('cmt_'))      return 'committee';
+  if (sourceId.startsWith('votes_'))    return 'votes';
+  if (sourceId.startsWith('oraq_'))     return 'votes';    // merged into votes group
+  if (sourceId.startsWith('written_'))  return 'hansard';  // merged into hansard group
+  if (sourceId.startsWith('hansard_'))  return 'hansard';
+  if (sourceId.startsWith('now_'))      return 'events';   // live now = events group
+  return '';
+}
+
+function filterCat(btn) {
+  document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat || null;
+  applyFilters();
+}
+
+function toggleAdv() {
+  const panel  = document.getElementById('adv-panel');
+  const toggle = document.getElementById('adv-toggle');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function clearAdv() {
+  // Reset advanced checkboxes
+  document.querySelectorAll('.adv-srctype,.adv-doctype').forEach(cb => cb.checked = true);
+  const f = document.getElementById('adv-from'); if (f) f.value = '';
+  const t = document.getElementById('adv-to');   if (t) t.value = '';
+  // Reset source group buttons
+  document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.src-btn[data-src=""]')?.classList.add('active');
+  activeSrcGroup = '';
+  // Reset department buttons
+  document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.dept-btn[data-dept=""]')?.classList.add('active');
+  activeDept = '';
+  // Reset date buttons
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.date-btn[data-date=""]')?.classList.add('active');
+  activeDateFilter = '';
+  applyFilters();
+}
+
+function expandAll()   { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.remove('hidden')); document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▼'); }
+function collapseAll() { document.querySelectorAll('[id^="body-"]').forEach(e => e.classList.add('hidden'));    document.querySelectorAll('[id^="chev-"]').forEach(e => e.textContent='▶'); }
+
+// ── View toggle (list / calendar) ────────────────────────────────────────────
+
+let currentView = 'list';
+let calYear, calMonth;
+
+function setView(mode) {
+  currentView = mode;
+  document.getElementById('view-list').classList.toggle('active', mode === 'list');
+  document.getElementById('view-cal').classList.toggle('active', mode === 'cal');
+  if (mode === 'list') {
+    show('groups-container');
+    hide('cal-container');
+  } else {
+    hide('groups-container');
+    show('cal-container');
+    if (!calYear) { const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth(); }
+    renderCalendar();
+  }
+}
+
+// ── Calendar renderer ─────────────────────────────────────────────────────────
+
+const SRC_COLORS = {
+  govuk:'#1d4ed8', events:'#0e7490', bills:'#0891b2', committee:'#7c3aed',
+  votes:'#d97706', hansard:'#374151',
+};
+
+function calPrev()  { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
+function calNext()  { calMonth++; if (calMonth > 11) { calMonth = 0;  calYear++; } renderCalendar(); }
+function calToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); renderCalendar(); }
+
+function getVisibleItems() {
+  // Return items that pass current filters (source group, topic, search)
+  const q      = (document.getElementById('search').value || '').toLowerCase();
+  const kwOnly = document.getElementById('kw-only').checked;
+  return dedupeItems(allItems).filter(item => {
+    if (activeSrcGroup && srcGroup(item.source_id || '') !== activeSrcGroup) return false;
+    if (activeDept && (item.source_id || '') !== activeDept) return false;
+    if (activeConsultationFilter && !isConsultationDoc(item.doc_type)) return false;
+    if (activeCat && !(item.matched_cats || []).includes(activeCat)) return false;
+    if (kwOnly && !(item.matched_cats && item.matched_cats.length)) return false;
+    if (q && !(item.title || '').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderCalendar() {
+  const monthNames = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+  document.getElementById('cal-title').textContent = `${monthNames[calMonth]} ${calYear}`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  // Day headers
+  for (const d of ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']) {
+    const h = document.createElement('div');
+    h.className = 'cal-day-header'; h.textContent = d;
+    grid.appendChild(h);
+  }
+
+  // Build date→items map from visible items
+  const byDate = {};
+  for (const item of getVisibleItems()) {
+    const ds = (item.published_at || '').slice(0, 10);
+    if (!ds) continue;
+    if (!byDate[ds]) byDate[ds] = [];
+    byDate[ds].push(item);
+  }
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay  = new Date(calYear, calMonth + 1, 0);
+  // Start from Monday of the week containing 1st
+  let startMon = new Date(firstDay);
+  const dow = (firstDay.getDay() + 6) % 7; // 0=Mon
+  startMon.setDate(startMon.getDate() - dow);
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(startMon);
+    d.setDate(startMon.getDate() + i);
+    const ds = d.toISOString().slice(0, 10);
+    const inMonth = d.getMonth() === calMonth;
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + (inMonth ? '' : ' other-month') + (ds === todayStr ? ' today' : '');
+    cell.dataset.date = ds;
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'cal-date';
+    dateEl.textContent = d.getDate();
+    cell.appendChild(dateEl);
+
+    const items = byDate[ds] || [];
+    if (items.length) {
+      const chips = document.createElement('div');
+      chips.className = 'cal-chips';
+      const show3 = items.slice(0, 3);
+      const rest  = items.slice(3);
+      for (const item of show3) {
+        const chip = document.createElement('button');
+        chip.className = 'cal-chip' + ((item.matched_cats && item.matched_cats.length) ? ' kw' : '');
+        const grp = srcGroup(item.source_id || '');
+        chip.style.background = (SRC_COLORS[grp] || '#94a3b8') + '1a';
+        chip.style.color = SRC_COLORS[grp] || '#374151';
+        chip.textContent = item.title;
+        chip.title = item.title;
+        chip.onclick = (e) => { e.stopPropagation(); openDayPanel(ds, items); };
+        chips.appendChild(chip);
+      }
+      if (rest.length) {
+        const more = document.createElement('div');
+        more.className = 'cal-more';
+        more.textContent = `+${rest.length} more`;
+        more.onclick = (e) => { e.stopPropagation(); openDayPanel(ds, items); };
+        chips.appendChild(more);
+      }
+      cell.appendChild(chips);
+    }
+
+    cell.onclick = () => openDayPanel(ds, items);
+    grid.appendChild(cell);
+  }
+
+  hide('day-panel');
+}
+
+function openDayPanel(ds, items) {
+  const panel = document.getElementById('day-panel');
+  if (!items.length) { hide('day-panel'); return; }
+
+  const fmt = new Date(ds + 'T12:00:00').toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  let html = `<h3>${fmt} <span style="font-size:12px;color:var(--muted);font-weight:400">(${items.length} item${items.length > 1?'s':''})</span></h3>
+  <button class="close-day" onclick="hide('day-panel')" title="Close">✕</button>`;
+
+  for (const item of items) {
+    const isKw = item.matched_cats && item.matched_cats.length;
+    const grp  = srcGroup(item.source_id || '');
+    const color = SRC_COLORS[grp] || '#374151';
+    const catBadges = (item.matched_cats || []).map(c =>
+      `<span class="cat-badge cat-${c}">${c === 'ai' ? 'AI' : cap(c)}</span>`).join('');
+    const titleHtml = item.url
+      ? `<a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>`
+      : esc(item.title);
+    html += `<div class="day-item${isKw ? ' kw-match' : ''}" style="${isKw ? `border-left-color:${color}` : ''}">
+      <div class="day-item-title">${titleHtml}</div>
+      ${item.summary ? `<div style="font-size:12px;color:var(--muted);margin-top:3px">${esc(item.summary)}</div>` : ''}
+      <div class="day-item-meta">
+        <span style="background:${color}1a;color:${color};padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600">${esc(item.source_label || grp)}</span>
+        ${catBadges}
+        ${calDropHtml(item)}
+      </div>
+    </div>`;
+  }
+
+  panel.innerHTML = html;
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── Add-to-calendar ────────────────────────────────────────────────────────────
+
+function calDropHtml(item) {
+  const id = (item.item_id || '').replace(/[^a-z0-9_-]/gi, '');
+  const gcal = googleCalUrl(item);
+  return `<div class="cal-wrap">
+    <button class="btn-cal" onclick="toggleCalDrop(event,'drop-${id}')">📅 Add to calendar ▾</button>
+    <div class="cal-drop" id="drop-${id}">
+      <a href="${gcal}" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285f4"><path d="M19.5 3h-2V1h-2v2h-7V1h-2v2h-2C2.67 3 2 3.67 2 4.5v15C2 20.33 2.67 21 3.5 21h17c.83 0 1.5-.67 1.5-1.5v-15C22 3.67 21.33 3 20.5 3zM20 19H4V8h16v11z"/></svg>
+        Google Calendar
+      </a>
+      <div class="drop-sep"></div>
+      <button onclick="downloadSingleICS(${JSON.stringify(item).replace(/</g,'\\u003c')})">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.1a.5.5 0 0 1 1 0v2.1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V10.4a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+        Download .ics
+      </button>
+    </div>
+  </div>`;
+}
+
+function toggleCalDrop(e, id) {
+  e.stopPropagation();
+  // Close all others first
+  document.querySelectorAll('.cal-drop.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+  document.getElementById(id)?.classList.toggle('open');
+}
+document.addEventListener('click', () => document.querySelectorAll('.cal-drop.open').forEach(d => d.classList.remove('open')));
+
+function itemDate(item) {
+  return (item.published_at || '').slice(0, 10).replace(/-/g, '') || '';
+}
+
+// Parse "HH:MM" or "HH:MMam/pm" → "HHMMSS" UTC-naive for ICS, or ISO string for URLs
+function parseTime(timeStr) {
+  if (!timeStr) return null;
+  // Strip any am/pm suffix that Parliament sometimes includes
+  const clean = timeStr.trim().replace(/\s*(am|pm)$/i, '');
+  const [h, m] = clean.split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return null;
+  return { h, m, ics: `${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`, iso: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}` };
+}
+
+function calDescription(item) {
+  const parts = [];
+  if (item.doc_type)     parts.push(item.doc_type.replace(/^\w/, c => c.toUpperCase()));
+  if (item.summary)      parts.push(cleanText(item.summary));
+  if (item.source_label) parts.push(`Source: ${item.source_label}`);
+  // Always include a direct link — prefer the event URL, then fall back to What's On
+  const link = item.url && !item.url.includes('calendar.parliament.uk') ? item.url : null;
+  if (link) parts.push(`View event: ${link}`);
+  parts.push(`What's On in Parliament: https://whatson.parliament.uk`);
+  return parts.join('\n\n');
+}
+
+function googleCalUrl(item) {
+  const dateStr = (item.published_at || '').slice(0, 10);
+  const st = parseTime(item.start_time);
+  const et = parseTime(item.end_time);
+  let dates;
+  if (st && dateStr) {
+    // Timed event: format YYYYMMDDTHHMMSS / YYYYMMDDTHHMMSS (local, no Z = floating)
+    const d = dateStr.replace(/-/g, '');
+    const endT = et ? et.ics : String(st.h + 1).padStart(2,'0') + st.ics.slice(2); // +1h default
+    dates = `${d}T${st.ics}/${d}T${endT}`;
+  } else {
+    const d = dateStr.replace(/-/g,'') || new Date().toISOString().slice(0,10).replace(/-/g,'');
+    dates = `${d}/${d}`;
+  }
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: cleanText(item.title) || '',
+    dates,
+    details: calDescription(item),
+    location: '',
+  });
+  return `https://calendar.google.com/calendar/render?${p}`;
+}
+
+function makeICSEvent(item) {
+  const uid     = (item.item_id || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'') + '@fc-monitoring';
+  const dateStr = (item.published_at || '').slice(0, 10);
+  const d       = dateStr.replace(/-/g,'');
+  const dtStamp = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
+  const title   = cleanText(item.title || '');
+  const desc    = calDescription(item).replace(/\n/g,'\\n');
+  const st = parseTime(item.start_time);
+  const et = parseTime(item.end_time);
+
+  let dtStart, dtEnd;
+  if (st && d) {
+    dtStart = `DTSTART;TZID=Europe/London:${d}T${st.ics}`;
+    const endHour = et ? et.ics : String(st.h + 1).padStart(2,'0') + st.ics.slice(2);
+    dtEnd   = `DTEND;TZID=Europe/London:${d}T${endHour}`;
+  } else {
+    dtStart = d ? `DTSTART;VALUE=DATE:${d}` : `DTSTART;VALUE=DATE:${new Date().toISOString().slice(0,10).replace(/-/g,'')}`;
+    dtEnd   = d ? `DTEND;VALUE=DATE:${d}` : '';
+  }
+  return [
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtStamp}`,
+    dtStart,
+    dtEnd,
+    `SUMMARY:${title}`,
+    desc    ? `DESCRIPTION:${desc}` : '',
+    item.url ? `URL:${item.url}` : '',
+    'END:VEVENT',
+  ].filter(Boolean).join('\r\n');
+}
+
+function buildICS(items) {
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//FC Monitoring//Parliamentary Monitor//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    ...items.map(makeICSEvent),
+    'END:VCALENDAR',
+  ].join('\r\n');
+}
+
+function downloadICSBlob(content, filename) {
+  const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function downloadSingleICS(item) {
+  downloadICSBlob(buildICS([item]), `${(item.title||'event').slice(0,40).replace(/[^a-z0-9]/gi,'-')}.ics`);
+}
+
+function exportICS() {
+  const items = getVisibleItems().filter(i => i.published_at);
+  if (!items.length) { alert('No items with dates to export.'); return; }
+  downloadICSBlob(buildICS(items), `fc-monitoring-${new Date().toISOString().slice(0,10)}.ics`);
+}
+// ── Keyword editor ────────────────────────────────────────────────────────────
+
+const KW_STORAGE_KEY = 'fc-monitoring-keywords';
+const DEFAULT_KW_CATEGORIES = JSON.parse(JSON.stringify(KEYWORD_CATEGORIES)); // deep copy
+
+function loadUserKeywords() {
+  try {
+    const stored = localStorage.getItem(KW_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Merge: add user keywords to each category
+      for (const [cat, kws] of Object.entries(parsed)) {
+        if (KEYWORD_CATEGORIES[cat]) {
+          const existing = new Set(KEYWORD_CATEGORIES[cat]);
+          for (const kw of kws) if (!existing.has(kw)) KEYWORD_CATEGORIES[cat].push(kw);
+        }
+      }
+    }
+  } catch(_) {}
+}
+
+function toggleKwEditor() {
+  const panel = document.getElementById('kw-panel');
+  const isOpen = !panel.classList.contains('hidden');
+  if (isOpen) { panel.classList.add('hidden'); return; }
+  buildKwEditor();
+  panel.classList.remove('hidden');
+}
+
+function buildKwEditor() {
+  const grid = document.getElementById('kw-editor-grid');
+  grid.innerHTML = '';
+  for (const [cat, kws] of Object.entries(KEYWORD_CATEGORIES)) {
+    const box = document.createElement('div');
+    box.className = 'kw-cat-box adv-section';
+    box.id = 'kw-box-' + cat;
+    const color = {energy:'#c2410c', ai:'#1d4ed8', health:'#9d174d', tax:'#15803d'}[cat] || '#374151';
+    box.innerHTML = `<h4 style="color:${color}">${cat === 'ai' ? 'AI' : cat === 'custom' ? '★ My keywords' : cap(cat)}</h4>
+      <div class="kw-tags" id="kw-tags-${cat}"></div>
+      <div class="kw-add-row">
+        <input type="text" id="kw-input-${cat}" placeholder="Add keyword…" onkeydown="if(event.key==='Enter')addKw('${cat}')">
+        <button class="kw-add-btn" onclick="addKw('${cat}')">Add</button>
+      </div>`;
+    grid.appendChild(box);
+    renderKwTags(cat, kws);
+  }
+}
+
+function renderKwTags(cat, kws) {
+  const container = document.getElementById('kw-tags-' + cat);
+  if (!container) return;
+  container.innerHTML = kws.map((kw, i) => `
+    <span class="kw-tag">
+      ${esc(kw)}
+      <button onclick="removeKw('${cat}', ${i})" title="Remove">✕</button>
+    </span>`).join('');
+}
+
+function addKw(cat) {
+  const input = document.getElementById('kw-input-' + cat);
+  const kw = (input.value || '').trim().toLowerCase();
+  if (!kw) return;
+  if (!KEYWORD_CATEGORIES[cat].includes(kw)) {
+    KEYWORD_CATEGORIES[cat].push(kw);
+    renderKwTags(cat, KEYWORD_CATEGORIES[cat]);
+  }
+  input.value = '';
+}
+
+function removeKw(cat, idx) {
+  KEYWORD_CATEGORIES[cat].splice(idx, 1);
+  renderKwTags(cat, KEYWORD_CATEGORIES[cat]);
+}
+
+function saveKeywords() {
+  localStorage.setItem(KW_STORAGE_KEY, JSON.stringify(KEYWORD_CATEGORIES));
+  // Re-run matching on existing items
+  for (const item of allItems) item.matched_cats = matchCats(item.title, item.summary || '');
+  renderAll();
+  document.getElementById('kw-panel').classList.add('hidden');
+}
+
+function resetKeywords() {
+  localStorage.removeItem(KW_STORAGE_KEY);
+  for (const [cat, kws] of Object.entries(DEFAULT_KW_CATEGORIES)) {
+    KEYWORD_CATEGORIES[cat] = [...kws];
+  }
+  buildKwEditor();
+}
+
+function toggleGrp(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  if (!body) return;
+  const h = body.classList.toggle('hidden');
+  chev.textContent = h ? '▶' : '▼';
+}
+
+// ── Cache ─────────────────────────────────────────────────────────────────────
+
+function saveCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch(_){} }
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.ts || Date.now() - d.ts > CACHE_TTL) return null;
+    return d;
+  } catch(_) { return null; }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+async function fetchJSON(url) {
+  const r = await fetch(url, {headers:{Accept:'application/json'}});
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+function toArr(d) {
+  if (Array.isArray(d)) return d;
+  if (d && typeof d === 'object') return d.items || d.value || d.results || d.searchResults || null;
+  return null;
+}
+// Deeper search — also tries Response, data, and first array-valued key found
+function toArrDeep(d) {
+  const quick = toArr(d);
+  if (quick && quick.length) return quick;
+  if (!d || typeof d !== 'object') return [];
+  // Try more keys
+  for (const k of ['Response','response','data','Data','committees','Committees','collection']) {
+    if (Array.isArray(d[k]) && d[k].length) return d[k];
+  }
+  // Last resort: grab the first array-valued key with items
+  for (const v of Object.values(d)) {
+    if (Array.isArray(v) && v.length) return v;
+  }
+  return [];
+}
+
+function daysAgo(n) { return new Date(Date.now() - n*86400000).toISOString().slice(0,10); }
+function cleanText(s) { return s ? String(s).replace(/\\n/g,' ').replace(/\n/g,' ').replace(/\r/g,'').replace(/\s{2,}/g,' ').trim() : ''; }
+function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+function shortErr(e) { const m = e.message || ''; return m.length > 40 ? m.slice(0,40)+'…' : m; }
+function show(id) { document.getElementById(id)?.classList.remove('hidden'); }
+function hide(id) { document.getElementById(id)?.classList.add('hidden'); }
+function setStatus(t) { const el = document.getElementById('last-updated'); if (el) el.textContent = t; }
+function setRefreshing(on) {
+  const btn = document.getElementById('refresh-btn');
+  if (!btn) return;
+  btn.disabled = on;
+  btn.classList.toggle('spinning', on);
+}
+</script>
+</body>
+</html>

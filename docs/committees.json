@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T10:09:53+00:00",
+ "generated_at": "2026-11-23T22:09:49+00:00",
  "committee_ids": [
   81,
   135,
@@ -63,7 +63,7 @@
   },
   {
    "item_id": "cmt_ev_28795",
-   "title": "Formal meeting (oral evidence session)",
+   "title": "Formal meeting (oral evidence session): Tax reform",
    "url": "https://committees.parliament.uk/event/28795/",
    "published_at": "2026-12-01T15:00:00",
    "summary": "To Be Confirmed",
@@ -170,6 +170,16 @@
    "_is_event": true,
    "committee_id": 378,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_news_193_F5MlNkOFRodnNnUkw4aUJGeEJ4anpUeUhVZjFUQQ",
+   "title": "The Future of UK compute in the age of AI inquiry launched",
+   "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOeXNlS2pLV2VoOUZxS0RFQW9rUGphQThTSUZkNjZ6M2FCMmFKSkZEdGhBbDdmdW5lVjM4YUlqbWthbldNd3hqS2VuamNZUjBTYkxoYnV2cWIxY0hjUDBKdEk1d2d3WTRxUldHMEhGOGlzMjJRZG5mekhkaURpbDBUN0ZwQnVocVo5dzRpWlRiX1BaTEJXYjhnVFZGaUNtUWFHU2JVOVE1X0NsN1ZsMmRFSXVXSS1HV1lIdlpBdERzT2ZGM1g1Szg2a2F5MlNkOFRodnNnUkw4aUJGeEJ4anpUeUhVZjFUQQ?oc=5",
+   "published_at": "2026-11-23T12:47:09+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 193,
+   "_part": "news"
   },
   {
    "item_id": "cmt_inq_10145",
@@ -421,7 +431,7 @@
   {
    "item_id": "cmt_pub_55845",
    "title": "Correspondence to No 10 North  - section 75",
-   "url": "https://committees.parliament.uk/publications/55845/documents/314372/default/",
+   "url": "https://committees.parliament.uk/publications/55845/documents/315576/default/",
    "published_at": "2026-11-16T00:00:00",
    "summary": "Correspondence",
    "doc_type": "committee correspondence",
@@ -573,7 +583,7 @@
    "title": "New inquiry: Future of UK compute in the age of AI",
    "url": "https://committees.parliament.uk/work/10109/",
    "published_at": "2026-11-11T00:00:00",
-   "summary": "Inquiry",
+   "summary": "Inquiry · Call for evidence closes 2027-01-15",
    "doc_type": "inquiry",
    "committee_id": 193,
    "_part": "inquiries"
@@ -742,7 +752,7 @@
    "item_id": "cmt_news_378_6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE",
    "title": "Visitor Levy Bill introduced: Comment from DCMS Committee Chair Dame Caroline Dinenage MP",
    "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQVFZaNUFpLURrTlJpQVRDY1g1cXNLdXUyODFOTkkyRDhsQ2tRdnRxaUJfLWFJVkZmSHNGdjBPd2sxM2k0UFZQZll1TVJpSXppNElaTTVIam91MG5Ycm42enlrTFNha2YyQ3ZPS0U5b1JfaEVnWW5Ya1FUSFo2RE1BdXR4cm9hbk5jSXpObVBwN01WRXE0aWhhNEd4ZTNQQ0kwV0V0b1lZbWFHNmFqUWNqTVhvLWZkcUxvaHg1dS1pSFdXSG5LQ3EtX2I3Z2MyZE9BNGhoeDR1cnNvS203MVp4NEQ4S21OMnM0Y3ZNU2lRcHUzTHhJUWlXeUtOdzZ6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE?oc=5",
-   "published_at": "2026-11-06T08:00:00+00:00",
+   "published_at": "2026-11-06T10:10:19+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 378,

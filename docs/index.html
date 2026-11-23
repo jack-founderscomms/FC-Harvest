@@ -484,6 +484,7 @@ input[type=date]:focus{border-color:var(--accent)}
       <label><input type="checkbox" class="adv-doctype" value="parliament event,committee hearing,oral questions" checked onchange="applyFilters()"> Parliament hearings &amp; events</label>
       <label><input type="checkbox" class="adv-doctype" value="inquiry" checked onchange="applyFilters()"> Committee inquiries &amp; calls for evidence</label>
       <label><input type="checkbox" class="adv-doctype" value="committee news" checked onchange="applyFilters()"> Committee news</label>
+      <label><input type="checkbox" class="adv-doctype" value="committee report,committee correspondence,committee publication" checked onchange="applyFilters()"> Committee reports &amp; letters</label>
       <label><input type="checkbox" class="adv-doctype" value="written statement" checked onchange="applyFilters()"> Written statements</label>
       <label><input type="checkbox" class="adv-doctype" value="hansard" checked onchange="applyFilters()"> Hansard debates</label>
       <label><input type="checkbox" class="adv-doctype" value="bill" checked onchange="applyFilters()"> Bills</label>
@@ -618,15 +619,20 @@ const GOVUK_SOURCES = [
   {id:'govuk_hmrc',    label:'HMRC',             org:'hm-revenue-customs'},
 ];
 
+// committeeId = the number in the committee's URL, e.g.
+// committees.parliament.uk/committee/365/business-innovation-science-and-trade-committee/
+// scripts/fetch_committees.py reads these IDs to build docs/committees.json.
 const COMMITTEE_SOURCES = [
-  {id:'cmt_hsc',   label:'Health & Social Care Committee (Commons)', searchName:'Health and Social Care',            house:'Commons', committeeId:81},
-  {id:'cmt_sit',   label:'SIT Committee (Commons)',                  searchName:'Science, Innovation and Technology', house:'Commons'},
-  {id:'cmt_st',    label:'Science & Technology (Lords)',             searchName:'Science and Technology',            house:'Lords'},
-  {id:'cmt_bt',    label:'Business & Trade (Commons)',               searchName:'Business and Trade',                house:'Commons'},
-  {id:'cmt_cd',    label:'Communications & Digital (Lords)',         searchName:'Communications and Digital',        house:'Lords'},
-  {id:'cmt_ea',    label:'Economic Affairs (Lords)',                 searchName:'Economic Affairs',                  house:'Lords'},
-  {id:'cmt_ir',    label:'Industry & Regulators (Lords)',            searchName:'Industry and Regulators',           house:'Lords'},
-  {id:'cmt_treas', label:'Treasury Committee (Commons)',             searchName:'Treasury',                          house:'Commons'},
+  {id:'cmt_bt',     label:'Business, Innovation, Science & Trade Committee (Commons)', house:'Commons', committeeId:365},
+  {id:'cmt_bt_sec', label:'BIST Sub-Committee on Economic Security, Arms & Export Controls', house:'Commons', committeeId:783},
+  {id:'cmt_sit',    label:'Science & Technology Committee (Commons)', house:'Commons', committeeId:135},
+  {id:'cmt_st',     label:'Science & Technology Committee (Lords)',   house:'Lords',   committeeId:193},
+  {id:'cmt_dcms',   label:'Digital, Culture, Media & Sport Committee (Commons)', house:'Commons', committeeId:378},
+  {id:'cmt_cd',     label:'Communications & Digital Committee (Lords)', house:'Lords', committeeId:170},
+  {id:'cmt_ea',     label:'Economic Affairs Committee (Lords)',       house:'Lords',   committeeId:175},
+  {id:'cmt_ir',     label:'Industry & Regulators Committee (Lords)',  house:'Lords',   committeeId:517},
+  {id:'cmt_treas',  label:'Treasury Committee (Commons)',             house:'Commons', committeeId:158},
+  {id:'cmt_hsc',    label:'Health & Social Care Committee (Commons)', house:'Commons', committeeId:81},
 ];
 
 const WRITTEN_SOURCES = [
@@ -678,7 +684,7 @@ const DOC_TYPES = ['news_story','press_release',...CONSULT_DOC_TYPES,'policy_pap
                    'speech','written_statement','government_response','guidance'];
 const PRESS_DOC_TYPES = ['news_story','press_release'];
 
-const CACHE_KEY = 'fc-monitoring-v19';
+const CACHE_KEY = 'fc-monitoring-v20';
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -691,7 +697,7 @@ let activeSrcGroup  = '';    // '', 'govuk', 'bills', 'committee', 'votes', 'ora
 let activeDept = '';         // '', or a GOVUK_SOURCES id e.g. 'govuk_dbist'
 let activeConsultationFilter = false;
 let activeSort = 'date_desc'; // 'date_desc' | 'date_asc' | 'alpha_asc' | 'alpha_desc'
-let committeeLists = {};
+let committeesDataPromise = null; // shared fetch of docs/committees.json
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
@@ -721,7 +727,7 @@ async function fetchAll() {
   hide('item-count');
   allItems = [];
   sourceErrors = {};
-  committeeLists = {};
+  committeesDataPromise = null;
 
   const prog = document.getElementById('progress-list');
   prog.innerHTML = '';
@@ -738,22 +744,6 @@ async function fetchAll() {
     if (!el) return;
     el.className = cls;
     if (suffix) el.textContent += ' — ' + suffix;
-  }
-
-  // Pre-fetch committee lists (2 calls instead of 14)
-  mkProg('cmt-lists', 'Looking up committee IDs…');
-  try {
-    const [cd, ld] = await Promise.all([
-      fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Commons&currentCommitteesOnly=true'),
-      fetchJSON('https://committees-api.parliament.uk/api/Committees?house=Lords&currentCommitteesOnly=true'),
-    ]);
-    committeeLists.Commons = toArrDeep(cd);
-    committeeLists.Lords   = toArrDeep(ld);
-    doneProg('cmt-lists');
-  } catch (e) {
-    committeeLists.Commons = [];
-    committeeLists.Lords   = [];
-    errProg('cmt-lists', e.message);
   }
 
   // All sources in parallel
@@ -866,92 +856,27 @@ function mapGovUKResults(results, src) {
   })).filter(i => i.title);
 }
 
-async function fetchCommittee(src) {
-  const list = committeeLists[src.house] || [];
-  const nl = src.searchName.toLowerCase();
-  let cmt = list.find(c => (c.name||c.Name||'').toLowerCase().includes(nl));
-  if (!cmt) {
-    const words = new Set(nl.split(/\s+/).filter(w => w.length > 3));
-    let best, bestScore = 0;
-    for (const c of list) {
-      const cn = (c.name||c.Name||'').toLowerCase();
-      const score = [...words].filter(w => cn.includes(w)).length;
-      if (score > bestScore) { bestScore = score; best = c; }
-    }
-    if (bestScore >= 2) cmt = best;
+// Committee news, reports, letters, inquiries and hearings come from
+// docs/committees.json, built by a scheduled GitHub Action
+// (scripts/fetch_committees.py). They can't be fetched here: the Committees API
+// and Google News both block browser requests (no CORS), and the API has no
+// news endpoint. raw.githubusercontent.com does allow browser requests.
+const COMMITTEES_JSON = 'https://raw.githubusercontent.com/jack-founderscomms/FC-Harvest/main/docs/committees.json';
+
+function loadCommitteesData() {
+  if (!committeesDataPromise) {
+    committeesDataPromise = fetch(COMMITTEES_JSON + '?t=' + Date.now(), {cache: 'no-store'})
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    committeesDataPromise.catch(() => { committeesDataPromise = null; });
   }
-  // Fall back to a known committee ID (from its committees.parliament.uk URL)
-  // if the dynamic name lookup above comes up empty — keeps the source working
-  // even if the API's committee list omits or renames this committee.
-  const id = cmt ? (cmt.id || cmt.Id || cmt.committeeId || cmt.CommitteeId || cmt.commiteeId) : src.committeeId;
-  if (!id) throw new Error('Not found: ' + src.searchName);
-  const items = [];
+  return committeesDataPromise;
+}
 
-  // News articles
-  try {
-    const nd = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/NewsArticles?take=25`);
-    for (const r of (toArrDeep(nd) || [])) {
-      const t = (r.title||r.Title||'').trim();
-      if (!t) continue;
-      const aid = r.id||r.Id||'';
-      items.push({
-        item_id: `cmt_news_${id}_${aid}`,
-        title: t,
-        url: r.url||r.Url||`https://committees.parliament.uk/committee/${id}/news/${aid}`,
-        published_at: r.publishedDate||r.PublishedDate||'',
-        summary: (r.summary||r.Summary||'').slice(0,500),
-        doc_type: 'committee news',
-        source_id: src.id, source_label: src.label,
-      });
-    }
-  } catch(_) {}
-
-  // Inquiries / calls for evidence
-  try {
-    const iq = await fetchJSON(`https://committees-api.parliament.uk/api/Committees/${id}/Inquiries?take=15`);
-    for (const r of (toArrDeep(iq) || [])) {
-      const t = (r.title||r.Title||r.inquiryTitle||'').trim();
-      if (!t) continue;
-      const iid = r.id||r.Id||r.inquiryId||'';
-      items.push({
-        item_id: `cmt_inq_${id}_${iid}`,
-        title: t,
-        url: r.url||r.Url||`https://committees.parliament.uk/committee/${id}/inquiries`,
-        published_at: r.dateCreated||r.DateCreated||r.startDate||'',
-        summary: (r.description||r.Description||r.summary||'').slice(0,500),
-        doc_type: 'inquiry',
-        source_id: src.id, source_label: src.label,
-      });
-    }
-  } catch(_) {}
-
-  // Evidence sessions (scheduled committee hearings with witnesses)
-  try {
-    const since = daysAgo(7);
-    const until = daysAgo(-42);
-    const es = await fetchJSON(
-      `https://committees-api.parliament.uk/api/Committees/${id}/EvidenceSessions?startDate=${since}&endDate=${until}&take=20`
-    );
-    for (const r of (toArr(es) || [])) {
-      const t = (r.title||r.Title||r.sessionTitle||r.inquiry?.title||'').trim()
-             || `${src.label} — Evidence Session`;
-      const sid = r.id||r.Id||r.sessionId||'';
-      const when = (r.startDate||r.StartDate||r.date||r.Date||'').slice(0,10);
-      const witnesses = (r.witnesses||r.Witnesses||[]).map(w => w.name||w.Name||w).join(', ');
-      items.push({
-        item_id:      `cmt_es_${id}_${sid||when}`,
-        title:        t,
-        url:          r.url||r.Url||`https://committees.parliament.uk/committee/${id}/hearings`,
-        published_at: when,
-        summary:      witnesses ? `Witnesses: ${witnesses}` : (r.description||r.Description||'').slice(0,300),
-        doc_type:     'committee hearing',
-        source_id:    src.id, source_label: src.label,
-        _is_event:    true,
-      });
-    }
-  } catch(_) {}
-
-  return items;
+async function fetchCommittee(src) {
+  const data = await loadCommitteesData();
+  return (data.items || [])
+    .filter(i => i.committee_id === src.committeeId)
+    .map(i => ({...i, source_id: src.id, source_label: src.label}));
 }
 
 async function fetchWritten(src) {

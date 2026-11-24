@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T22:09:49+00:00",
+ "generated_at": "2026-11-24T17:46:57+00:00",
  "committee_ids": [
   81,
   135,
@@ -44,7 +44,7 @@
    "title": "Formal meeting (oral evidence session)",
    "url": "https://committees.parliament.uk/event/28796/",
    "published_at": "2026-12-08T15:00:00",
-   "summary": "To Be Confirmed",
+   "summary": "To be confirmed",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 175,
@@ -62,6 +62,17 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_ev_28418",
+   "title": "Formal meeting (oral evidence session): The science and risks of AI",
+   "url": "https://committees.parliament.uk/event/28418/",
+   "published_at": "2026-12-02T09:00:00",
+   "summary": "TBC",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 135,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28795",
    "title": "Formal meeting (oral evidence session): Tax reform",
    "url": "https://committees.parliament.uk/event/28795/",
@@ -70,6 +81,17 @@
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 175,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28943",
+   "title": "Formal meeting (oral evidence session)",
+   "url": "https://committees.parliament.uk/event/28943/",
+   "published_at": "2026-12-01T14:00:00",
+   "summary": "TBC",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 365,
    "_part": "events"
   },
   {
@@ -128,6 +150,106 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_pub_55974",
+   "title": "Letter from the John Lewis Partnership relating to the Committee's evidence session on 3 November regarding consumer protection, 9 November 2026",
+   "url": "https://committees.parliament.uk/publications/55974/documents/315714/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Consumer protection",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55975",
+   "title": "Letter from Ming Yang relating to the Committee's Tenth Report of Session relating to China and the UK economy, 9 November 2026",
+   "url": "https://committees.parliament.uk/publications/55975/documents/315716/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: China and the UK economy",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55976",
+   "title": "Letter from the Secretary of State relating to the Steel Trade Measure, 13 November 2026",
+   "url": "https://committees.parliament.uk/publications/55976/documents/315717/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Industrial Strategy",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55977",
+   "title": "Letter to BAE Systems relating to exports and end-use monitoring, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55977/documents/315718/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: UK export support services",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55979",
+   "title": "Letter from the Minister of State for the Future of Work relating to the Department's current and forthcoming consultation on consumer protection and product safety, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55979/documents/315721/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Consumer protection",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55981",
+   "title": "Letter from the Minister of State for Trade relating to Melt and Pour Reporting Requirement for Steel, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55981/documents/315723/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Industrial Strategy",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55983",
+   "title": "Letter to the Secretary of State relating to further questions from the Committee following the evidence session on the 20 October on the work of the Department, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55983/documents/315725/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: The work of the Department for Business, Innovation, Science and Trade",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55984",
+   "title": "Letter from the Minister of State for the Future of Work relating to tipping code of practice, 17 November 2026",
+   "url": "https://committees.parliament.uk/publications/55984/documents/315726/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55985",
+   "title": "Letter from UK Steel relating to the UK steel industry and trade measures, 17 November 2026",
+   "url": "https://committees.parliament.uk/publications/55985/documents/315727/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Industrial Strategy",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55986",
+   "title": "Letter from the British Business Bank relating to further information requested by the Committee following its session on 27 October on entrepreneurship, 18 October 2026",
+   "url": "https://committees.parliament.uk/publications/55986/documents/315728/default/",
+   "published_at": "2026-11-24T17:00:00",
+   "summary": "Correspondence · Inquiry: Entrepreneurship and business",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_ev_28761",
    "title": "Formal meeting (oral evidence session): Fiscal devolution in England",
    "url": "https://committees.parliament.uk/event/28761/",
@@ -150,6 +272,36 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_pub_55969",
+   "title": "Letter from Rt Hon Lisa Nandy MP, Secretary of State for Digital, Culture, Media and Sport, regarding the Ticket Tout Ban Bill, 20 November 2026",
+   "url": "https://committees.parliament.uk/publications/55969/documents/315682/default/",
+   "published_at": "2026-11-24T12:10:00",
+   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55968",
+   "title": "Letter from Stephanie Peacock MP, Minister for Sport, Tourism, Place and Digital Government, regarding the Deaflympics, 19 November 2026",
+   "url": "https://committees.parliament.uk/publications/55968/documents/315680/default/",
+   "published_at": "2026-11-24T12:05:00",
+   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55966",
+   "title": "Letter from Ian Rumsey, Chief Executive, ITN, regarding the work of Channel 4 oral evidence, 18 November 2026",
+   "url": "https://committees.parliament.uk/publications/55966/documents/315679/default/",
+   "published_at": "2026-11-24T12:00:00",
+   "summary": "Correspondence · Inquiry: The work of Channel 4",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_ev_28863",
    "title": "Formal meeting (oral evidence session): Future of UK compute in the age of AI",
    "url": "https://committees.parliament.uk/event/28863/",
@@ -170,6 +322,36 @@
    "_is_event": true,
    "committee_id": 378,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_pub_55948",
+   "title": "Correspondence from the CEO of NISTA to the Chair, relating to Voluntary Exit Scheme, dated 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55948/documents/315619/default/",
+   "published_at": "2026-11-24T09:00:00",
+   "summary": "Correspondence · Inquiry: Work of the National Infrastructure and Service Transformation Authority",
+   "doc_type": "committee correspondence",
+   "committee_id": 158,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55949",
+   "title": "Correspondence from the Bank of England to the Chair, relating to monetary policy at 30 inquiry, dated 13 November 2026",
+   "url": "https://committees.parliament.uk/publications/55949/documents/315620/default/",
+   "published_at": "2026-11-24T05:30:00",
+   "summary": "Correspondence · Inquiry: Bank of England monetary policy independence at 30: Still fit for purpose?",
+   "doc_type": "committee correspondence",
+   "committee_id": 158,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_inq_10156",
+   "title": "New non-inquiry session: The science and risks of AI",
+   "url": "https://committees.parliament.uk/work/10156/",
+   "published_at": "2026-11-24T00:00:00",
+   "summary": "Non-inquiry session",
+   "doc_type": "inquiry",
+   "committee_id": 135,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_news_193_F5MlNkOFRodnNnUkw4aUJGeEJ4anpUeUhVZjFUQQ",
@@ -343,6 +525,16 @@
    "doc_type": "committee report",
    "committee_id": 830,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_news_378_dDRUemdERkF0aEZpdlpNZGF1RjhwMS1nU3Rjc2Zn",
+   "title": "MPs to examine use of NDAs in media and entertainment industries",
+   "url": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxNVVNFbjJfR0dwWmIyemR5UVZ4bFBPRVdwbEo4ZHV6MnNJLWdsanJCamVCbFZ5LVNwVTNzVUNHZHdTOHljU1h3eDFhNGlTMW10a1pvcndfQlhXRGYzVm5idDQ2SG1WOTNuYW10a1lWYllBSFVvSktFbkliU2pUVnNvcW5yMkdBVDZnd3ZrbUZyVWlKY1NmTi1UWUowTmtxSmUwSkstNjFjOXREZHpYVTlEcElVZXJZVzNtVzg2UzlteXlLUXdKTEhQa3AtcE41TDZ5NmtITTlsWDRwUDhQdDRUemdERkF0aEZpdlpNZGF1RjhwMS1nU3Rjc2Zn?oc=5",
+   "published_at": "2026-11-17T18:11:31+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 378,
+   "_part": "news"
   },
   {
    "item_id": "cmt_pub_55867",
@@ -752,7 +944,7 @@
    "item_id": "cmt_news_378_6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE",
    "title": "Visitor Levy Bill introduced: Comment from DCMS Committee Chair Dame Caroline Dinenage MP",
    "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQVFZaNUFpLURrTlJpQVRDY1g1cXNLdXUyODFOTkkyRDhsQ2tRdnRxaUJfLWFJVkZmSHNGdjBPd2sxM2k0UFZQZll1TVJpSXppNElaTTVIam91MG5Ycm42enlrTFNha2YyQ3ZPS0U5b1JfaEVnWW5Ya1FUSFo2RE1BdXR4cm9hbk5jSXpObVBwN01WRXE0aWhhNEd4ZTNQQ0kwV0V0b1lZbWFHNmFqUWNqTVhvLWZkcUxvaHg1dS1pSFdXSG5LQ3EtX2I3Z2MyZE9BNGhoeDR1cnNvS203MVp4NEQ4S21OMnM0Y3ZNU2lRcHUzTHhJUWlXeUtOdzZ6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE?oc=5",
-   "published_at": "2026-11-06T10:10:19+00:00",
+   "published_at": "2026-11-06T08:00:00+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 378,
@@ -1079,56 +1271,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55646",
-   "title": "Letter from the North East Mayor relating to the Industrial Strategy and local growth, 23 October 2026",
-   "url": "https://committees.parliament.uk/publications/55646/documents/309254/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence · Inquiry: Industrial Strategy",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55647",
-   "title": "Letter from the Secretary of State relating to a Ministerial Direction regarding UK Export Finance's cover limit for Ukraine, 28 October 2026",
-   "url": "https://committees.parliament.uk/publications/55647/documents/309260/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55649",
-   "title": "Letter from the Secretary of State relating to a long-term cooperation agreement with Rolls-Royce, 28 October 2026",
-   "url": "https://committees.parliament.uk/publications/55649/documents/309261/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55650",
-   "title": "Letter from TikTok relating to giving evidence to the Committee on 3 November regarding consumer protection, 28 October 2026",
-   "url": "https://committees.parliament.uk/publications/55650/documents/309262/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55651",
-   "title": "Letter from the Financial Conduct Authority and the Payments Systems Regulator relating to consumer protection in payments, 29 October 2026",
-   "url": "https://committees.parliament.uk/publications/55651/documents/309265/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55641",
    "title": "Correspondence to Baroness Amos- Follow up on 15 July Session",
    "url": "https://committees.parliament.uk/publications/55641/documents/309229/default/",
@@ -1169,16 +1311,6 @@
    "_part": "news"
   },
   {
-   "item_id": "cmt_pub_55592",
-   "title": "10th Report - China and the UK economy: the case for risk-managed growth",
-   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmbeis/124/report.html",
-   "published_at": "2026-11-02T00:01:00",
-   "summary": "Report · Inquiry: China and the UK economy",
-   "doc_type": "committee report",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_news_81_FxbEoyT0c5VWFPdnhJOFNMUFVvQk5qakRlbWZWUQ",
    "title": "Prime Minister should make tackling England’s obesity crisis his personal mission, says Health Committee",
    "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxQSWZoNEIwcTFLWTlrMGtaYkp5VFQtUTRvd1lsYUtkM2ZyY2pPcDNnc29nVnZRcEM1S3V0Y01RWUU5YURRcUx1QVp5aFV4YkNhZF82VXY4RzhJQmZrSEFTbVFnblhqYWd1Z0k2OFd0TXA4RUtlaG9MUEFRNkFwenZVVnMtT0RJLXcydkxOdXdmYTJXY1k1RUZ6NW55MWFvZW1hUkFRcC1NdFFCQTVLMHBSbko2RzBpRmM3REtBSUNZZjZLR1VzVnJGNXZuODNDdHRHT1Fwd2djU20xRm9vZGFHa3dXdGFaLVR1aTZPd1JqZVRBb2dqdkNXTlVtX2JjWmlYQnFxbEoyT0c5VWFPdnhJOFNMUFVvQk5qakRlbWZWUQ?oc=5",
@@ -1207,16 +1339,6 @@
    "doc_type": "committee news",
    "committee_id": 158,
    "_part": "news"
-  },
-  {
-   "item_id": "cmt_pub_55570",
-   "title": "Letter to the Secretary of State relating to urgent action on Steel Safeguards to protect downstream manufacturing, 28 October 2026",
-   "url": "https://committees.parliament.uk/publications/55570/documents/308660/default/",
-   "published_at": "2026-10-28T15:30:00",
-   "summary": "Correspondence · Inquiry: Industrial Strategy",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_55568",
@@ -1279,16 +1401,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55521",
-   "title": "5th Special Report - Small business strategy: Second Government Response",
-   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmbeis/748/report.html",
-   "published_at": "2026-10-28T00:01:00",
-   "summary": "Special Report · Inquiry: Small business strategy",
-   "doc_type": "committee report",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_inq_10059",
    "title": "New non-inquiry session: Winter Pressures",
    "url": "https://committees.parliament.uk/work/10059/",
@@ -1297,26 +1409,6 @@
    "doc_type": "inquiry",
    "committee_id": 81,
    "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_pub_55541",
-   "title": "Letter to TikTok relating to appearing before the Committee on 3 November to give evidence on Consumer Protection, 27 October 2026",
-   "url": "https://committees.parliament.uk/publications/55541/documents/308483/default/",
-   "published_at": "2026-10-27T16:00:00",
-   "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55542",
-   "title": "Letter to Amazon relating to appearing before the Committee on 3 November to give evidence on Consumer Protection, 27 October 2026",
-   "url": "https://committees.parliament.uk/publications/55542/documents/308485/default/",
-   "published_at": "2026-10-27T16:00:00",
-   "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_55533",
@@ -1799,36 +1891,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55179",
-   "title": "Letter from Rt Hon Ian Murray MP, Minister for Creative Industries, Media and Online Safety, regarding the £1 voluntary ticket contribution for grassroots music, 30 September 2026",
-   "url": "https://committees.parliament.uk/publications/55179/documents/306803/default/",
-   "published_at": "2026-10-13T14:15:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55178",
-   "title": "Letter from Vicky Foxcroft MP, Minister for Youth, Gambling, Digital Inclusion, Civil Society & Loneliness, regarding Powerball consultation, 25 September 2026",
-   "url": "https://committees.parliament.uk/publications/55178/documents/306800/default/",
-   "published_at": "2026-10-13T14:10:00",
-   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55177",
-   "title": "Letter from Rt Hon Lisa Nandy MP, Secretary of State for Digital, Culture, Media and Sport, regarding Soft power Council, 22 September 2026",
-   "url": "https://committees.parliament.uk/publications/55177/documents/306799/default/",
-   "published_at": "2026-10-13T14:05:00",
-   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55171",
    "title": "Correspondence from the Economic Secretary to the Treasury to the Chair relating to The Financial Services and Markets Act 2000 (Cryptoassets) (Miscellaneous Amendments) Regulations 2026, dated 25 September 2026",
    "url": "https://committees.parliament.uk/publications/55171/documents/306791/default/",
@@ -1989,16 +2051,6 @@
    "_part": "inquiries"
   },
   {
-   "item_id": "cmt_pub_55105",
-   "title": "4th Report - The Office for Budget Responsibility: Time for change?",
-   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmtreasy/15/report.html",
-   "published_at": "2026-09-23T00:01:00",
-   "summary": "Report · Inquiry: The OBR: 15 years on",
-   "doc_type": "committee report",
-   "committee_id": 158,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_inq_10008",
    "title": "New inquiry: National Youth Strategy: One year on",
    "url": "https://committees.parliament.uk/work/10008/",
@@ -2016,16 +2068,6 @@
    "summary": "Correspondence · Inquiry: BBC Charter Renewal",
    "doc_type": "committee correspondence",
    "committee_id": 170,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55074",
-   "title": "2nd Special Report – Financial Inclusion Strategy: Government response",
-   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmtreasy/621/report.html",
-   "published_at": "2026-09-18T00:01:00",
-   "summary": "Special Report · Inquiry: Financial Inclusion Strategy",
-   "doc_type": "committee report",
-   "committee_id": 158,
    "_part": "publications"
   },
   {
@@ -3004,16 +3046,6 @@
    "url": "https://committees.parliament.uk/work/9718/",
    "published_at": "2026-03-24T00:00:00",
    "summary": "Inquiry",
-   "doc_type": "inquiry",
-   "committee_id": 135,
-   "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_inq_9716",
-   "title": "New pre-appointment hearing: Pre-appointment hearing for the Chair of Ofcom",
-   "url": "https://committees.parliament.uk/work/9716/",
-   "published_at": "2026-03-24T00:00:00",
-   "summary": "Pre-appointment hearing",
    "doc_type": "inquiry",
    "committee_id": 135,
    "_part": "inquiries"

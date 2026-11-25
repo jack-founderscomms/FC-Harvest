@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T02:31:49+00:00",
+ "generated_at": "2026-11-25T17:12:36+00:00",
  "committee_ids": [
   81,
   135,
@@ -40,6 +40,17 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_ev_28961",
+   "title": "Formal meeting (oral evidence session): The Online Safety Act: implementation and impact",
+   "url": "https://committees.parliament.uk/event/28961/",
+   "published_at": "2026-12-09T10:00:00",
+   "summary": "To be confirmed",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 170,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28796",
    "title": "Formal meeting (oral evidence session)",
    "url": "https://committees.parliament.uk/event/28796/",
@@ -51,11 +62,22 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_ev_28913",
+   "title": "Reappointment of Professor David Miles CBE to the OBR's Budget Responsibility Committee",
+   "url": "https://committees.parliament.uk/event/28913/",
+   "published_at": "2026-12-02T14:00:00",
+   "summary": "The Grimond Room, Portcullis House · Reappointment of Professor David Miles CBE to the OBR's Budget Responsibility Committee",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 158,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28154",
    "title": "Formal meeting (oral evidence session): Children’s social care",
    "url": "https://committees.parliament.uk/event/28154/",
    "published_at": "2026-12-02T11:00:00",
-   "summary": "To be Confirmed",
+   "summary": "Room 2, Palace of Westminster",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 430,
@@ -66,7 +88,7 @@
    "title": "Formal meeting (oral evidence session): The science and risks of AI",
    "url": "https://committees.parliament.uk/event/28418/",
    "published_at": "2026-12-02T09:00:00",
-   "summary": "TBC",
+   "summary": "Room 8, Palace of Westminster",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 135,
@@ -77,7 +99,7 @@
    "title": "Formal meeting (oral evidence session): Tax reform",
    "url": "https://committees.parliament.uk/event/28795/",
    "published_at": "2026-12-01T15:00:00",
-   "summary": "To Be Confirmed",
+   "summary": "Room 2, Palace of Westminster",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 175,
@@ -85,10 +107,10 @@
   },
   {
    "item_id": "cmt_ev_28943",
-   "title": "Formal meeting (oral evidence session)",
+   "title": "Formal meeting (oral evidence session): UK trade with the EU",
    "url": "https://committees.parliament.uk/event/28943/",
    "published_at": "2026-12-01T14:00:00",
-   "summary": "TBC",
+   "summary": "The Thatcher Room, Portcullis House",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 365,
@@ -99,11 +121,83 @@
    "title": "Formal meeting (oral evidence session): Future of UK compute in the age of AI",
    "url": "https://committees.parliament.uk/event/28891/",
    "published_at": "2026-12-01T10:00:00",
-   "summary": "To be confirmed",
+   "summary": "Room 3, Palace of Westminster",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 193,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28894",
+   "title": "Work of the Prudential Regulation Authority",
+   "url": "https://committees.parliament.uk/event/28894/",
+   "published_at": "2026-12-01T09:30:00",
+   "summary": "Room 8, Palace of Westminster · Work of the Prudential Regulation Authority",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 158,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28673",
+   "title": "Formal meeting (oral evidence session): Tourism",
+   "url": "https://committees.parliament.uk/event/28673/",
+   "published_at": "2026-11-30T13:00:00",
+   "summary": "Portrait Gallery, Edinburgh",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 378,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_pub_56038",
+   "title": "Letter to Gordon Brothers relating to the administration of Poundland, 25 November 2026",
+   "url": "https://committees.parliament.uk/publications/56038/documents/316031/default/",
+   "published_at": "2026-11-25T16:10:00",
+   "summary": "Correspondence · Inquiry: Poundland",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_56030",
+   "title": "Letter from the Chair to Rt Hon Lisa Nandy MP, Secretary of State for Digital, Culture, Media and Sport, regarding the Information Commission, 25 November 2026",
+   "url": "https://committees.parliament.uk/publications/56030/documents/315983/default/",
+   "published_at": "2026-11-25T14:10:00",
+   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55978",
+   "title": "Correspondence from DHSC - Digital Capability for Health and Care",
+   "url": "https://committees.parliament.uk/publications/55978/documents/315720/default/",
+   "published_at": "2026-11-25T14:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 81,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55980",
+   "title": "Joint Correspondence from multiple departments – Millburn review",
+   "url": "https://committees.parliament.uk/publications/55980/documents/315722/default/",
+   "published_at": "2026-11-25T14:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 81,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55982",
+   "title": "Correspondence from DHSC - Men's Health One Year On",
+   "url": "https://committees.parliament.uk/publications/55982/documents/315724/default/",
+   "published_at": "2026-11-25T14:00:00",
+   "summary": "Correspondence",
+   "doc_type": "committee correspondence",
+   "committee_id": 81,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_ev_28810",
@@ -115,6 +209,16 @@
    "_is_event": true,
    "committee_id": 158,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_pub_56031",
+   "title": "Letter from Stephanie Peacock MP, Minister for Sport, Tourism, Place and Digital Government, regarding trusted digital verification services, 24 November 2026",
+   "url": "https://committees.parliament.uk/publications/56031/documents/315984/default/",
+   "published_at": "2026-11-25T14:00:00",
+   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_ev_28153",
@@ -164,7 +268,7 @@
    "item_id": "cmt_news_378_xTUFpMTR3Q21Qc2NSYTJ5UlF1bDRISGc0dWhMNFU",
    "title": "Major sporting and cultural events: MPs urge new government approach to protect standing on world stage",
    "url": "https://news.google.com/rss/articles/CBMirAJBVV95cUxOTWNnclBvWk9YXy1kdUZnSEVlZXd0M3JvdlBkQ01YNXpITGN1bzZmVTJPR2NIbFZQd3IyTkEwV1BNYjFObmZqbFZrd1JIc2RhczlNdl9BbnByWXREVmE1dlZ1SDh4UUJ3MmJrbWh4UnF6YVN6MHJtUmtWRzNfaVNrcHc0V2JxNDlzQ2dVSTRfMkp6cUtpSm1oT2dhVFFkNGg2UzlQS1g0T1IwOWZ3RmIxYzNEOFhMVWpXQTZaMEk0YzRNYUROdHpmMENhMGl4dUh1cG5pU1BIZEtJWlZqT0xleHJSZHc4WnRMTjVjVEZZTlh0VDh5MzJNMHhPYUl0N1FreXNHWFpmSWhrQ3ZmR0MxTUFpMTR3Q21Qc2NSYTJ5UlF1bDRISGc0dWhMNFU?oc=5",
-   "published_at": "2026-11-25T00:04:45+00:00",
+   "published_at": "2026-11-25T00:05:15+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 378,
@@ -393,6 +497,16 @@
    "doc_type": "committee news",
    "committee_id": 193,
    "_part": "news"
+  },
+  {
+   "item_id": "cmt_inq_10147",
+   "title": "New pre-appointment hearing: Reappointment of Professor David Miles CBE to the OBR's Budget Responsibility Committee",
+   "url": "https://committees.parliament.uk/work/10147/",
+   "published_at": "2026-11-23T00:00:00",
+   "summary": "Pre-appointment hearing",
+   "doc_type": "inquiry",
+   "committee_id": 158,
+   "_part": "inquiries"
   },
   {
    "item_id": "cmt_inq_10145",
@@ -1248,16 +1362,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55645",
-   "title": "Letter from the Minister of State for Trade relating to round 6 of negotiations on an enhanced Free Trade Agreement with Turkey, 22 October 2026",
-   "url": "https://committees.parliament.uk/publications/55645/documents/309252/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55641",
    "title": "Correspondence to Baroness Amos- Follow up on 15 July Session",
    "url": "https://committees.parliament.uk/publications/55641/documents/309229/default/",
@@ -1738,36 +1842,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55349",
-   "title": "Correspondence from Minister Johnson - Ebola",
-   "url": "https://committees.parliament.uk/publications/55349/documents/307239/default/",
-   "published_at": "2026-10-14T15:09:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 81,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55350",
-   "title": "Correspondence from Minister Frith - Annual Dentistry Statistics",
-   "url": "https://committees.parliament.uk/publications/55350/documents/307240/default/",
-   "published_at": "2026-10-14T15:09:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 81,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55351",
-   "title": "Correspondence from MHRA - Consultation on Statutory Fees",
-   "url": "https://committees.parliament.uk/publications/55351/documents/307241/default/",
-   "published_at": "2026-10-14T15:09:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 81,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55266",
    "title": "Correspondence from CaSE, re Response to follow-up to oral evidence on Machinery of government changes, 28 September 2026",
    "url": "https://committees.parliament.uk/publications/55266/documents/307066/default/",
@@ -1846,26 +1920,6 @@
    "doc_type": "inquiry",
    "committee_id": 158,
    "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_pub_55208",
-   "title": "Letter from the Chair to Rt Hon Ian Murray MP, Minister for Creative Industries, Media and Online Safety, regarding AI and copyright, 13 October 2026",
-   "url": "https://committees.parliament.uk/publications/55208/documents/306906/default/",
-   "published_at": "2026-10-13T14:30:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55181",
-   "title": "Letter from Rt Hon Lisa Nandy MP, Secretary of State for Digital, Culture, Media and Sport, regarding the acquisition of the business of TalkTalk Telecom Group Limited by BT Group plc, 5 October 2026",
-   "url": "https://committees.parliament.uk/publications/55181/documents/306806/default/",
-   "published_at": "2026-10-13T14:25:00",
-   "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_55171",
@@ -3095,16 +3149,6 @@
    "summary": "Non-inquiry session",
    "doc_type": "inquiry",
    "committee_id": 365,
-   "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_inq_9682",
-   "title": "New inquiry: Student loans and taxation of graduates",
-   "url": "https://committees.parliament.uk/work/9682/",
-   "published_at": "2026-03-12T00:00:00",
-   "summary": "Inquiry",
-   "doc_type": "inquiry",
-   "committee_id": 158,
    "_part": "inquiries"
   },
   {

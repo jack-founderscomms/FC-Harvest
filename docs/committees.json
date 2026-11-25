@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-24T17:46:57+00:00",
+ "generated_at": "2026-11-25T02:31:49+00:00",
  "committee_ids": [
   81,
   135,
@@ -95,6 +95,17 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_ev_28891",
+   "title": "Formal meeting (oral evidence session): Future of UK compute in the age of AI",
+   "url": "https://committees.parliament.uk/event/28891/",
+   "published_at": "2026-12-01T10:00:00",
+   "summary": "To be confirmed",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 193,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28810",
    "title": "Bank of England Monetary Policy Reports",
    "url": "https://committees.parliament.uk/event/28810/",
@@ -148,6 +159,26 @@
    "_is_event": true,
    "committee_id": 135,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_news_378_xTUFpMTR3Q21Qc2NSYTJ5UlF1bDRISGc0dWhMNFU",
+   "title": "Major sporting and cultural events: MPs urge new government approach to protect standing on world stage",
+   "url": "https://news.google.com/rss/articles/CBMirAJBVV95cUxOTWNnclBvWk9YXy1kdUZnSEVlZXd0M3JvdlBkQ01YNXpITGN1bzZmVTJPR2NIbFZQd3IyTkEwV1BNYjFObmZqbFZrd1JIc2RhczlNdl9BbnByWXREVmE1dlZ1SDh4UUJ3MmJrbWh4UnF6YVN6MHJtUmtWRzNfaVNrcHc0V2JxNDlzQ2dVSTRfMkp6cUtpSm1oT2dhVFFkNGg2UzlQS1g0T1IwOWZ3RmIxYzNEOFhMVWpXQTZaMEk0YzRNYUROdHpmMENhMGl4dUh1cG5pU1BIZEtJWlZqT0xleHJSZHc4WnRMTjVjVEZZTlh0VDh5MzJNMHhPYUl0N1FreXNHWFpmSWhrQ3ZmR0MxTUFpMTR3Q21Qc2NSYTJ5UlF1bDRISGc0dWhMNFU?oc=5",
+   "published_at": "2026-11-25T00:04:45+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 378,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_pub_55954",
+   "title": "5th Report - Major events",
+   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmcumeds/147/report.html",
+   "published_at": "2026-11-25T00:01:00",
+   "summary": "Report · Inquiry: Major events",
+   "doc_type": "committee report",
+   "committee_id": 378,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_55974",
@@ -547,28 +578,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_ev_28747",
-   "title": "Formal meeting (oral evidence session): The Online Safety Act: implementation and impact",
-   "url": "https://committees.parliament.uk/event/28747/",
-   "published_at": "2026-11-17T14:00:00",
-   "summary": "Room 1, Palace of Westminster",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 170,
-   "_part": "events"
-  },
-  {
-   "item_id": "cmt_ev_28758",
-   "title": "Private Discussion",
-   "url": "https://committees.parliament.uk/event/28758/",
-   "published_at": "2026-11-17T12:00:00",
-   "summary": "Room 5, Palace of Westminster",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 81,
-   "_part": "events"
-  },
-  {
    "item_id": "cmt_news_81_U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3",
    "title": "Health Committee to examine role of NHS in helping people back to work",
    "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPQkJlVGpjZllDckxwWndUSG16NEJScHkycURQc2lyQVhjTWpDcE9GVzNvb0pfYkxmRUtkVW1XV0tUcVA0ZWJXYm1EV0VuWkUxZ1VORG9SbXZCc014OVdNSnVBZnVmOTFlLU01UzI5WTFVUVI0emdJUlpOMTl2Yy1FLUVqb3QtZ2lPRUlLZnlsWmRIVXhMeExCVzJXOHJ6Z1JWY292dVJRbXE5YVdIX2hpc3E4NlFjVUJ1STJ1LUlSeHBVdmRsWTlRRDhvVFpQUWM0cDdFXzF5U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3?oc=5",
@@ -597,28 +606,6 @@
    "doc_type": "committee correspondence",
    "committee_id": 378,
    "_part": "publications"
-  },
-  {
-   "item_id": "cmt_ev_28365",
-   "title": "Formal meeting (oral evidence session): The work of Channel 4",
-   "url": "https://committees.parliament.uk/event/28365/",
-   "published_at": "2026-11-17T09:30:00",
-   "summary": "Room 16, Palace of Westminster",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 378,
-   "_part": "events"
-  },
-  {
-   "item_id": "cmt_ev_28415",
-   "title": "STFC funding: Impact on UK science",
-   "url": "https://committees.parliament.uk/event/28415/",
-   "published_at": "2026-11-17T09:15:00",
-   "summary": "Room 8, Palace of Westminster · Scientific research funding",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 135,
-   "_part": "events"
   },
   {
    "item_id": "cmt_pub_55845",
@@ -1876,16 +1863,6 @@
    "url": "https://committees.parliament.uk/publications/55181/documents/306806/default/",
    "published_at": "2026-10-13T14:25:00",
    "summary": "Correspondence · Inquiry: The work of the Department for Digital, Culture, Media and Sport",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55180",
-   "title": "Letter from Helen Rhodes, Director, Major Policy Projects, Gambling Commission, regarding new machine rules, 30 September 2026",
-   "url": "https://committees.parliament.uk/publications/55180/documents/306805/default/",
-   "published_at": "2026-10-13T14:20:00",
-   "summary": "Correspondence",
    "doc_type": "committee correspondence",
    "committee_id": 378,
    "_part": "publications"

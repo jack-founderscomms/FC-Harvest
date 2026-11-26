@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T01:47:46+00:00",
+ "generated_at": "2026-11-26T16:53:26+00:00",
  "committee_ids": [
   81,
   135,
@@ -52,7 +52,7 @@
   },
   {
    "item_id": "cmt_ev_28796",
-   "title": "Formal meeting (oral evidence session)",
+   "title": "Formal meeting (oral evidence session): Tax reform",
    "url": "https://committees.parliament.uk/event/28796/",
    "published_at": "2026-12-08T15:00:00",
    "summary": "To be confirmed",
@@ -81,6 +81,17 @@
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 430,
+   "_part": "events"
+  },
+  {
+   "item_id": "cmt_ev_28897",
+   "title": "Oral Evidence",
+   "url": "https://committees.parliament.uk/event/28897/",
+   "published_at": "2026-12-02T09:15:00",
+   "summary": "The Boothroyd Room, Portcullis House · The transition from child to adult health and social care services",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 81,
    "_part": "events"
   },
   {
@@ -117,6 +128,17 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_ev_28895",
+   "title": "Private Discussion",
+   "url": "https://committees.parliament.uk/event/28895/",
+   "published_at": "2026-12-01T12:00:00",
+   "summary": "Room 5, Palace of Westminster",
+   "doc_type": "committee hearing",
+   "_is_event": true,
+   "committee_id": 81,
+   "_part": "events"
+  },
+  {
    "item_id": "cmt_ev_28891",
    "title": "Formal meeting (oral evidence session): Future of UK compute in the age of AI",
    "url": "https://committees.parliament.uk/event/28891/",
@@ -132,7 +154,7 @@
    "title": "Work of the Prudential Regulation Authority",
    "url": "https://committees.parliament.uk/event/28894/",
    "published_at": "2026-12-01T09:30:00",
-   "summary": "Room 8, Palace of Westminster · Work of the Prudential Regulation Authority",
+   "summary": "The Wilson Room, Portcullis House · Work of the Prudential Regulation Authority",
    "doc_type": "committee hearing",
    "_is_event": true,
    "committee_id": 158,
@@ -150,10 +172,40 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_pub_56056",
+   "title": "Government Response to the Retirement and Participation Committee's Report",
+   "url": "https://www.gov.uk/government/publications/government-response-to-the-retirement-and-participation-committees-report",
+   "published_at": "2026-11-26T16:00:00",
+   "summary": "Government Response · Inquiry: Retirement and participation",
+   "doc_type": "government_response",
+   "committee_id": 821,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_56051",
+   "title": "Letter from the Chair to Rt Hon John Healey MP, Chancellor of the Exchequer, HM Treasury, regarding tax incentives for British film and high-end television, 26 November 2026",
+   "url": "https://committees.parliament.uk/publications/56051/documents/316119/default/",
+   "published_at": "2026-11-26T14:18:00",
+   "summary": "Correspondence · Inquiry: British film and high-end television follow-up",
+   "doc_type": "committee correspondence",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_news_365_jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c",
+   "title": "Business, Innovation, Science and Trade Committee write to Poundland owners Gordon Brothers",
+   "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOakxpMlJ2bXo1emdJbEV5bHFpZ0ZUa2FlT01WQlpYS09CUE9YWWVRMGNnR0RWYjFpWWUwRXMxZ2R6cjNZYk1LNzFSWUNKZXl3OGwwbFFkQjdHUXRrNldfdlh3NHYtQUNnSUVIT1BfZERfV0FNRWF5RFl2MUc1WUQtZXVDS1pEai1KQmwxSDRndkI4ZjE0OEJEdFRpbTNCakNaX0J3WWotdktVOWxBek04NWNTcUpWZU5VUEF0QUdYVUUya2JCdFl4LWdJYllXc2E2Y1dNSWdGcFFsVTZvVklDckJFdGY1QUNpNHZoRktzSU5HV2NTNV9FSS1abjZZRHRzZkt0Vk1jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c?oc=5",
+   "published_at": "2026-11-26T05:03:45+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 365,
+   "_part": "news"
+  },
+  {
    "item_id": "cmt_news_193_vbERnb1RUdEwyUGpwYUp0ZmR5WnpUNm5MamU2VzY",
    "title": "Broken NHS innovation system losing opportunities to ease NHS pressure, save lives and support economic growth, peers warn",
    "url": "https://news.google.com/rss/articles/CBMiuAJBVV95cUxQWk9jeklwN0h3LUJMYnhCUExOVWI2bDN5RFNmZlVXNUhNR2ZZV1NtVmhqcU50LWtNM0gyQnZya1RscGlhNEI0eHN1WWJGRWVEQjY2UmNDSXZha0tGTVNzWVRyT3FwRkkxWWlxbk9xc2FEUXk2a2VRU1Mxc2dUMldwTHNkNlNPWHlqdHVtM2o1OGpCZTY5c3JJQWtEeDM2Z3ZEemFPR1hHYkVWOHB3VHpSQTZyZnRPVV9YaV9Pb3ZOc0ZEandMVUtvX0RCeG9QQ2psY3RxdTk5YmlFQ2JlSUpfN3dvYmRtall0Rm5HV1VVQ2JsaHNKLU9QUndDcUpoM3doZF9EVDNnRGdEWVpQQW9HMVk3X2F3eTMwWGtvbERnb1RUdEwyUGpwYUp0ZmR5WnpUNm5MamU2VzY?oc=5",
-   "published_at": "2026-11-26T00:03:29+00:00",
+   "published_at": "2026-11-26T00:05:02+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 193,
@@ -164,7 +216,7 @@
    "title": "1st Report - Innovation in the NHS: Personalised Medicine and AI–lost opportunities?",
    "url": "https://publications.parliament.uk/pa/ld5902/ldselect/ldsctech/93/9302.htm",
    "published_at": "2026-11-26T00:01:00",
-   "summary": "Report",
+   "summary": "Report · Inquiry: Innovation in the NHS: personalised medicine and AI",
    "doc_type": "committee report",
    "committee_id": 193,
    "_part": "publications"
@@ -228,16 +280,6 @@
    "doc_type": "committee correspondence",
    "committee_id": 135,
    "_part": "publications"
-  },
-  {
-   "item_id": "cmt_news_365_jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c",
-   "title": "Business, Innovation, Science and Trade Committee write to Poundland owners Gordon Brothers",
-   "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOakxpMlJ2bXo1emdJbEV5bHFpZ0ZUa2FlT01WQlpYS09CUE9YWWVRMGNnR0RWYjFpWWUwRXMxZ2R6cjNZYk1LNzFSWUNKZXl3OGwwbFFkQjdHUXRrNldfdlh3NHYtQUNnSUVIT1BfZERfV0FNRWF5RFl2MUc1WUQtZXVDS1pEai1KQmwxSDRndkI4ZjE0OEJEdFRpbTNCakNaX0J3WWotdktVOWxBek04NWNTcUpWZU5VUEF0QUdYVUUya2JCdFl4LWdJYllXc2E2Y1dNSWdGcFFsVTZvVklDckJFdGY1QUNpNHZoRktzSU5HV2NTNV9FSS1abjZZRHRzZkt0Vk1jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c?oc=5",
-   "published_at": "2026-11-25T17:13:11+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 365,
-   "_part": "news"
   },
   {
    "item_id": "cmt_pub_56038",
@@ -1629,16 +1671,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_news_378_FKb3FiWm1rOW9GWVBmZlhJSGVkcjRlbDFHeXE4Rw",
-   "title": "DCMS Committee publishes correspondence following Ofcom evidence session",
-   "url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxOMWZ5WWtBWDd2ZEN4WVhNaFctSHp5M2ZRUU0tYmZ4eTV0TUhKWHpNekhpd3g5dUgzRjZLbG5DRHFJcUtVYThzQmlBY2E4YlRfOVh0UzBQTFIzWmlwTlBhMTFUZnFPc1dKMkVWdUZtVTJHUnRza0NrU25MWUtCeEp6T3ZibHBIYzBXSzlYVlBjamxoNTFQS1FnZXVtN1hxQUVYNG1DdlJ6QXZNdHlscEhZczdFOTlCNU5UV2ZEb1owdXJNSkhQaXVKd1hqc2ExVnhtanpFdVJnd3dBNVkzdm83YnkwS1o2Y0FKb3FiWm1rOW9GWVBmZlhJSGVkcjRlbDFHeXE4Rw?oc=5",
-   "published_at": "2026-10-27T07:00:00+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 378,
-   "_part": "news"
-  },
-  {
    "item_id": "cmt_pub_55504",
    "title": "Correspondence from Minister Frith- Government Response to the National Commission into the Regulation of AI in Healthcare",
    "url": "https://committees.parliament.uk/publications/55504/documents/308141/default/",
@@ -1807,16 +1839,6 @@
    "doc_type": "inquiry",
    "committee_id": 378,
    "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_pub_55314",
-   "title": "5th Special Report - Protecting built heritage: Government response",
-   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmcumeds/715/report.html",
-   "published_at": "2026-10-16T11:00:00",
-   "summary": "Special Report · Inquiry: Protecting built heritage",
-   "doc_type": "committee report",
-   "committee_id": 378,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_inq_10031",

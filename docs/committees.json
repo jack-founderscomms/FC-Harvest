@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T17:12:36+00:00",
+ "generated_at": "2026-11-26T01:47:46+00:00",
  "committee_ids": [
   81,
   135,
@@ -148,6 +148,96 @@
    "_is_event": true,
    "committee_id": 378,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_news_193_vbERnb1RUdEwyUGpwYUp0ZmR5WnpUNm5MamU2VzY",
+   "title": "Broken NHS innovation system losing opportunities to ease NHS pressure, save lives and support economic growth, peers warn",
+   "url": "https://news.google.com/rss/articles/CBMiuAJBVV95cUxQWk9jeklwN0h3LUJMYnhCUExOVWI2bDN5RFNmZlVXNUhNR2ZZV1NtVmhqcU50LWtNM0gyQnZya1RscGlhNEI0eHN1WWJGRWVEQjY2UmNDSXZha0tGTVNzWVRyT3FwRkkxWWlxbk9xc2FEUXk2a2VRU1Mxc2dUMldwTHNkNlNPWHlqdHVtM2o1OGpCZTY5c3JJQWtEeDM2Z3ZEemFPR1hHYkVWOHB3VHpSQTZyZnRPVV9YaV9Pb3ZOc0ZEandMVUtvX0RCeG9QQ2psY3RxdTk5YmlFQ2JlSUpfN3dvYmRtall0Rm5HV1VVQ2JsaHNKLU9QUndDcUpoM3doZF9EVDNnRGdEWVpQQW9HMVk3X2F3eTMwWGtvbERnb1RUdEwyUGpwYUp0ZmR5WnpUNm5MamU2VzY?oc=5",
+   "published_at": "2026-11-26T00:03:29+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 193,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_pub_56025",
+   "title": "1st Report - Innovation in the NHS: Personalised Medicine and AI–lost opportunities?",
+   "url": "https://publications.parliament.uk/pa/ld5902/ldselect/ldsctech/93/9302.htm",
+   "published_at": "2026-11-26T00:01:00",
+   "summary": "Report",
+   "doc_type": "committee report",
+   "committee_id": 193,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55952",
+   "title": "Correspondence from Minister for Creative Industries, Media and Online Safety, re follow-up to Neuroscience and digital childhoods session 3 November, 18 November 2026",
+   "url": "https://committees.parliament.uk/publications/55952/documents/315634/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Neuroscience and digital childhoods",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55953",
+   "title": "Correspondence from the Minister for Early Education, re follow-up to Neuroscience and digital childhoods oral evidence session 3 November, 18 November 2026",
+   "url": "https://committees.parliament.uk/publications/55953/documents/315637/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Neuroscience and digital childhoods",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55963",
+   "title": "Annex 1 to Correspondence from the Minister for Early Education, re follow-up to Neuroscience and digital childhoods oral evidence session 3 November, 18 November 2026: RCTs and Longitudinal Studies",
+   "url": "https://committees.parliament.uk/publications/55963/documents/315670/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Neuroscience and digital childhoods",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55964",
+   "title": "Annex 2 Correspondence from the Minister for Early Education, re follow-up to Neuroscience and digital childhoods oral evidence session 3 November, 18 November 2026: DfE–EEF partnership for the national EdTech Testbed Programme",
+   "url": "https://committees.parliament.uk/publications/55964/documents/315673/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Neuroscience and digital childhoods",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55965",
+   "title": "Correspondence from Parliamentary Under-Secretary of State for Health Innovation, re FDP and Palantir, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55965/documents/315676/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Digital centre of government",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_55967",
+   "title": "Correspondence from Minister of State for Public Health and Patient Safety, DHSC, re follow-up to the Neuroscience and digital childhood session, 16 November 2026",
+   "url": "https://committees.parliament.uk/publications/55967/documents/315681/default/",
+   "published_at": "2026-11-26T00:00:00",
+   "summary": "Correspondence · Inquiry: Neuroscience and digital childhoods",
+   "doc_type": "committee correspondence",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_news_365_jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c",
+   "title": "Business, Innovation, Science and Trade Committee write to Poundland owners Gordon Brothers",
+   "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOakxpMlJ2bXo1emdJbEV5bHFpZ0ZUa2FlT01WQlpYS09CUE9YWWVRMGNnR0RWYjFpWWUwRXMxZ2R6cjNZYk1LNzFSWUNKZXl3OGwwbFFkQjdHUXRrNldfdlh3NHYtQUNnSUVIT1BfZERfV0FNRWF5RFl2MUc1WUQtZXVDS1pEai1KQmwxSDRndkI4ZjE0OEJEdFRpbTNCakNaX0J3WWotdktVOWxBek04NWNTcUpWZU5VUEF0QUdYVUUya2JCdFl4LWdJYllXc2E2Y1dNSWdGcFFsVTZvVklDckJFdGY1QUNpNHZoRktzSU5HV2NTNV9FSS1abjZZRHRzZkt0Vk1jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c?oc=5",
+   "published_at": "2026-11-25T17:13:11+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 365,
+   "_part": "news"
   },
   {
    "item_id": "cmt_pub_56038",
@@ -599,39 +689,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_ev_28152",
-   "title": "Formal meeting (oral evidence session): Children’s social care",
-   "url": "https://committees.parliament.uk/event/28152/",
-   "published_at": "2026-11-18T11:00:00",
-   "summary": "Room 1, Palace of Westminster",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 430,
-   "_part": "events"
-  },
-  {
-   "item_id": "cmt_ev_28759",
-   "title": "Oral Evidence",
-   "url": "https://committees.parliament.uk/event/28759/",
-   "published_at": "2026-11-18T09:15:00",
-   "summary": "Room 16, Palace of Westminster · Health and Homelessness",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 81,
-   "_part": "events"
-  },
-  {
-   "item_id": "cmt_ev_28416",
-   "title": "Formal meeting (oral evidence session): Early onset cancer: What does the science tell us?",
-   "url": "https://committees.parliament.uk/event/28416/",
-   "published_at": "2026-11-18T09:00:00",
-   "summary": "Room 8, Palace of Westminster",
-   "doc_type": "committee hearing",
-   "_is_event": true,
-   "committee_id": 135,
-   "_part": "events"
-  },
-  {
    "item_id": "cmt_news_365_IUlhvbXlBWUZvMEdYSm5SUjRVdU1Md0x1MUlmOFE",
    "title": "Close AI safety gaps to secure Britain’s £400 billion AI growth opportunity, MPs urge",
    "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQUkZPcW9pYkJlcWt4VmtKaEVPdy12Qk0yZ3hPaW1zdUVTSHg3MmZJTjczQVctZjE2VHpETy1JemN3dDNscHQyRzJyb2lPV3p3VW1XZm9NZXJGQlpfMllFNlNrRGNSeDNfM0FHdERIQTZRcldLZzRjeWstU2Vna21TQlBYNFBMMWpQRGtRTG9qanBjRWpaMzRiREE1Ym1IVEVWVEtUUDJ6VWgyVnFRT1F3Z2EwMU50Q2V1WFdOajRkSUMtU19kUWhLUndJNGZlR01Fb2tocW1VSjJmbFhvakhnSzhQOFFXNlVlcDY2cjhwU1MyNmxpaWtkb2xjUDNIUlhvbXlBWUZvMEdYSm5SUjRVdU1Md0x1MUlmOFE?oc=5",
@@ -692,16 +749,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_news_81_U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3",
-   "title": "Health Committee to examine role of NHS in helping people back to work",
-   "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPQkJlVGpjZllDckxwWndUSG16NEJScHkycURQc2lyQVhjTWpDcE9GVzNvb0pfYkxmRUtkVW1XV0tUcVA0ZWJXYm1EV0VuWkUxZ1VORG9SbXZCc014OVdNSnVBZnVmOTFlLU01UzI5WTFVUVI0emdJUlpOMTl2Yy1FLUVqb3QtZ2lPRUlLZnlsWmRIVXhMeExCVzJXOHJ6Z1JWY292dVJRbXE5YVdIX2hpc3E4NlFjVUJ1STJ1LUlSeHBVdmRsWTlRRDhvVFpQUWM0cDdFXzF5U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3?oc=5",
-   "published_at": "2026-11-17T11:04:34+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 81,
-   "_part": "news"
-  },
-  {
    "item_id": "cmt_pub_55863",
    "title": "Letter from Rt Hon Ian Murray MP, Minister for Creative Industries, Media and Online Safety, regarding Ofcom’s Online Safety Act Codes of Practice, 16 November 2026",
    "url": "https://committees.parliament.uk/publications/55863/documents/315175/default/",
@@ -720,6 +767,16 @@
    "doc_type": "committee correspondence",
    "committee_id": 378,
    "_part": "publications"
+  },
+  {
+   "item_id": "cmt_news_81_U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3",
+   "title": "Health Committee to examine role of NHS in helping people back to work",
+   "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPQkJlVGpjZllDckxwWndUSG16NEJScHkycURQc2lyQVhjTWpDcE9GVzNvb0pfYkxmRUtkVW1XV0tUcVA0ZWJXYm1EV0VuWkUxZ1VORG9SbXZCc014OVdNSnVBZnVmOTFlLU01UzI5WTFVUVI0emdJUlpOMTl2Yy1FLUVqb3QtZ2lPRUlLZnlsWmRIVXhMeExCVzJXOHJ6Z1JWY292dVJRbXE5YVdIX2hpc3E4NlFjVUJ1STJ1LUlSeHBVdmRsWTlRRDhvVFpQUWM0cDdFXzF5U0syamI5Z1J5SzVUSnZ6cVplOHpUWDRGTWtMN2t3?oc=5",
+   "published_at": "2026-11-17T08:00:00+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 81,
+   "_part": "news"
   },
   {
    "item_id": "cmt_pub_55845",
@@ -1882,26 +1939,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55261",
-   "title": "Correspondence from Minister for Science, Innovation and Investment, re ARIA Chair appointment, 18 September 2026",
-   "url": "https://committees.parliament.uk/publications/55261/documents/307060/default/",
-   "published_at": "2026-10-14T14:36:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55259",
-   "title": "Correspondence from PUS DCMS, re Transfer of functions from the Information Commissioner’s Office (ICO) to the Information Commission, 14 September 2026",
-   "url": "https://committees.parliament.uk/publications/55259/documents/307057/default/",
-   "published_at": "2026-10-14T14:30:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55256",
    "title": "Correspondence from the Chief Executive of HMRC to Chair relating to Tax Compliance in Professional Football, dated 12 October 2026",
    "url": "https://committees.parliament.uk/publications/55256/documents/307046/default/",
@@ -2112,16 +2149,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55081",
-   "title": "Correspondence with the Cabinet Office, the Department for Business, Innovation, Science and Technology, and the Department for Digital, Culture, Media and Sport, re. Science and technology policy, and funding following machinery of government changes, 17 September",
-   "url": "https://committees.parliament.uk/publications/55081/documents/305341/default/",
-   "published_at": "2026-09-17T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_inq_10001",
    "title": "New inquiry: Children’s social care",
    "url": "https://committees.parliament.uk/work/10001/",
@@ -2130,36 +2157,6 @@
    "doc_type": "inquiry",
    "committee_id": 430,
    "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_pub_55034",
-   "title": "Correspondence from Minister for Space, Cyber and Regulatory Reform, re. Consultation on modernising corporate reporting, 7 September 2026",
-   "url": "https://committees.parliament.uk/publications/55034/documents/305137/default/",
-   "published_at": "2026-09-15T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55035",
-   "title": "Correspondence from Minister for Space, Cyber and Regulatory Reform and Minister for Defence Readiness and Industry, re. Announcing and publishing the UK Space Strategy, 8 September 2026",
-   "url": "https://committees.parliament.uk/publications/55035/documents/305139/default/",
-   "published_at": "2026-09-15T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55036",
-   "title": "Correspondence from Secretary of State for Digital, Culture, Media and Sport, re. Next steps on the Government's plan to prevent children from taking, sharing or viewing nude images online, 8 September 2026",
-   "url": "https://committees.parliament.uk/publications/55036/documents/305140/default/",
-   "published_at": "2026-09-15T15:00:00",
-   "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_55025",
@@ -4100,16 +4097,6 @@
    "doc_type": "inquiry",
    "committee_id": 430,
    "_part": "inquiries"
-  },
-  {
-   "item_id": "cmt_pub_46994",
-   "title": "Government response to Vaccine resilience letter",
-   "url": "https://committees.parliament.uk/publications/46994/documents/243025/default/",
-   "published_at": "2025-03-10T12:00:00",
-   "summary": "Government Response · Inquiry: Lessons from the COVID-19 vaccine rollout",
-   "doc_type": "government_response",
-   "committee_id": 193,
-   "_part": "publications"
   },
   {
    "item_id": "cmt_inq_8992",

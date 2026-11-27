@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T01:45:18+00:00",
+ "generated_at": "2026-11-27T16:42:26+00:00",
  "committee_ids": [
   81,
   135,
@@ -172,6 +172,86 @@
    "_part": "events"
   },
   {
+   "item_id": "cmt_news_378_ejlkcDdpd3VzZkxvaHJKckRFWG15ZE9EU1FlbXVB",
+   "title": "Protecting built heritage: DCMS Committee publishes additional government response to report",
+   "url": "https://news.google.com/rss/articles/CBMingJBVV95cUxOZ3pXZXZLeEFteGdjY2ZESHVMZTNsYTRmN2V5TEo2NUR2Y3JlYVZQUHJwQ3JHM0RyYmdMY2FBVnBCZkhLV3lFd0QwRzBZWkxIbjlpSTA2Um1tSGNjdDBITXpoMVRhWUtUdXRZSEV0c0dhUHg2ZTdabThrMzlkWEtmUFI3OGxNNDM4R0tGNzhtUWV1d2w1d1l3M0lFeXdUUmxkRW9oQkUyZUIybGNGaVdSTHdONF9pbi1GdGZfNjVzMlVjNDlwYnVPVGJNNXI4NEVYTGo2ZGptSFkwUlhCN0RBQTBZMjVXRG1fUTVZZU45WlpfaGJxQ2FTSFp3VUFuS0REejlkcDdpd3VzZkxvaHJKckRFWG15ZE9EU1FlbXVB?oc=5",
+   "published_at": "2026-11-27T15:01:45+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 378,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_news_135_TnJDR1piOTNhbWF3OURBenp6VnZoZWhEZHBFSDI2",
+   "title": "Chair comment – Department for Work and Pensions Cyber Incident",
+   "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNbktLMnFxODh2VlJFT0draURrd3gzY3RoQXFBejJGWmt2MnNIOFlCTWJRWHVES2hRd2ZlT2JOY3lpaVJpM2V6TlNUaG5paXhTVUJpcHJEMDYxcG5Eb1NJVHdtLWlwQnQ2V2VTbTFGWUZfYzlOUlFjS0RaT0JrZzNpRGQ2TU1XVXMtUGxxSEpPLVpaNTd3YVA3V0RTUmw2clBCbGVFQ0lldE9mS2VwMGZGMk4xanUxNDdILUUzT1NXVDNqUFpPQ0cwSW5kYndEb2ZrQmdzNG92TnJDR1piOTNhbWF3OURBenp6VnZoZWhEZHBFSDI2?oc=5",
+   "published_at": "2026-11-27T14:22:13+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 135,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_pub_56062",
+   "title": "Letter to Anthropic relating to the report from Model Evaluation & Threat Research (METR) on AI research and development at Anthropic, 27 November 2026",
+   "url": "https://committees.parliament.uk/publications/56062/documents/316207/default/",
+   "published_at": "2026-11-27T12:15:00",
+   "summary": "Correspondence · Inquiry: AI adoption, safety and governance",
+   "doc_type": "committee correspondence",
+   "committee_id": 365,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_56047",
+   "title": "6th Special Report: Protecting built heritage: Revised Government response",
+   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmcumeds/859/report.html",
+   "published_at": "2026-11-27T10:00:00",
+   "summary": "Special Report · Inquiry: Protecting built heritage",
+   "doc_type": "committee report",
+   "committee_id": 378,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_news_81_aWllLbnVBOTU4VHlNbzJzUWVWRVNnQmJoWEdER2s",
+   "title": "MPs call for hospital bed occupancy target and plan to end corridor care for children",
+   "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxQc2dVZGk5THpCWnVwVEdmcExNdTg1Y0oxVjZmMUN5LVJSSHN2S0wzaEFCRC1JRXFFQkZwcHptSzgzeGlpWW5PejdxMzdWRHNXR1VGdWdvalNhOWI3YVlWbzFGTWdRSUJucS1GU3Z4VUVGY2l1OE1YQmFUa2hzY2Fndm16T29KbU5qb3VGbEM1WVJKQnRNUXhialREYTAtVzQwM1dmVmxKdEdFOUctaFlJZ0ZGNG85Z0pDb3hCZ1ZfUU9DUktDZkJ1Ym9sOS10cTZsM28zUGFxZno1YTFpbFlzTHBaLUYwZFV3SlpaWllLbnVBOTU4VHlNbzJzUWVWRVNnQmJoWEdER2s?oc=5",
+   "published_at": "2026-11-27T09:36:43+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 81,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_news_135_83MElDVkQ1VlgtOUdHZFpxMTNzTW8wSlFTa2JHTQ",
+   "title": "Professor Christopher Smith endorsed as Executive Chair of Research England",
+   "url": "https://news.google.com/rss/articles/CBMihwJBVV95cUxQS3pjc0pNYzdqNFRBN0lDdFVCM18xYWhQbEVyZE5nODhEeE1LQlhUd2t0a0wwUUZiNUlUZlJnamF0WHRiaHctX3BPeFJqSVRQSjF3ZlVmZzNsaXFVOXhHNEdubHNkSWJJRUt5SkVTZU4ySGRyb0pLUGtCOVdmQmQxbWhkUVZBcUJmUnZ3VzhWYUJDTWR1Um5NZWNvdWVaLWZZMkZ3OTdtLUFWeE5qdlQxbGpxSFFtSnNIVDlLTVF2VVBoWk9ObXFzREtMRHpPR0ZMQXpsNmp1LTgtMVRNTV8xQ0NxMy11NU9yeE83MElDVkQ1VlgtOUdHZFpxMTNzTW8wSlFTa2JHTQ?oc=5",
+   "published_at": "2026-11-27T09:17:31+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 135,
+   "_part": "news"
+  },
+  {
+   "item_id": "cmt_pub_56053",
+   "title": "Correspondence to DHSC -  Winter pressures follow up 2026",
+   "url": "https://committees.parliament.uk/publications/56053/documents/316144/default/",
+   "published_at": "2026-11-27T09:00:00",
+   "summary": "Correspondence · Inquiry: Winter Pressures",
+   "doc_type": "committee correspondence",
+   "committee_id": 81,
+   "_part": "publications"
+  },
+  {
+   "item_id": "cmt_pub_56048",
+   "title": "6th Report – Pre-appointment hearing for the Executive Chair of Research England",
+   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmsctech/805/report.html",
+   "published_at": "2026-11-27T09:00:00",
+   "summary": "Report · Inquiry: Pre-appointment hearing for the Executive Chair of Research England",
+   "doc_type": "committee report",
+   "committee_id": 135,
+   "_part": "publications"
+  },
+  {
    "item_id": "cmt_pub_56046",
    "title": "12th Report - Consumer protection: Black Friday",
    "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmbeis/130/report.html",
@@ -205,7 +285,7 @@
    "item_id": "cmt_news_365_jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c",
    "title": "Business, Innovation, Science and Trade Committee write to Poundland owners Gordon Brothers",
    "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOakxpMlJ2bXo1emdJbEV5bHFpZ0ZUa2FlT01WQlpYS09CUE9YWWVRMGNnR0RWYjFpWWUwRXMxZ2R6cjNZYk1LNzFSWUNKZXl3OGwwbFFkQjdHUXRrNldfdlh3NHYtQUNnSUVIT1BfZERfV0FNRWF5RFl2MUc1WUQtZXVDS1pEai1KQmwxSDRndkI4ZjE0OEJEdFRpbTNCakNaX0J3WWotdktVOWxBek04NWNTcUpWZU5VUEF0QUdYVUUya2JCdFl4LWdJYllXc2E2Y1dNSWdGcFFsVTZvVklDckJFdGY1QUNpNHZoRktzSU5HV2NTNV9FSS1abjZZRHRzZkt0Vk1jUjl4ZWd0Z3RFRVJvOWJjdXlhUTJURjlZSHZ4T3c?oc=5",
-   "published_at": "2026-11-26T05:03:45+00:00",
+   "published_at": "2026-11-26T06:22:11+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 365,
@@ -744,7 +824,7 @@
    "item_id": "cmt_news_365_IUlhvbXlBWUZvMEdYSm5SUjRVdU1Md0x1MUlmOFE",
    "title": "Close AI safety gaps to secure Britain’s £400 billion AI growth opportunity, MPs urge",
    "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQUkZPcW9pYkJlcWt4VmtKaEVPdy12Qk0yZ3hPaW1zdUVTSHg3MmZJTjczQVctZjE2VHpETy1JemN3dDNscHQyRzJyb2lPV3p3VW1XZm9NZXJGQlpfMllFNlNrRGNSeDNfM0FHdERIQTZRcldLZzRjeWstU2Vna21TQlBYNFBMMWpQRGtRTG9qanBjRWpaMzRiREE1Ym1IVEVWVEtUUDJ6VWgyVnFRT1F3Z2EwMU50Q2V1WFdOajRkSUMtU19kUWhLUndJNGZlR01Fb2tocW1VSjJmbFhvakhnSzhQOFFXNlVlcDY2cjhwU1MyNmxpaWtkb2xjUDNIUlhvbXlBWUZvMEdYSm5SUjRVdU1Md0x1MUlmOFE?oc=5",
-   "published_at": "2026-11-18T00:06:16+00:00",
+   "published_at": "2026-11-18T08:00:00+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 365,
@@ -754,7 +834,7 @@
    "item_id": "cmt_news_830_bmk0dnBBMzFHSXp2U1J4d2NzM3Vab1NUZ3N2aE1o",
    "title": "No time to lose to reverse the decline in childhood vaccination rates",
    "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNM25xTWhUNHNFUFpWM3pEd2ZIM0tPdTVzRUU1NlllYlQ0Vi1Zbk9KTi1rVkFRajV1MmF1cjh6VFBlNVJwV0tlMkZvVmgwOFM0dTZzQlJ5UDVmMjY2c0lDSzBsZEVvSzc1clhadU1WLVNpWWNTWUp0eExmNld6OExkX1cxbkh4bGRPV3pzaThRbkUwczlSSnNweWZrM0ZqMGVJTG9NQXhSZlJ2blhrRE5xNzFXUHpTYUl4a3hhcUxGTWVZNjkwMGluT0xWeEw4YzZEOGxZZGRWbmk0dnBBMzFHSXp2U1J4d2NzM3Vab1NUZ3N2aE1o?oc=5",
-   "published_at": "2026-11-18T00:01:17+00:00",
+   "published_at": "2026-11-18T08:00:00+00:00",
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 830,
@@ -1451,16 +1531,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55652",
-   "title": "Letter from Amazon UK relating to giving evidence to the Committee on 3 November regarding consumer protection, 28 October 2026",
-   "url": "https://committees.parliament.uk/publications/55652/documents/309266/default/",
-   "published_at": "2026-11-03T15:15:00",
-   "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55641",
    "title": "Correspondence to Baroness Amos- Follow up on 15 July Session",
    "url": "https://committees.parliament.uk/publications/55641/documents/309229/default/",
@@ -1549,26 +1619,6 @@
    "doc_type": "committee correspondence",
    "committee_id": 170,
    "_part": "publications"
-  },
-  {
-   "item_id": "cmt_news_158_VfU1d5QlZ4T2JDWUlpWGNGYW9Zc1ZGYm5UT2thaw",
-   "title": "\"A victory for common sense\": Cash ISA Budget announcement welcomed by Meg Hillier",
-   "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxNaDFvbGNrQVd2ME4zdEpBOG5RSXp6VGtIeDhza1NFUlpyYmpUYkNVY0h0Mldfb1dQMmpWV1lFZVo2WEc4NFh6RXc2SllDRjJ4ajVCeWhhMFg5V3dqRHFLSnVIaDFtaWNGdXo5ZmR4OTlQcHpvVFl5OTNNbUpSWFJhSW0tdnM4MHpwOTFtZmVvNFRqblZpSHFmOTJQU3lXaW5nbEI4Yy1JX0wyaENHTTU0Q1BZb2RoREgzWlJoY3BkNl9QMDgyYnptZ1hBOEhJY25ySUVfU1d5QlZ4T2JDWUlpWGNGYW9Zc1ZGYm5UT2thaw?oc=5",
-   "published_at": "2026-10-28T07:00:00+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 158,
-   "_part": "news"
-  },
-  {
-   "item_id": "cmt_news_365_dhMlZNamRRQXlyZjk4YVp6SWtMRFhSYVI1UUZOOA",
-   "title": "Small business: Ministers make welcome concessions to MPs - but Budget must tackle costs holding firms back",
-   "url": "https://news.google.com/rss/articles/CBMitwJBVV95cUxPRFc1NGJ3SFNzUW1WZnJfc2JrX2EzVUtHRTBET0lhbEp0cklpOFVsenZUbkNGa0JFSHpndm5IYVBMT3VfZDByU1BNTy1YRjdRQnNmSXFrXzVXRWxlN0RDa3FuOXJfU2J1WUNMcGpnRmNWWW44TnJpeFpGYkVDbTQzSUpnTjZmQmx3cVpnNFhTTG9YcTY4b3B6UXRSVkxncU9mdmpPekl0SGVDSkx2Y0gyMU5BZmlCZHhxYmRFUWlNOTloSTB2bzlYUmhWWnBGWERNLV83RkpGT19hQ3RNcXlwdF9MS05GR2VKRF9faE81N2w2ajRvZXpDazl2aHNLdi1PWVlrWWV2Qk1OcC1hREVpZjRwMWNPRy1XaGdhMlZNamRRQXlyZjk4YVp6SWtMRFhSYVI1UUZOOA?oc=5",
-   "published_at": "2026-10-28T07:00:00+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 365,
-   "_part": "news"
   },
   {
    "item_id": "cmt_pub_55573",
@@ -1781,16 +1831,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55409",
-   "title": "Letter from Baroness Twycross, Minister for Heritage, regarding Places of Worship Renewal Fund, 15 October 2026",
-   "url": "https://committees.parliament.uk/publications/55409/",
-   "published_at": "2026-10-20T10:10:00",
-   "summary": "Correspondence · Inquiry: Protecting built heritage",
-   "doc_type": "committee correspondence",
-   "committee_id": 378,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55432",
    "title": "Correspondence from the Chair to the Governor of the Bank of England and Chief Executive of the FCA on Critical Third Parties regime and Google Cloud service disruptions, dated 20 October 2026",
    "url": "https://committees.parliament.uk/publications/55432/documents/307662/default/",
@@ -1911,16 +1951,6 @@
    "_part": "publications"
   },
   {
-   "item_id": "cmt_pub_55348",
-   "title": "Correspondence to NHSE - primary care estate",
-   "url": "https://committees.parliament.uk/publications/55348/documents/307238/default/",
-   "published_at": "2026-10-14T15:09:00",
-   "summary": "Correspondence · Inquiry: Delivering the Neighbourhood Health Service: Estates",
-   "doc_type": "committee correspondence",
-   "committee_id": 81,
-   "_part": "publications"
-  },
-  {
    "item_id": "cmt_pub_55266",
    "title": "Correspondence from CaSE, re Response to follow-up to oral evidence on Machinery of government changes, 28 September 2026",
    "url": "https://committees.parliament.uk/publications/55266/documents/307066/default/",
@@ -1946,16 +1976,6 @@
    "url": "https://committees.parliament.uk/publications/55268/documents/307069/default/",
    "published_at": "2026-10-14T14:47:00",
    "summary": "Correspondence",
-   "doc_type": "committee correspondence",
-   "committee_id": 135,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55265",
-   "title": "Correspondence with Secretary of State, DHSC re. Government response to the Digital centre of government inquiry report, 24 September",
-   "url": "https://committees.parliament.uk/publications/55265/documents/307063/default/",
-   "published_at": "2026-10-14T14:46:00",
-   "summary": "Correspondence · Inquiry: Digital centre of government",
    "doc_type": "committee correspondence",
    "committee_id": 135,
    "_part": "publications"

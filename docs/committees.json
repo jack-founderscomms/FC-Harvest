@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T16:53:26+00:00",
+ "generated_at": "2026-11-27T01:45:18+00:00",
  "committee_ids": [
   81,
   135,
@@ -170,6 +170,16 @@
    "_is_event": true,
    "committee_id": 378,
    "_part": "events"
+  },
+  {
+   "item_id": "cmt_pub_56046",
+   "title": "12th Report - Consumer protection: Black Friday",
+   "url": "https://publications.parliament.uk/pa/cm5902/cmselect/cmbeis/130/report.html",
+   "published_at": "2026-11-27T00:01:00",
+   "summary": "Report · Inquiry: Consumer protection",
+   "doc_type": "committee report",
+   "committee_id": 365,
+   "_part": "publications"
   },
   {
    "item_id": "cmt_pub_56056",
@@ -1141,6 +1151,16 @@
    "_part": "publications"
   },
   {
+   "item_id": "cmt_news_81_INEIwbE00Nl9MWEtRMV9rcmdvTU5CRmhNY0pDNUk",
+   "title": "‘Like a cliff edge’: young people with complex needs let down as they transition from children’s to adult services, experts find",
+   "url": "https://news.google.com/rss/articles/CBMiuwJBVV95cUxQUGdHMFhWcTVyRXhNZ3BfdUZ3ZXBBMU8waUJ6Y0VhLXlua3M3WFFUYWY1cG9JR1N4Mk5tQ3JIRmMzcktpMnhyLWFrcGNuSEc0WkY3ay1ySTZaQTAxdzNLTkhOd2lxUUFzN0dpQ0NpaXlmTF84enhaVUhmX3VlSElSQV9nTXg2WEJQUkRYLUlGNlJBMUk4WlBscEdiTkt3dHJtTEhHOHRKT1RxcndXTHdzanFDc1JtMWxRMkltWHRjTWEzNGh4TkxWT0ZPVUN3azY5aU5xWUNIVWtOaGs5V2ctd195T0V5Rm1SZV9rWjM0SVFUclVGcWFXWm01T0FOYkhwc1dzSXZtWXBmNi1VUU1PdTVmUmNBc3VxWVVrTjFINEIwbE00Nl9MWEtRMV9rcmdvTU5CRmhNY0pDNUk?oc=5",
+   "published_at": "2026-11-06T08:00:00+00:00",
+   "summary": "",
+   "doc_type": "committee news",
+   "committee_id": 81,
+   "_part": "news"
+  },
+  {
    "item_id": "cmt_news_378_6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE",
    "title": "Visitor Levy Bill introduced: Comment from DCMS Committee Chair Dame Caroline Dinenage MP",
    "url": "https://news.google.com/rss/articles/CBMimgJBVV95cUxQVFZaNUFpLURrTlJpQVRDY1g1cXNLdXUyODFOTkkyRDhsQ2tRdnRxaUJfLWFJVkZmSHNGdjBPd2sxM2k0UFZQZll1TVJpSXppNElaTTVIam91MG5Ycm42enlrTFNha2YyQ3ZPS0U5b1JfaEVnWW5Ya1FUSFo2RE1BdXR4cm9hbk5jSXpObVBwN01WRXE0aWhhNEd4ZTNQQ0kwV0V0b1lZbWFHNmFqUWNqTVhvLWZkcUxvaHg1dS1pSFdXSG5LQ3EtX2I3Z2MyZE9BNGhoeDR1cnNvS203MVp4NEQ4S21OMnM0Y3ZNU2lRcHUzTHhJUWlXeUtOdzZ6Y0hYSUJMYWhWZGdqbnVvSlpZX191dzFEeVlkTFE?oc=5",
@@ -1148,16 +1168,6 @@
    "summary": "",
    "doc_type": "committee news",
    "committee_id": 378,
-   "_part": "news"
-  },
-  {
-   "item_id": "cmt_news_81_INEIwbE00Nl9MWEtRMV9rcmdvTU5CRmhNY0pDNUk",
-   "title": "‘Like a cliff edge’: young people with complex needs let down as they transition from children’s to adult services, experts find",
-   "url": "https://news.google.com/rss/articles/CBMiuwJBVV95cUxQUGdHMFhWcTVyRXhNZ3BfdUZ3ZXBBMU8waUJ6Y0VhLXlua3M3WFFUYWY1cG9JR1N4Mk5tQ3JIRmMzcktpMnhyLWFrcGNuSEc0WkY3ay1ySTZaQTAxdzNLTkhOd2lxUUFzN0dpQ0NpaXlmTF84enhaVUhmX3VlSElSQV9nTXg2WEJQUkRYLUlGNlJBMUk4WlBscEdiTkt3dHJtTEhHOHRKT1RxcndXTHdzanFDc1JtMWxRMkltWHRjTWEzNGh4TkxWT0ZPVUN3azY5aU5xWUNIVWtOaGs5V2ctd195T0V5Rm1SZV9rWjM0SVFUclVGcWFXWm01T0FOYkhwc1dzSXZtWXBmNi1VUU1PdTVmUmNBc3VxWVVrTjFINEIwbE00Nl9MWEtRMV9rcmdvTU5CRmhNY0pDNUk?oc=5",
-   "published_at": "2026-11-06T00:04:46+00:00",
-   "summary": "",
-   "doc_type": "committee news",
-   "committee_id": 81,
    "_part": "news"
   },
   {
@@ -1446,16 +1456,6 @@
    "url": "https://committees.parliament.uk/publications/55652/documents/309266/default/",
    "published_at": "2026-11-03T15:15:00",
    "summary": "Correspondence · Inquiry: Consumer protection",
-   "doc_type": "committee correspondence",
-   "committee_id": 365,
-   "_part": "publications"
-  },
-  {
-   "item_id": "cmt_pub_55643",
-   "title": "Letter from the Minister of State for the Future of Work relating to Post Office redress, 22 October 2026",
-   "url": "https://committees.parliament.uk/publications/55643/documents/309249/default/",
-   "published_at": "2026-11-03T15:00:00",
-   "summary": "Correspondence · Inquiry: Post Office Horizon scandal: Justice for sub-postmasters",
    "doc_type": "committee correspondence",
    "committee_id": 365,
    "_part": "publications"
